@@ -57,3 +57,9 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## ToDo
+
+- dense vector search: https://docs.paradedb.com/search/dense/search
+- sparse vector search: https://docs.paradedb.com/search/sparse/search
+- hybrid search: https://docs.paradedb.com/search/hybrid/basic
