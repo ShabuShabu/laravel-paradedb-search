@@ -72,10 +72,7 @@
         "laravel": {
             "providers": [
                 "ShabuShabu\\ParadeDB\\ParadeDBServiceProvider"
-            ],
-            "aliases": {
-                "ParadeDB": "ShabuShabu\\ParadeDB\\Facades\\ParadeDB"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",

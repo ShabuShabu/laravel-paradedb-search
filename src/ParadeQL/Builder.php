@@ -68,6 +68,7 @@ class Builder
 
     public function whereFilter(string $column, string $operator, bool|int|array $value, ?int $boost = null, string $boolean = 'AND'): static
     {
+        $this->assertFilterOperator($operator, $value);
         $this->assertRangeOperator($operator, $value);
         $this->assertRangeFilter($value);
 
@@ -79,6 +80,26 @@ class Builder
     public function orWhereFilter(string $column, string $operator, bool|int|array $value, ?int $boost = null): static
     {
         return $this->whereFilter($column, $operator, $value, $boost, 'OR');
+    }
+
+    public function whereInclusiveRange(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
+    {
+        return $this->whereFilter($column, '[]', $values, $boost, $boolean);
+    }
+
+    public function whereExclusiveRange(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
+    {
+        return $this->whereFilter($column, '{}', $values, $boost, $boolean);
+    }
+
+    public function orWhereInclusiveRange(string $column, array $values, ?int $boost = null): static
+    {
+        return $this->whereFilter($column, '[]', $values, $boost, 'OR');
+    }
+
+    public function orWhereExclusiveRange(string $column, array $values, ?int $boost = null): static
+    {
+        return $this->whereFilter($column, '{}', $values, $boost, 'OR');
     }
 
     public function get(): string
@@ -158,7 +179,10 @@ class Builder
                 "Operator `$operator` is not a valid range operator. Valid operators are: ".implode(', ', $this->rangeOperators)
             );
         }
+    }
 
+    protected function assertFilterOperator(string $operator, mixed $value): void
+    {
         if (! is_array($value) && ! in_array($operator, $this->filterOperators, true)) {
             throw new InvalidArgumentException(
                 "Operator `$operator` is not a valid filter operator. Valid operators are: ".implode(', ', $this->filterOperators)
@@ -196,7 +220,12 @@ class Builder
 
     protected function prepareValue(string $value): string
     {
-        $value = addcslashes(trim($value), implode('', $this->specialChars));
+        $replacements = array_map(
+            static fn (string $char) => "\\$char",
+            $this->specialChars
+        );
+
+        $value = str_replace($this->specialChars, $replacements, trim($value));
 
         if (str_contains($value, ' ')) {
             $value = Str::wrap($value, '"');
