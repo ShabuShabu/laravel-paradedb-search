@@ -6,7 +6,7 @@ use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
 use ShabuShabu\ParadeDB\Query\Expressions\Concerns\Stringable;
 
-readonly class Search implements ParadeExpression
+readonly class FullTextSearch implements ParadeExpression
 {
     use Stringable;
 

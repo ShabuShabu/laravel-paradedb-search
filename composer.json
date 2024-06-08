@@ -68,6 +68,10 @@
             "phpstan/extension-installer": true
         }
     },
+    "suggest": {
+        "tpetry/laravel-query-expressions": "Provides useful expressions for use in ParadeDB search queries",
+        "tpetry/laravel-postgresql-enhanced": "Adds vector operators to use in regular Eloquent where statements"
+    },
     "extra": {
         "laravel": {
             "providers": [
