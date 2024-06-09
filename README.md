@@ -25,11 +25,85 @@ This is the contents of the published config file:
 
 ```php
 return [
+    'table_suffix' => '_idx',
 ];
 ```
 
 ## Usage
 
+```php
+use Illuminate\Database\Eloquent\Model;
+use ShabuShabu\ParadeDB\Concerns\CanSearch;
+
+class Product extends Model
+{
+    use CanSearch;
+    
+    // the rest of the model...
+}
+```
+
+### ParadeQL
+
+```php
+use App\Models\Product;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+
+Product::search()
+    ->query(
+        Builder::make()
+            ->whereIn('description', ['keyboard', 'toy'])
+            ->where(
+                fn (Builder $builder) => $builder
+                    ->where('category', 'electronics')
+                    ->orWhere('tag', 'office')
+            )
+    )
+    ->limit(20)
+    ->get();
+```
+
+### ParadeDB methods
+
+```php
+use App\Models\Product;
+use ShabuShabu\ParadeDB\Query\Expressions\Rank;
+use ShabuShabu\ParadeDB\Query\Expressions\Boolean;
+use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
+
+Product::search()
+    ->select(['*', new Rank('id')])
+    ->query(new Boolean(
+        should: [
+            new FuzzyTerm(field: 'description', value: 'keyboard'),
+            new FuzzyTerm(field: 'category', value: 'electronics'),
+        ]   
+    ))
+    ->limit(20)
+    ->offset(20)
+    ->fullText();
+```
+
+### Hybrid search
+
+```php
+use App\Models\Product;
+use ShabuShabu\ParadeDB\Query\Distance;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+
+Product::search(
+    ->query(
+        Builder::make()
+            ->where('description', 'keyboard')
+            ->orWhere('category', 'electronics')
+    )
+    ->similarity(
+        column: 'embedding',
+        operator: Distance::l2,
+        value: "'[1,2,3]'"
+    )
+    ->hybrid();
+```
 
 ## Testing
 

@@ -94,7 +94,7 @@ class Search
         ));
     }
 
-    public function similarityQuery(string|Expression $column, SimOp $operator, string|Expression $value): static
+    public function similarity(string|Expression $column, Distance $operator, string|Expression $value): static
     {
         $column = $column instanceof Expression
             ? (string) $column->getValue($this->builder->grammar)
@@ -104,7 +104,7 @@ class Search
             ? (string) $value->getValue($this->builder->grammar)
             : $value;
 
-        $this->similarityQuery = "$column $operator->value $value";
+        $this->similarityQuery = "'$value' $operator->value $column";
 
         return $this;
     }

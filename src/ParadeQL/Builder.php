@@ -25,34 +25,33 @@ class Builder
         '[]', '{}',
     ];
 
-    public function where(Closure|string $column, ?string $value = null, ?int $boost = null, string $boolean = 'AND'): static
+    public static function make(): static
     {
-        $value = $this->prepareValue($value);
+        return new static();
+    }
+
+    public function where(Closure|string $column, null|int|string|array $value = null, ?int $boost = null, ?int $slop = null, string $boolean = 'AND'): static
+    {
+        if (! $column instanceof Closure && is_array($value)) {
+            return $this->whereIn($column, $value, $boost, $boolean);
+        }
+
+        $value = $this->prepareValue($value, $slop);
 
         $this->wheres[] = compact('column', 'value', 'boost', 'boolean');
 
         return $this;
     }
 
-    public function orWhere(Closure|string $column, ?string $value = null, ?int $boost = null): static
+    public function orWhere(Closure|string $column, null|int|string|array $value = null, ?int $boost = null, ?int $slop = null): static
     {
-        return $this->where($column, $value, $boost, 'OR');
+        return $this->where($column, $value, $boost, $slop, 'OR');
     }
 
-    public function whereNot(Closure|string $column, ?string $value = null, ?int $boost = null, string $boolean = 'AND'): static
-    {
-        return $this->where($column, $value, $boost, $boolean.' NOT');
-    }
-
-    public function orWhereNot(Closure|string $column, ?string $value = null, ?int $boost = null): static
-    {
-        return $this->whereNot($column, $value, $boost, 'OR');
-    }
-
-    public function whereIn(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
+    protected function whereIn(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
     {
         $values = array_map(
-            $this->prepareValue(...),
+            fn (string $value) => $this->prepareValue($value),
             array_filter($values, static fn (mixed $value) => is_string($value))
         );
 
@@ -61,9 +60,14 @@ class Builder
         return $this;
     }
 
-    public function orWhereIn(string $column, array $values, ?int $boost = null)
+    public function whereNot(Closure|string $column, null|int|string $value = null, ?int $boost = null, ?int $slop = null, string $boolean = 'AND'): static
     {
-        return $this->whereIn($column, $values, $boost, 'OR');
+        return $this->where($column, $value, $boost, $slop, $boolean.' NOT');
+    }
+
+    public function orWhereNot(Closure|string $column, null|int|string $value = null, ?int $boost = null, ?int $slop = null): static
+    {
+        return $this->whereNot($column, $value, $boost, $slop, 'OR');
     }
 
     public function whereFilter(string $column, string $operator, bool|int|array $value, ?int $boost = null, string $boolean = 'AND'): static
@@ -129,7 +133,7 @@ class Builder
 
         if ($column instanceof Closure) {
             return $this->boolean($boolean, $index).Str::wrap(
-                $this->compile($column(new static)),
+                $this->compile($column(static::make())),
                 '(', ')'
             );
         }
@@ -218,7 +222,12 @@ class Builder
         return $boost ? "^$boost" : '';
     }
 
-    protected function prepareValue(string $value): string
+    protected function slop(?int $slop): string
+    {
+        return $slop ? "~$slop" : '';
+    }
+
+    protected function prepareValue(string $value, ?int $slop = null): string
     {
         $replacements = array_map(
             static fn (string $char) => "\\$char",
@@ -228,7 +237,7 @@ class Builder
         $value = str_replace($this->specialChars, $replacements, trim($value));
 
         if (str_contains($value, ' ')) {
-            $value = Str::wrap($value, '"');
+            $value = Str::wrap($value, '"').$this->slop($slop);
         }
 
         return $value;

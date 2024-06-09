@@ -77,32 +77,38 @@ class Bm25
         );
 
         DB::statement(
-            <<<QUERY
+            <<<'QUERY'
             CALL paradedb.create_bm25(
-                index_name => '$this->table$this->suffix',
-                schema_name => '$this->schema',
-                table_name => '$this->table',
-                key_field => '$this->id',
-                text_fields => '{$fields->get('text')}',
-                numeric_fields => '{$fields->get('numeric')}',
-                boolean_fields => '{$fields->get('boolean')}',
-                json_fields => '{$fields->get('json')}',
-                datetime_fields => '{$fields->get('date')}'
+                index_name => :index,
+                schema_name => :schema,
+                table_name => :table,
+                key_field => :key,
+                text_fields => :text,
+                numeric_fields => :numeric,
+                boolean_fields => :boolean,
+                json_fields => :json,
+                datetime_fields => :date
             );
-            QUERY
+            QUERY, [
+                'index' => $this->table.$this->suffix,
+                'schema' => $this->schema,
+                'table' => $this->table,
+                'key' => $this->id,
+                'text' => $fields->get('text'),
+                'numeric' => $fields->get('numeric'),
+                'boolean' => $fields->get('boolean'),
+                'json' => $fields->get('json'),
+                'date' => $fields->get('date'),
+            ]
         );
     }
 
     public function drop(): void
     {
-        DB::statement(
-            <<<QUERY
-            CALL paradedb.drop_bm25(
-                index_name => '$this->table$this->suffix',
-                schema_name => '$this->schema'
-            );
-            QUERY
-        );
+        DB::statement('CALL paradedb.drop_bm25(:index_name, :schema_name);', [
+            'index_name' => $this->table.$this->suffix,
+            'schema_name' => $this->schema,
+        ]);
     }
 
     public function __call(string $method, array $arguments): static
