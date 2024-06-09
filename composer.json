@@ -4,7 +4,8 @@
     "keywords": [
         "ShabuShabu",
         "laravel",
-        "laravel-paradedb-search"
+        "paradedb",
+        "pg_search"
     ],
     "homepage": "https://github.com/ShabuShabu/laravel-paradedb-search",
     "license": "MIT",
@@ -18,13 +19,14 @@
     "require": {
         "php": "^8.2",
         "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^11.0"
+        "illuminate/contracts": "^10.0 || ^11.0"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "laravel/pint": "^1.14",
-        "nunomaduro/collision": "^8.1.1",
+        "nunomaduro/collision": "^7.10",
         "larastan/larastan": "^2.9",
-        "orchestra/testbench": "^9.0.0",
+        "orchestra/testbench": "^8.23",
         "pestphp/pest": "^2.34",
         "pestphp/pest-plugin-arch": "^2.7",
         "pestphp/pest-plugin-laravel": "^2.3",
@@ -40,22 +42,11 @@
     "autoload-dev": {
         "psr-4": {
             "ShabuShabu\\ParadeDB\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "ShabuShabu\\ParadeDB\\Tests\\App\\": "tests/app",
+            "ShabuShabu\\ParadeDB\\Tests\\Database\\Factories\\": "tests/app/database/factories"
         }
     },
     "scripts": {
-        "post-autoload-dump": "@composer run prepare",
-        "clear": "@php vendor/bin/testbench package:purge-laravel-paradedb-search --ansi",
-        "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "build": [
-            "@composer run prepare",
-            "@php vendor/bin/testbench workbench:build --ansi"
-        ],
-        "start": [
-            "Composer\\Config::disableProcessTimeout",
-            "@composer run build",
-            "@php vendor/bin/testbench serve"
-        ],
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",

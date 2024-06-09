@@ -49,6 +49,12 @@ it('compiles a slop query', function () {
     expect($query)->toBe('description:"black keyboard"~1');
 });
 
+it('compiles a boosted slop query', function () {
+    $query = Builder::make()->where('description', 'black keyboard', boost: 1, slop: 1)->get();
+
+    expect($query)->toBe('description:"black keyboard"~1^1');
+});
+
 it('ignores the slop operator for single-word values', function () {
     $query = Builder::make()->where('description', 'keyboard', slop: 1)->get();
 

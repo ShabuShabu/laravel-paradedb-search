@@ -44,7 +44,7 @@ class Bm25
     protected function addFields(string $name, array $config): static
     {
         if (! array_key_exists($name, $this->fields)) {
-            throw new InvalidArgumentException("Field '$name' does not exist");
+            throw new InvalidArgumentException("Field `$name` does not exist");
         }
 
         $this->fields[$name] = $config;
