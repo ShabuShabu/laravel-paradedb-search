@@ -6,15 +6,15 @@ namespace ShabuShabu\ParadeDB\ParadeQL;
 
 use Closure;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
 
 class Builder
 {
     protected array $wheres = [];
 
     protected array $specialChars = [
-        '\\', '+', '^', '`', ':', '{', '}', '"',
-        '[', ']', '(', ')', '~', '!', '*',
+        '\\', '+', '^', '`', ':',
+        '{', '}', '"', '[', ']',
+        '(', ')', '~', '!', '*',
     ];
 
     protected array $filterOperators = [
@@ -108,16 +108,11 @@ class Builder
 
     public function get(): string
     {
-        return $this->compile($this->wheres);
-    }
-
-    protected function compile(array $wheres): string
-    {
-        return collect($wheres)
+        return collect($this->wheres)
             ->map(fn (array $where, int $index) => match (true) {
                 isset($where['operator']) => $this->compileFilterQuery($where, $index),
                 isset($where['values']) => $this->compileContainsQuery($where, $index),
-                isset($where['value']) => $this->compileWhereQuery($where, $index),
+                default => $this->compileWhereQuery($where, $index),
             })
             ->implode(' ');
     }
@@ -133,7 +128,7 @@ class Builder
 
         if ($column instanceof Closure) {
             return $this->boolean($boolean, $index).Str::wrap(
-                $this->compile($column(static::make())),
+                $column(static::make())->get(),
                 '(', ')'
             );
         }
@@ -165,8 +160,8 @@ class Builder
             'boolean' => $boolean,
         ] = $where;
 
-        $query = match ($value) {
-            is_bool($value) => "$column:".$value ? 'true' : 'false',
+        $query = match (true) {
+            is_bool($value) => "$column:".($value ? 'true' : 'false'),
             is_array($value) && $operator === '[]' => sprintf('%s:[%d TO %d]', $column, $value[0], $value[1]),
             is_array($value) && $operator === '{}' => sprintf('%s:{%d TO %d}', $column, $value[0], $value[1]),
             $operator !== '=' => "$column:$operator$value",
@@ -179,36 +174,21 @@ class Builder
     protected function assertRangeOperator(string $operator, mixed $value): void
     {
         if (is_array($value) && ! in_array($operator, $this->rangeOperators, true)) {
-            throw new InvalidArgumentException(
-                "Operator `$operator` is not a valid range operator. Valid operators are: ".implode(', ', $this->rangeOperators)
-            );
+            throw InvalidFilter::unknownRangeOperator($operator, $this->rangeOperators);
         }
     }
 
     protected function assertFilterOperator(string $operator, mixed $value): void
     {
         if (! is_array($value) && ! in_array($operator, $this->filterOperators, true)) {
-            throw new InvalidArgumentException(
-                "Operator `$operator` is not a valid filter operator. Valid operators are: ".implode(', ', $this->filterOperators)
-            );
+            throw InvalidFilter::unknownFilterOperator($operator, $this->filterOperators);
         }
     }
 
     protected function assertRangeFilter(mixed $value): void
     {
-        if (! is_array($value)) {
-            return;
-        }
-
-        $message = match (true) {
-            count($value) > 2 => 'A range filter must be an array of exactly two values',
-            ! is_int($value[0]) || ! is_int($value[1]) => 'A range filter must consist only of integers',
-            $value[1] >= $value[0] => 'Range filter values must be in order from smallest to highest',
-            default => null
-        };
-
-        if (is_string($message)) {
-            throw new InvalidArgumentException($message);
+        if (is_array($value) && (count($value) > 2 || ! is_int($value[0]) || ! is_int($value[1]) || $value[0] >= $value[1])) {
+            throw InvalidFilter::malformedRange($value);
         }
     }
 
@@ -227,8 +207,12 @@ class Builder
         return $slop ? "~$slop" : '';
     }
 
-    protected function prepareValue(string $value, ?int $slop = null): string
+    protected function prepareValue(?string $value, ?int $slop = null): ?string
     {
+        if (! $value) {
+            return $value;
+        }
+
         $replacements = array_map(
             static fn (string $char) => "\\$char",
             $this->specialChars

@@ -52,7 +52,7 @@ use ShabuShabu\ParadeDB\ParadeQL\Builder;
 Product::search()
     ->query(
         Builder::make()
-            ->whereIn('description', ['keyboard', 'toy'])
+            ->where('description', ['keyboard', 'toy'])
             ->where(
                 fn (Builder $builder) => $builder
                     ->where('category', 'electronics')
