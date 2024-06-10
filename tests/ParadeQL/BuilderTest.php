@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
 use ShabuShabu\ParadeDB\ParadeQL\InvalidFilter;
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Range;
 
 it('compiles a regular query', function () {
     $query = Builder::make()->where('description', 'keyboard')->get();
@@ -151,7 +153,7 @@ it('escapes multiple special characters', function () {
 
 it('compiles an equality filter', function () {
     $query = Builder::make()
-        ->whereFilter('rating', '=', 4)
+        ->whereFilter('rating', Filter::equals, 4)
         ->get();
 
     expect($query)->toBe('rating:4');
@@ -231,7 +233,7 @@ it('panics for an unknown filter operator', function () {
 );
 
 it('panics for a range filter consisting of more than two values', function () {
-    Builder::make()->whereFilter('rating', '[]', [2, 4, 6]);
+    Builder::make()->whereFilter('rating', Range::incl, [2, 4, 6]);
 })->throws(
     InvalidFilter::class,
     'A range filter must be an array of exactly two values',

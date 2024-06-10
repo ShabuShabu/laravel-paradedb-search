@@ -22,7 +22,7 @@ it('creates and deletes a bm25 index', function () {
                 ],
             ],
         ])
-        ->create();
+        ->create(drop: true);
 
     expect('teams_index')->toBeExistingSchema();
 

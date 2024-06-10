@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\ParadeQL;
 
+use BackedEnum;
 use Closure;
 use Illuminate\Support\Str;
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Range;
 
 class Builder
 {
@@ -17,16 +20,9 @@ class Builder
         '(', ')', '~', '!', '*',
     ];
 
-    protected array $filterOperators = [
-        '=', '<', '<=', '>', '>=',
-    ];
-
-    protected array $rangeOperators = [
-        '[]', '{}',
-    ];
-
     public static function make(): static
     {
+        /** @phpstan-ignore-next-line */
         return new static();
     }
 
@@ -70,7 +66,7 @@ class Builder
         return $this->whereNot($column, $value, $boost, $slop, 'OR');
     }
 
-    public function whereFilter(string $column, string $operator, bool|int|array $value, ?int $boost = null, string $boolean = 'AND'): static
+    public function whereFilter(string $column, string|Range|Filter $operator, bool|int|array $value, ?int $boost = null, string $boolean = 'AND'): static
     {
         $this->assertFilterOperator($operator, $value);
         $this->assertRangeOperator($operator, $value);
@@ -81,29 +77,29 @@ class Builder
         return $this;
     }
 
-    public function orWhereFilter(string $column, string $operator, bool|int|array $value, ?int $boost = null): static
+    public function orWhereFilter(string $column, string|Range|Filter $operator, bool|int|array $value, ?int $boost = null): static
     {
         return $this->whereFilter($column, $operator, $value, $boost, 'OR');
     }
 
     public function whereInclusiveRange(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
     {
-        return $this->whereFilter($column, '[]', $values, $boost, $boolean);
+        return $this->whereFilter($column, Range::incl, $values, $boost, $boolean);
     }
 
     public function whereExclusiveRange(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
     {
-        return $this->whereFilter($column, '{}', $values, $boost, $boolean);
+        return $this->whereFilter($column, Range::excl, $values, $boost, $boolean);
     }
 
     public function orWhereInclusiveRange(string $column, array $values, ?int $boost = null): static
     {
-        return $this->whereFilter($column, '[]', $values, $boost, 'OR');
+        return $this->whereFilter($column, Range::incl, $values, $boost, 'OR');
     }
 
     public function orWhereExclusiveRange(string $column, array $values, ?int $boost = null): static
     {
-        return $this->whereFilter($column, '{}', $values, $boost, 'OR');
+        return $this->whereFilter($column, Range::excl, $values, $boost, 'OR');
     }
 
     public function get(): string
@@ -160,10 +156,14 @@ class Builder
             'boolean' => $boolean,
         ] = $where;
 
+        if ($operator instanceof BackedEnum) {
+            $operator = $operator->value;
+        }
+
         $query = match (true) {
             is_bool($value) => "$column:".($value ? 'true' : 'false'),
-            is_array($value) && $operator === '[]' => sprintf('%s:[%d TO %d]', $column, $value[0], $value[1]),
-            is_array($value) && $operator === '{}' => sprintf('%s:{%d TO %d}', $column, $value[0], $value[1]),
+            is_array($value) && $operator === Range::incl->value => sprintf('%s:[%d TO %d]', $column, $value[0], $value[1]),
+            is_array($value) && $operator === Range::excl->value => sprintf('%s:{%d TO %d}', $column, $value[0], $value[1]),
             $operator !== '=' => "$column:$operator$value",
             default => "$column:$value",
         };
@@ -171,23 +171,23 @@ class Builder
         return $this->boolean($boolean, $index).$query.$this->boost($boost);
     }
 
-    protected function assertRangeOperator(string $operator, mixed $value): void
+    protected function assertRangeOperator(mixed $operator, mixed $value): void
     {
-        if (is_array($value) && ! in_array($operator, $this->rangeOperators, true)) {
-            throw InvalidFilter::unknownRangeOperator($operator, $this->rangeOperators);
+        if (is_array($value) && ! Range::contains($operator)) {
+            throw InvalidFilter::unknownRangeOperator($operator);
         }
     }
 
-    protected function assertFilterOperator(string $operator, mixed $value): void
+    protected function assertFilterOperator(mixed $operator, mixed $value): void
     {
-        if (! is_array($value) && ! in_array($operator, $this->filterOperators, true)) {
-            throw InvalidFilter::unknownFilterOperator($operator, $this->filterOperators);
+        if (! is_array($value) && ! Filter::contains($operator)) {
+            throw InvalidFilter::unknownFilterOperator($operator);
         }
     }
 
     protected function assertRangeFilter(mixed $value): void
     {
-        if (is_array($value) && (count($value) > 2 || ! is_int($value[0]) || ! is_int($value[1]) || $value[0] >= $value[1])) {
+        if (Range::isInvalidFilter($value)) {
             throw InvalidFilter::malformedRange($value);
         }
     }
