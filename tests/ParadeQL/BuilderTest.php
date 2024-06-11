@@ -250,5 +250,5 @@ it('panics for a range filter in the wrong order', function () {
     Builder::make()->whereFilter('rating', '[]', [4, 2]);
 })->throws(
     InvalidFilter::class,
-    'Range filter values must be in order from smallest to highest',
+    'Range filter values must be in order from lowest to highest',
 );

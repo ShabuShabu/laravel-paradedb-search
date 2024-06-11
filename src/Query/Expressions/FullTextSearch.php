@@ -12,7 +12,7 @@ readonly class FullTextSearch implements ParadeExpression
 
     public function __construct(
         private string $index,
-        private Builder|ParadeExpression $query,
+        private string|Builder|ParadeExpression $query,
         private ?int $limit = null,
         private ?int $offset = null,
         private ?string $alias = null,
@@ -22,15 +22,12 @@ readonly class FullTextSearch implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $query = $this->query instanceof Builder
-            ? $this->query->get()
-            : $this->query->getValue($grammar);
-
-        $offset = $this->parseInt($this->offset);
+        $query = $this->normalizeQuery($grammar, $this->query);
         $limit = $this->parseInt($this->limit);
+        $offset = $this->parseInt($this->offset);
         $alias = $this->parseText($this->alias);
         $sort = $this->parseBool($this->stableSort);
 
-        return "$this->index.search(query => '$query', offset_rows => $offset, limit_rows => $limit, alias => $alias, stable_sort => $sort)";
+        return "$this->index.search(query => $query, offset_rows => $offset, limit_rows => $limit, alias => $alias, stable_sort => $sort)";
     }
 }

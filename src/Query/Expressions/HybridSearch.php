@@ -12,8 +12,8 @@ readonly class HybridSearch implements ParadeExpression
 
     public function __construct(
         private string $index,
-        private Builder|ParadeExpression $bm25Query,
-        private string $similarityQuery,
+        private string|Builder|ParadeExpression $bm25Query,
+        private Similarity $similarityQuery,
         private int $bm25Limit = 100,
         private float|int $bm25Weight = 0.5,
         private int $similarityLimit = 100,
@@ -23,10 +23,9 @@ readonly class HybridSearch implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $bm25Query = $this->bm25Query instanceof Builder
-            ? $this->bm25Query->get()
-            : $this->bm25Query->getValue($grammar);
+        $bm25Query = $this->normalizeQuery($grammar, $this->bm25Query);
+        $similarityQuery = $this->wrap($this->similarityQuery->getValue($grammar));
 
-        return "$this->index.rank_hybrid(bm25_query => $bm25Query, similarity_query => '$this->similarityQuery', bm25_weight => $this->bm25Weight, similarity_weight => $this->similarityWeight, bm25_limit_n => $this->bm25Limit, similarity_limit_n => $this->similarityLimit)";
+        return "$this->index.rank_hybrid(bm25_query => $bm25Query, similarity_query => $similarityQuery, bm25_weight => $this->bm25Weight, similarity_weight => $this->similarityWeight, bm25_limit_n => $this->bm25Limit, similarity_limit_n => $this->similarityLimit)";
     }
 }

@@ -11,17 +11,28 @@ readonly class TimestampTz implements RangeExpression
     use Stringable;
 
     public function __construct(
-        private string|CarbonInterface $upper,
-        private string|CarbonInterface $lower,
+        private null|string|CarbonInterface $lower,
+        private null|string|CarbonInterface $upper,
         private Bounds $bounds = Bounds::excludeStartIncludeEnd
     ) {
     }
 
     public function getValue(Grammar $grammar): string
     {
+        if (is_null($this->lower) && is_null($this->upper)) {
+            throw InvalidRange::unbounded();
+        }
+
+        $lower = $this->toDate($this->lower);
+        $upper = $this->toDate($this->upper);
+
+        if ($lower && $upper && $lower->gte($upper)) {
+            throw InvalidRange::wrongOrder();
+        }
+
         $bounds = $this->bounds->wrap(
-            $this->parseDate($this->lower, 'Y-m-d H:i:sP'),
-            $this->parseDate($this->upper, 'Y-m-d H:i:sP'),
+            $this->parseDate($lower, 'Y-m-d H:i:sP'),
+            $this->parseDate($upper, 'Y-m-d H:i:sP'),
         );
 
         return "$bounds::tstzrange";

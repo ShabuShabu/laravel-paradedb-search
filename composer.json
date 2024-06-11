@@ -1,6 +1,6 @@
 {
     "name": "shabushabu/laravel-paradedb-search",
-    "description": "Integrates the ParadeDB pg_search extension into Laravel",
+    "description": "Integrates the pg_search extension by ParadeDB into Laravel",
     "keywords": [
         "ShabuShabu",
         "laravel",
@@ -19,14 +19,14 @@
     "require": {
         "php": "^8.2",
         "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^10.0 || ^11.0"
+        "illuminate/contracts": "^11.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "laravel/pint": "^1.14",
-        "nunomaduro/collision": "^7.10",
+        "nunomaduro/collision": "^8.0",
         "larastan/larastan": "^2.9",
-        "orchestra/testbench": "^8.23",
+        "orchestra/testbench": "^9.0",
         "pestphp/pest": "^2.34",
         "pestphp/pest-plugin-arch": "^2.7",
         "pestphp/pest-plugin-laravel": "^2.3",
@@ -47,6 +47,7 @@
         }
     },
     "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",

@@ -12,15 +12,16 @@ readonly class PhrasePrefix implements ParadeExpression
     public function __construct(
         private string $field,
         private array $phrases,
-        private ?int $maxExpansion = null,
+        private ?int $expansion = null,
     ) {
     }
 
     public function getValue(Grammar $grammar): string
     {
-        $maxExpansion = $this->parseInt($this->maxExpansion);
-        $phrases = $this->wrapItems($this->phrases);
+        $field = $this->parseText($this->field);
+        $phrases = $this->parseArray($this->phrases);
+        $expansion = $this->parseInt($this->expansion);
 
-        return "paradedb.phrase(field => '$this->field', phrases => ARRAY[$phrases], max_expansion => $maxExpansion)";
+        return "paradedb.phrase_prefix(field => $field, phrases => $phrases, max_expansion => $expansion)";
     }
 }

@@ -5,29 +5,83 @@ namespace ShabuShabu\ParadeDB\Query\Expressions\Concerns;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Grammar;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\ParadeExpression;
+use ShabuShabu\ParadeDB\Query\Expressions\Parse;
 
 trait Stringable
 {
-    protected function toString(Grammar $grammar, string|Expression $expression): float|int|string
+    protected function toString(Grammar $grammar, string|Expression|Builder $query): float|int|string
     {
-        return match ($grammar->isExpression($expression)) {
-            true => $grammar->getValue($expression),
-            false => $grammar->wrap($expression),
+        if ($query instanceof Builder) {
+            $query = $query->get();
+        }
+
+        return match (true) {
+            $grammar->isExpression($query) => $grammar->getValue($query),
+            is_string($query) => $this->wrap($query)
         };
     }
 
-    protected function wrapItems(array $values): string
+    protected function normalizeQuery(Grammar $grammar, ParadeExpression|Builder|string $query): ?string
     {
-        return collect($values)
-            ->filter(fn (mixed $value) => is_string($value))
-            ->map(fn (string $value) => Str::wrap($value, "'"))
-            ->join(', ');
+        return match (true) {
+            $query instanceof Builder,
+            is_string($query) => $this->toString($grammar, new Parse($query)),
+            $query instanceof ParadeExpression => $this->toString($grammar, $query),
+            default => null,
+        };
     }
 
-    protected function boolToString(bool $value): string
+    protected function normalizeQueries(Grammar $grammar, ParadeExpression|Builder|string|array $queries): Collection
     {
-        return $value ? 'true' : 'false';
+        return collect(Arr::wrap($queries))
+            ->map(fn (mixed $query) => $this->normalizeQuery($grammar, $query))
+            ->filter()
+            ->values();
+    }
+
+    protected function parseArray(array $values): string
+    {
+        return $this->wrapArray(
+            collect($values)
+                ->filter(fn (mixed $value) => is_string($value))
+                ->map(fn (string $value) => $this->wrap($value))
+        );
+    }
+
+    protected function wrapArray(Collection $values): string
+    {
+        return Str::wrap($values->join(', '), 'ARRAY[', ']');
+    }
+
+    protected function toDate(CarbonInterface|string|null $value): ?CarbonInterface
+    {
+        if (is_null($value)) {
+            return null;
+        }
+
+        return $value instanceof CarbonInterface ? $value : Date::parse($value);
+    }
+
+    protected function parseDate(?CarbonInterface $value, string $format): string
+    {
+        return ! is_null($value)
+            ? $this->wrap($value->format($format))
+            : '';
+    }
+
+    protected function parseBool(?bool $value): string
+    {
+        return match ($value) {
+            null => 'NULL::boolean',
+            true => 'true',
+            false => 'false',
+        };
     }
 
     protected function parseInt(?int $value): string
@@ -40,18 +94,13 @@ trait Stringable
         return $value === null ? 'NULL::real' : (string) $value;
     }
 
-    protected function parseBool(?bool $value): string
-    {
-        return $value === null ? 'NULL::boolean' : $this->boolToString($value);
-    }
-
     protected function parseText(?string $value): string
     {
-        return $value === null ? 'NULL::text' : Str::wrap($value, "'");
+        return $value === null ? 'NULL::text' : $this->wrap($value);
     }
 
-    protected function parseDate(string|CarbonInterface $value, string $format): string
+    protected function wrap(string $value): string
     {
-        return $value instanceof CarbonInterface ? $value->format($format) : Str::wrap($value, "'");
+        return Str::wrap($value, "'");
     }
 }

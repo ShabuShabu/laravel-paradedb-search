@@ -3,36 +3,35 @@
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Concerns\Stringable;
 
 readonly class Boolean implements ParadeExpression
 {
+    use Stringable;
+
     public function __construct(
-        private ?array $must = null,
-        private ?array $should = null,
-        private ?array $mustNot = null,
+        private null|string|array|ParadeExpression|Builder $must = null,
+        private null|string|array|ParadeExpression|Builder $should = null,
+        private null|string|array|ParadeExpression|Builder $mustNot = null,
     ) {
     }
 
     public function getValue(Grammar $grammar): string
     {
-        $must = $this->process($this->must, $grammar);
-        $should = $this->process($this->should, $grammar);
-        $mustNot = $this->process($this->mustNot, $grammar);
+        $must = $this->process($grammar, $this->must);
+        $should = $this->process($grammar, $this->should);
+        $mustNot = $this->process($grammar, $this->mustNot);
 
         return "paradedb.boolean(must => $must, should => $should, must_not => $mustNot)";
     }
 
-    protected function process(?array $expressions, Grammar $grammar): string
+    protected function process(Grammar $grammar, null|string|array|ParadeExpression|Builder $expressions): string
     {
-        if (! is_array($expressions) || count($expressions) <= 0) {
-            return 'NULL::paradedb.searchqueryinput';
-        }
-
-        $conditions = collect($expressions)
-            ->ensure(ParadeExpression::class)
-            ->map(fn (ParadeExpression $condition) => $condition->getValue($grammar))
-            ->join(', ');
-
-        return "ARRAY[$conditions]";
+        return is_null($expressions)
+            ? 'NULL::paradedb.searchqueryinput'
+            : $this->wrapArray(
+                $this->normalizeQueries($grammar, $expressions)
+            );
     }
 }

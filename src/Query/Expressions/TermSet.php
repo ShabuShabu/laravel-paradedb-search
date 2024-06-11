@@ -3,9 +3,12 @@
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
+use ShabuShabu\ParadeDB\Query\Expressions\Concerns\Stringable;
 
 readonly class TermSet implements ParadeExpression
 {
+    use Stringable;
+
     public function __construct(
         private array $terms,
     ) {
@@ -13,11 +16,14 @@ readonly class TermSet implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $terms = collect($this->terms)
-            ->ensure(Term::class)
-            ->map(fn (Term $term) => $term->getValue($grammar))
-            ->join(', ');
+        $terms = count($this->terms) <= 0
+            ? 'ARRAY[]::paradedb.searchqueryinput[]'
+            : $this->wrapArray(
+                collect($this->terms)
+                    ->ensure(Term::class)
+                    ->map(fn (Term $term) => $term->getValue($grammar))
+            );
 
-        return "paradedb.term_set(terms => ARRAY[$terms])";
+        return "paradedb.term_set(terms => $terms)";
     }
 }

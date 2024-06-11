@@ -2,13 +2,18 @@
 
 namespace ShabuShabu\ParadeDB\Query;
 
-use Illuminate\Contracts\Database\Query\Expression;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Pagination\Paginator as PaginatorContract;
 use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Grammars\Grammar;
+use Illuminate\Pagination\Paginator;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
 use ShabuShabu\ParadeDB\Query\Expressions\FullTextSearch;
 use ShabuShabu\ParadeDB\Query\Expressions\HybridSearch;
 use ShabuShabu\ParadeDB\Query\Expressions\ParadeExpression;
+use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
 
 class Search
 {
@@ -30,13 +35,12 @@ class Search
 
     protected int|float $similarityWeight = 0.5;
 
-    protected ?string $similarityQuery = null;
+    protected ?Similarity $similarityQuery = null;
 
     protected array $columns = ['*'];
 
     public function __construct(
-        protected string $table,
-        protected Eloquent\Builder $builder,
+        protected Eloquent\Model $model,
     ) {
     }
 
@@ -94,17 +98,9 @@ class Search
         ));
     }
 
-    public function similarity(string|Expression $column, Distance $operator, string|Expression $value): static
+    public function similarity(Similarity $query): static
     {
-        $column = $column instanceof Expression
-            ? (string) $column->getValue($this->builder->grammar)
-            : $column;
-
-        $value = $value instanceof Expression
-            ? (string) $value->getValue($this->builder->grammar)
-            : $value;
-
-        $this->similarityQuery = "'$value' $operator->value $column";
+        $this->similarityQuery = $query;
 
         return $this;
     }
@@ -157,16 +153,47 @@ class Search
             : $this->fullText();
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
+    public function simplePaginate(?int $perPage = null, string $pageName = 'page', ?int $page = null): PaginatorContract
+    {
+        $perPage = $perPage ?: $this->model->getPerPage();
+
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+
+        $items = $this
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage + 1)
+            ->get();
+
+        return Container::getInstance()->makeWith(Paginator::class, [
+            'items' => $items,
+            'perPage' => $perPage,
+            'currentPage' => $page,
+            'options' => [
+                'path' => Paginator::resolveCurrentPath(),
+                'pageName' => $pageName,
+            ],
+        ]);
+    }
+
     protected function execute(FullTextSearch|HybridSearch $search): Collection
     {
-        return $this->builder
+        return $this->model
+            ->newQuery()
             ->select($this->columns)
-            ->from($search->getValue($this->builder->grammar))
+            ->from($search->getValue($this->grammar()))
             ->get();
+    }
+
+    protected function grammar(): Grammar
+    {
+        return $this->model->newQuery()->getQuery()->grammar;
     }
 
     protected function indexName(): string
     {
-        return $this->table.config('paradedb-search.table_suffix');
+        return $this->model->getTable().config('paradedb-search.table_suffix');
     }
 }

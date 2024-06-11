@@ -27,7 +27,7 @@ final class InvalidFilter extends InvalidArgumentException
         $message = match (true) {
             count($value) > 2 => 'A range filter must be an array of exactly two values',
             ! is_int($value[0]) || ! is_int($value[1]) => 'A range filter must consist only of integers',
-            $value[0] >= $value[1] => 'Range filter values must be in order from smallest to highest',
+            $value[0] >= $value[1] => 'Range filter values must be in order from lowest to highest',
             default => 'The range filter is invalid',
         };
 

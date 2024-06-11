@@ -18,8 +18,9 @@ readonly class Term implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
+        $field = $this->parseText($this->field);
         $value = $this->toString($grammar, $this->value);
 
-        return "paradedb.term(field => '$this->field', value => $value)";
+        return "paradedb.term(field => $field, value => $value)";
     }
 }

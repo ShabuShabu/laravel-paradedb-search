@@ -4,13 +4,13 @@ namespace ShabuShabu\ParadeDB\Tests\App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use ShabuShabu\ParadeDB\Concerns\CanSearch;
+use ShabuShabu\ParadeDB\Concerns\Searchable;
 use ShabuShabu\ParadeDB\Tests\Database\Factories\TeamFactory;
 
 class Team extends Model
 {
-    use CanSearch;
     use HasFactory;
+    use Searchable;
 
     protected $guarded = [];
 

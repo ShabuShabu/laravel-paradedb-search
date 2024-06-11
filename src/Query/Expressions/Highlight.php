@@ -10,7 +10,7 @@ readonly class Highlight implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private int $key,
+        private string $key,
         private string $field,
         private ?string $prefix = null,
         private ?string $postfix = null,
@@ -21,11 +21,13 @@ readonly class Highlight implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
+        $key = $grammar->wrap($this->key);
+        $field = $this->parseText($this->field);
         $prefix = $this->parseText($this->prefix);
         $postfix = $this->parseText($this->postfix);
         $maxNumChars = $this->parseInt($this->maxNumChars);
         $alias = $this->parseText($this->alias);
 
-        return "paradedb.highlight(key => $this->key, field => '$this->field', prefix => $prefix, postfix => $postfix, max_num_chars => $maxNumChars, alias => $alias)";
+        return "paradedb.highlight(key => $key, field => $field, prefix => $prefix, postfix => $postfix, max_num_chars => $maxNumChars, alias => $alias)";
     }
 }

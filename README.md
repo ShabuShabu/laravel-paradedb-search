@@ -33,11 +33,11 @@ return [
 
 ```php
 use Illuminate\Database\Eloquent\Model;
-use ShabuShabu\ParadeDB\Concerns\CanSearch;
+use ShabuShabu\ParadeDB\Concerns\Searchable;
 
 class Product extends Model
 {
-    use CanSearch;
+    use Searchable;
     
     // the rest of the model...
 }
@@ -87,9 +87,7 @@ Product::search()
 ### Hybrid search
 
 ```php
-use App\Models\Product;
-use ShabuShabu\ParadeDB\Query\Distance;
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use App\Models\Product;use ShabuShabu\ParadeDB\ParadeQL\Builder;use ShabuShabu\ParadeDB\Query\Expressions\Distance;
 
 Product::search(
     ->query(

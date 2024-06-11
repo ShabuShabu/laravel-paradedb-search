@@ -1,6 +1,6 @@
 <?php
 
-namespace ShabuShabu\ParadeDB\Query;
+namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 enum Distance: string
 {

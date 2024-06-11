@@ -4,9 +4,12 @@ namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Concerns\Stringable;
 
 readonly class Parse implements ParadeExpression
 {
+    use Stringable;
+
     public function __construct(
         private string|Builder $query
     ) {
@@ -14,10 +17,8 @@ readonly class Parse implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $query = $this->query instanceof Builder
-            ? $this->query->get()
-            : $this->query;
+        $query = $this->toString($grammar, $this->query);
 
-        return "paradedb.parse(query_string => '$query')";
+        return "paradedb.parse(query_string => $query)";
     }
 }
