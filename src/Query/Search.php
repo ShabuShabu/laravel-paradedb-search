@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB\Query;
 
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Pagination\Paginator as PaginatorContract;
 use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
@@ -53,7 +52,7 @@ class Search
         return $this;
     }
 
-    public function query(Builder | ParadeExpression $query): static
+    public function where(Builder | ParadeExpression $query): static
     {
         $this->paradeQuery = $query;
 
@@ -67,16 +66,16 @@ class Search
         return $this;
     }
 
-    public function alias(string $alias): static
+    public function limit(int $limit): static
     {
-        $this->alias = $alias;
+        $this->limit = $limit;
 
         return $this;
     }
 
-    public function limit(int $limit): static
+    public function alias(string $alias): static
     {
-        $this->limit = $limit;
+        $this->alias = $alias;
 
         return $this;
     }
@@ -88,16 +87,16 @@ class Search
         return $this;
     }
 
-    public function fullText(): Collection
+    protected function fullText(): FullTextSearch
     {
-        return $this->execute(new FullTextSearch(
+        return new FullTextSearch(
             index: $this->indexName(),
             query: $this->paradeQuery,
             limit: $this->limit,
             offset: $this->offset,
             alias: $this->alias,
             stableSort: $this->stableSort,
-        ));
+        );
     }
 
     public function similarity(Similarity $query): static
@@ -135,9 +134,9 @@ class Search
         return $this;
     }
 
-    public function hybrid(): Collection
+    protected function hybrid(): HybridSearch
     {
-        return $this->execute(new HybridSearch(
+        return new HybridSearch(
             index: $this->indexName(),
             bm25Query: $this->paradeQuery,
             similarityQuery: $this->similarityQuery,
@@ -145,24 +144,19 @@ class Search
             bm25Weight: $this->bm25Weight,
             similarityLimit: $this->similarityLimit,
             similarityWeight: $this->similarityWeight,
-        ));
+        );
     }
 
     public function get(): Collection
     {
-        return $this->similarityQuery
-            ? $this->hybrid()
-            : $this->fullText();
+        return $this->toQuery()->get();
     }
 
-    /**
-     * @throws BindingResolutionException
-     */
     public function simplePaginate(?int $perPage = null, string $pageName = 'page', ?int $page = null): PaginatorContract
     {
-        $perPage = $perPage ?: $this->model->getPerPage();
-
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
+
+        $perPage = $perPage ?: $this->model->getPerPage();
 
         $items = $this
             ->offset(($page - 1) * $perPage)
@@ -180,13 +174,16 @@ class Search
         ]);
     }
 
-    protected function execute(FullTextSearch | HybridSearch $search): Collection
+    public function toQuery(): Eloquent\Builder
     {
+        $from = $this->similarityQuery
+            ? $this->hybrid()
+            : $this->fullText();
+
         return $this->model
             ->newQuery()
             ->select($this->columns)
-            ->from($search->getValue($this->grammar()))
-            ->get();
+            ->from($from);
     }
 
     protected function grammar(): Grammar
