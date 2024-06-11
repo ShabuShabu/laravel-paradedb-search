@@ -26,7 +26,7 @@ class Builder
         return new static();
     }
 
-    public function where(Closure|string $column, null|int|string|array $value = null, ?int $boost = null, ?int $slop = null, string $boolean = 'AND'): static
+    public function where(Closure | string $column, null | int | string | array $value = null, ?int $boost = null, ?int $slop = null, string $boolean = 'AND'): static
     {
         if (! $column instanceof Closure && is_array($value)) {
             return $this->whereIn($column, $value, $boost, $boolean);
@@ -39,7 +39,7 @@ class Builder
         return $this;
     }
 
-    public function orWhere(Closure|string $column, null|int|string|array $value = null, ?int $boost = null, ?int $slop = null): static
+    public function orWhere(Closure | string $column, null | int | string | array $value = null, ?int $boost = null, ?int $slop = null): static
     {
         return $this->where($column, $value, $boost, $slop, 'OR');
     }
@@ -56,17 +56,17 @@ class Builder
         return $this;
     }
 
-    public function whereNot(Closure|string $column, null|int|string $value = null, ?int $boost = null, ?int $slop = null, string $boolean = 'AND'): static
+    public function whereNot(Closure | string $column, null | int | string $value = null, ?int $boost = null, ?int $slop = null, string $boolean = 'AND'): static
     {
-        return $this->where($column, $value, $boost, $slop, $boolean.' NOT');
+        return $this->where($column, $value, $boost, $slop, $boolean . ' NOT');
     }
 
-    public function orWhereNot(Closure|string $column, null|int|string $value = null, ?int $boost = null, ?int $slop = null): static
+    public function orWhereNot(Closure | string $column, null | int | string $value = null, ?int $boost = null, ?int $slop = null): static
     {
         return $this->whereNot($column, $value, $boost, $slop, 'OR');
     }
 
-    public function whereFilter(string $column, string|Range|Filter $operator, bool|int|array $value, ?int $boost = null, string $boolean = 'AND'): static
+    public function whereFilter(string $column, string | Range | Filter $operator, bool | int | array $value, ?int $boost = null, string $boolean = 'AND'): static
     {
         $this->assertFilterOperator($operator, $value);
         $this->assertRangeOperator($operator, $value);
@@ -77,7 +77,7 @@ class Builder
         return $this;
     }
 
-    public function orWhereFilter(string $column, string|Range|Filter $operator, bool|int|array $value, ?int $boost = null): static
+    public function orWhereFilter(string $column, string | Range | Filter $operator, bool | int | array $value, ?int $boost = null): static
     {
         return $this->whereFilter($column, $operator, $value, $boost, 'OR');
     }
@@ -123,13 +123,14 @@ class Builder
         ] = $where;
 
         if ($column instanceof Closure) {
-            return $this->boolean($boolean, $index).Str::wrap(
+            return $this->boolean($boolean, $index) . Str::wrap(
                 $column(static::make())->get(),
-                '(', ')'
+                '(',
+                ')'
             );
         }
 
-        return $this->boolean($boolean, $index)."$column:$value".$this->boost($boost);
+        return $this->boolean($boolean, $index) . "$column:$value" . $this->boost($boost);
     }
 
     protected function compileContainsQuery(array $where, int $index): string
@@ -143,7 +144,7 @@ class Builder
 
         $values = implode(', ', $values);
 
-        return $this->boolean($boolean, $index)."$column:IN [$values]".$this->boost($boost);
+        return $this->boolean($boolean, $index) . "$column:IN [$values]" . $this->boost($boost);
     }
 
     protected function compileFilterQuery(array $where, int $index): string
@@ -161,14 +162,14 @@ class Builder
         }
 
         $query = match (true) {
-            is_bool($value) => "$column:".($value ? 'true' : 'false'),
+            is_bool($value) => "$column:" . ($value ? 'true' : 'false'),
             is_array($value) && $operator === Range::incl->value => sprintf('%s:[%d TO %d]', $column, $value[0], $value[1]),
             is_array($value) && $operator === Range::excl->value => sprintf('%s:{%d TO %d}', $column, $value[0], $value[1]),
             $operator !== '=' => "$column:$operator$value",
             default => "$column:$value",
         };
 
-        return $this->boolean($boolean, $index).$query.$this->boost($boost);
+        return $this->boolean($boolean, $index) . $query . $this->boost($boost);
     }
 
     protected function assertRangeOperator(mixed $operator, mixed $value): void
@@ -221,7 +222,7 @@ class Builder
         $value = str_replace($this->specialChars, $replacements, trim($value));
 
         if (str_contains($value, ' ')) {
-            $value = Str::wrap($value, '"').$this->slop($slop);
+            $value = Str::wrap($value, '"') . $this->slop($slop);
         }
 
         return $value;

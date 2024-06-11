@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
@@ -11,8 +13,8 @@ readonly class ConstScore implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private ParadeExpression|Builder|string $query,
-        private int|float $score
+        private ParadeExpression | Builder | string $query,
+        private int | float $score,
     ) {
     }
 

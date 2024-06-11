@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Concerns;
 
 use ShabuShabu\ParadeDB\Query\Search;

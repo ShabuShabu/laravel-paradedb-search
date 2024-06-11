@@ -175,7 +175,7 @@ it('panics for unbounded lower and upper values', function (string $class) {
 it('panics for wrong lower and upper value order', function (RangeExpression $expression) {
     $expression->getValue(grammar());
 })->with([
-    'date' => [new Ranges\Timestamp('2024-06-10', '2024-06-09', Ranges\Bounds::excludeAll)],
+    'date' => [new Ranges\Date('2024-06-10', '2024-06-09', Ranges\Bounds::excludeAll)],
     'timestamp' => [new Ranges\Timestamp('2024-06-10 15:27:32', '2024-06-09 15:27:32', Ranges\Bounds::excludeAll)],
     'timestamptz' => [new Ranges\TimestampTz('2024-06-10 15:27:32+05:45', '2024-06-09 15:27:32+05:45', Ranges\Bounds::excludeAll)],
     'int4' => [new Ranges\Int4(2, 1, Ranges\Bounds::excludeAll)],

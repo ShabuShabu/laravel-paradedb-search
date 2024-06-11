@@ -9,11 +9,12 @@ use ShabuShabu\ParadeDB\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
 
-expect()->extend('toBeSchemaAndExist', function () {
-    $query = DB::table('information_schema.schemata')
-        ->where('schema_name', $this->value);
+expect()->extend('toBeSchema', function () {
+    $count = DB::table('information_schema.schemata')
+        ->where('schema_name', $this->value)
+        ->count();
 
-    Assert::assertTrue($query->count() > 0);
+    Assert::assertTrue($count > 0);
 
     return $this;
 });

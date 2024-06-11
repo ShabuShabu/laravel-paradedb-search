@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Contracts\Database\Query\Expression;
@@ -12,10 +14,10 @@ readonly class Similarity implements Expression
     use Stringable;
 
     public function __construct(
-        private string|Expression $column,
+        private string | Expression $column,
         private Distance $operator,
         private array $values,
-        private bool $escape = true
+        private bool $escape = true,
     ) {
     }
 

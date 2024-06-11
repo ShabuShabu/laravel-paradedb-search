@@ -9,7 +9,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\FullTextSearch;
 use ShabuShabu\ParadeDB\Query\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Query\Expressions\Parse;
 
-it('performs a full-text search: ', function (string|Builder|ParadeExpression $query) {
+it('performs a full-text search: ', function (string | Builder | ParadeExpression $query) {
     expect(new FullTextSearch('teams_idx', $query))->toBeExpression(
         "teams_idx.search(query => paradedb.parse(query_string => 'description:shoes'), offset_rows => NULL::integer, limit_rows => NULL::integer, alias => NULL::text, stable_sort => NULL::boolean)"
     );

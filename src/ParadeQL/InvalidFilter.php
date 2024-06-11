@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\ParadeQL;
 
 use InvalidArgumentException;
@@ -11,14 +13,14 @@ final class InvalidFilter extends InvalidArgumentException
     public static function unknownFilterOperator(string $operator): self
     {
         return new self(
-            "Operator `$operator` is not a valid filter operator. Valid operators are ".Filter::format()
+            "Operator `$operator` is not a valid filter operator. Valid operators are " . Filter::format()
         );
     }
 
     public static function unknownRangeOperator(string $operator): self
     {
         return new self(
-            "Operator `$operator` is not a valid range operator. Valid operators are ".Range::format()
+            "Operator `$operator` is not a valid range operator. Valid operators are " . Range::format()
         );
     }
 

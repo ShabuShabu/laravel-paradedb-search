@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
@@ -12,7 +14,7 @@ readonly class FuzzyTerm implements ParadeExpression
     public function __construct(
         private string $field,
         private string $value,
-        private null|int|float $distance = null,
+        private null | int | float $distance = null,
         private ?bool $transpose = null,
         private ?bool $prefix = null,
     ) {

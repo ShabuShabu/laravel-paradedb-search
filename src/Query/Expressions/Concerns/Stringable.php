@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions\Concerns;
 
 use Carbon\CarbonInterface;
@@ -15,7 +17,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\Parse;
 
 trait Stringable
 {
-    protected function toString(Grammar $grammar, string|Expression|Builder $query): float|int|string
+    protected function toString(Grammar $grammar, string | Expression | Builder $query): float | int | string
     {
         if ($query instanceof Builder) {
             $query = $query->get();
@@ -27,7 +29,7 @@ trait Stringable
         };
     }
 
-    protected function normalizeQuery(Grammar $grammar, ParadeExpression|Builder|string $query): ?string
+    protected function normalizeQuery(Grammar $grammar, ParadeExpression | Builder | string $query): ?string
     {
         return match (true) {
             $query instanceof Builder,
@@ -37,7 +39,7 @@ trait Stringable
         };
     }
 
-    protected function normalizeQueries(Grammar $grammar, ParadeExpression|Builder|string|array $queries): Collection
+    protected function normalizeQueries(Grammar $grammar, ParadeExpression | Builder | string | array $queries): Collection
     {
         return collect(Arr::wrap($queries))
             ->map(fn (mixed $query) => $this->normalizeQuery($grammar, $query))
@@ -59,7 +61,7 @@ trait Stringable
         return Str::wrap($values->join(', '), 'ARRAY[', ']');
     }
 
-    protected function toDate(CarbonInterface|string|null $value): ?CarbonInterface
+    protected function toDate(CarbonInterface | string | null $value): ?CarbonInterface
     {
         if (is_null($value)) {
             return null;

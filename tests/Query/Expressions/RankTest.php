@@ -17,7 +17,8 @@ it('ranks a query from an expression')
 
 it('ranks a query using an alias')
     ->expect(new Rank('id', 'id_rank'))
-    ->toBeExpression(<<<'EXP'
+    ->toBeExpression(
+        <<<'EXP'
         paradedb.rank_bm25(key => "id", alias => 'id_rank')
         EXP
     );

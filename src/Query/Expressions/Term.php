@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Contracts\Database\Query\Expression;
@@ -12,7 +14,7 @@ readonly class Term implements ParadeExpression
 
     public function __construct(
         private string $field,
-        private string|Expression $value,
+        private string | Expression $value,
     ) {
     }
 

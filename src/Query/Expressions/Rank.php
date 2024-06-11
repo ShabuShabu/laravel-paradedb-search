@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Contracts\Database\Query\Expression;
@@ -11,8 +13,8 @@ readonly class Rank implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private string|Expression $key = 'id',
-        private ?string $alias = null
+        private string | Expression $key = 'id',
+        private ?string $alias = null,
     ) {
     }
 

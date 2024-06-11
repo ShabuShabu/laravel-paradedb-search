@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
@@ -11,8 +13,8 @@ readonly class DisjunctionMax implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private array|ParadeExpression|Builder|string $disjuncts,
-        private null|int|float $tieBreaker = null,
+        private array | ParadeExpression | Builder | string $disjuncts,
+        private null | int | float $tieBreaker = null,
     ) {
     }
 

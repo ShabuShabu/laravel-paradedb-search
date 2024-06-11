@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\ParadeQL\Operators;
 
 use BackedEnum;
@@ -21,7 +23,7 @@ trait CanQuery
             ->join(', ', ' and ');
     }
 
-    public static function contains(string|BackedEnum $operator): bool
+    public static function contains(string | BackedEnum $operator): bool
     {
         if ($operator instanceof BackedEnum) {
             $operator = (string) $operator->value;

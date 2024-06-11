@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
@@ -12,7 +14,7 @@ readonly class FullTextSearch implements ParadeExpression
 
     public function __construct(
         private string $index,
-        private string|Builder|ParadeExpression $query,
+        private string | Builder | ParadeExpression $query,
         private ?int $limit = null,
         private ?int $offset = null,
         private ?string $alias = null,

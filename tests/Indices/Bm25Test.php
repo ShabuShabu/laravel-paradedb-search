@@ -9,7 +9,7 @@ use ShabuShabu\ParadeDB\Indices\Bm25;
 it('creates and deletes a bm25 index', function () {
     config(['paradedb-search.table_suffix' => '_index']);
 
-    Bm25::index('teams')
+    $result = Bm25::index('teams')
         ->addNumericFields(['max_members'])
         ->addBooleanFields(['is_vip'])
         ->addDateFields(['created_at'])
@@ -24,12 +24,14 @@ it('creates and deletes a bm25 index', function () {
         ])
         ->create(drop: true);
 
-    expect('teams_index')->toBeSchemaAndExist();
+    expect('teams_index')->toBeSchema()
+        ->and($result)->toBeTrue();
 
-    Bm25::index('teams')->drop();
+    $result = Bm25::index('teams')->drop();
 
-    expect('teams_index')->not->toBeSchemaAndExist();
-})->skip('Causes the test suite to timeout...');
+    expect('teams_index')->not->toBeSchema()
+        ->and($result)->toBeTrue();
+})->skip('Causes the test suite to time out like 99% of the time...');
 
 it('panics for an unknown field', function () {
     /** @noinspection PhpUndefinedMethodInspection */

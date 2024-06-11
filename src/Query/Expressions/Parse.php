@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
@@ -11,7 +13,7 @@ readonly class Parse implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private string|Builder $query
+        private string | Builder $query,
     ) {
     }
 

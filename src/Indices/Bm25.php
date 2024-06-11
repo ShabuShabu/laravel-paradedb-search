@@ -58,7 +58,7 @@ class Bm25
     protected function encodeConfig(array $config): string
     {
         return collect($config)->mapWithKeys(
-            fn (mixed $value, int|string $key) => is_int($key)
+            fn (mixed $value, int | string $key) => is_int($key)
                 ? [$value => new stdClass()]
                 : [$key => $value]
         )->pipe(
@@ -66,7 +66,7 @@ class Bm25
         );
     }
 
-    public function create(bool $drop = false): void
+    public function create(bool $drop = false): bool
     {
         if ($drop) {
             $this->drop();
@@ -76,7 +76,7 @@ class Bm25
             fn (array $config) => blank($config) ? '{}' : $this->encodeConfig($config),
         );
 
-        DB::statement(
+        return DB::statement(
             <<<'QUERY'
             CALL paradedb.create_bm25(
                 index_name => :index,
@@ -89,8 +89,9 @@ class Bm25
                 json_fields => :json,
                 datetime_fields => :date
             );
-            QUERY, [
-                'index' => $this->table.$this->suffix,
+            QUERY,
+            [
+                'index' => $this->table . $this->suffix,
                 'schema' => $this->schema,
                 'table' => $this->table,
                 'key' => $this->id,
@@ -103,10 +104,10 @@ class Bm25
         );
     }
 
-    public function drop(): void
+    public function drop(): bool
     {
-        DB::statement('CALL paradedb.drop_bm25(:index_name, :schema_name);', [
-            'index_name' => $this->table.$this->suffix,
+        return DB::statement('CALL paradedb.drop_bm25(:index_name, :schema_name);', [
+            'index_name' => $this->table . $this->suffix,
             'schema_name' => $this->schema,
         ]);
     }

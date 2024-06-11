@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Database\Grammar;
@@ -11,8 +13,8 @@ readonly class Boost implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private ParadeExpression|Builder|string $query,
-        private int|float $boostBy
+        private ParadeExpression | Builder | string $query,
+        private int | float $boost,
     ) {
     }
 
@@ -20,6 +22,6 @@ readonly class Boost implements ParadeExpression
     {
         $query = $this->normalizeQuery($grammar, $this->query);
 
-        return "paradedb.boost(boost => $this->boostBy, query => $query)";
+        return "paradedb.boost(boost => $this->boost, query => $query)";
     }
 }

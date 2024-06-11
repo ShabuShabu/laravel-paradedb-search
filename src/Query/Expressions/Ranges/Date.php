@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query\Expressions\Ranges;
 
 use Carbon\CarbonInterface;
@@ -11,8 +13,8 @@ readonly class Date implements RangeExpression
     use Stringable;
 
     public function __construct(
-        private null|string|CarbonInterface $lower,
-        private null|string|CarbonInterface $upper,
+        private null | string | CarbonInterface $lower,
+        private null | string | CarbonInterface $upper,
         private Bounds $bounds = Bounds::excludeStartIncludeEnd
     ) {
     }

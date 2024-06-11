@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Query;
 
 use Illuminate\Container\Container;
@@ -17,7 +19,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
 
 class Search
 {
-    protected Builder|ParadeExpression $paradeQuery;
+    protected Builder | ParadeExpression $paradeQuery;
 
     protected ?int $limit = null;
 
@@ -29,11 +31,11 @@ class Search
 
     protected int $bm25Limit = 100;
 
-    protected int|float $bm25Weight = 0.5;
+    protected int | float $bm25Weight = 0.5;
 
     protected int $similarityLimit = 100;
 
-    protected int|float $similarityWeight = 0.5;
+    protected int | float $similarityWeight = 0.5;
 
     protected ?Similarity $similarityQuery = null;
 
@@ -51,7 +53,7 @@ class Search
         return $this;
     }
 
-    public function query(Builder|ParadeExpression $query): static
+    public function query(Builder | ParadeExpression $query): static
     {
         $this->paradeQuery = $query;
 
@@ -112,7 +114,7 @@ class Search
         return $this;
     }
 
-    public function bm25Weight(int|float $weight): static
+    public function bm25Weight(int | float $weight): static
     {
         $this->bm25Weight = $weight;
 
@@ -126,7 +128,7 @@ class Search
         return $this;
     }
 
-    public function similarityWeight(int|float $weight): static
+    public function similarityWeight(int | float $weight): static
     {
         $this->similarityWeight = $weight;
 
@@ -178,7 +180,7 @@ class Search
         ]);
     }
 
-    protected function execute(FullTextSearch|HybridSearch $search): Collection
+    protected function execute(FullTextSearch | HybridSearch $search): Collection
     {
         return $this->model
             ->newQuery()
@@ -194,6 +196,6 @@ class Search
 
     protected function indexName(): string
     {
-        return $this->model->getTable().config('paradedb-search.table_suffix');
+        return $this->model->getTable() . config('paradedb-search.table_suffix');
     }
 }
