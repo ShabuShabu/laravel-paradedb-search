@@ -33,8 +33,8 @@ readonly class TimestampTz implements RangeExpression
         }
 
         $bounds = $this->bounds->wrap(
-            $this->asDate($lower, 'Y-m-d H:i:sP'),
-            $this->asDate($upper, 'Y-m-d H:i:sP'),
+            $this->asDate($grammar, $lower, 'Y-m-d H:i:sP'),
+            $this->asDate($grammar, $upper, 'Y-m-d H:i:sP'),
         );
 
         return "$bounds::tstzrange";
