@@ -41,7 +41,7 @@ class Help extends Command
 
         $subject = text(
             label: 'Subject',
-            placeholder: 'Give the discussion a subject',
+            placeholder: 'What is the subject for this discussion?',
             required: 'A subject is required.'
         );
 

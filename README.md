@@ -136,6 +136,20 @@ While it is possible to combine ParadeDB queries with regular Eloquent queries, 
 
 For optimal performance it is recommended to let the `bm25` index do as much work as possible, so wherever possible you should use the [built-in filters](https://docs.paradedb.com/search/full-text/bm25#efficient-filtering) as well as [limit & offset](https://docs.paradedb.com/search/full-text/bm25#limit-and-offset)!
 
+### Getting help
+
+If your issue has something to do with this package, then please use the issues and discussions!
+
+If your issue is related to `pg_search`, tho, then please create a discussion in the ParadeDB repo.
+
+To make this a bit easier, you can use the `paradedb:help` command that ships with this package:
+
+```bash
+php artisan paradedb:help
+```
+
+Please note that this command is just an implementation of the `paradedb.help()` command that ships with the extension. Please use it wisely!
+
 ## Testing
 
 The tests require a PostgreSQL database, which can easily be set up by running the following script:
