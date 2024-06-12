@@ -19,23 +19,19 @@ trait Stringable
 {
     protected function toString(Grammar $grammar, string | Expression | Builder $query): float | int | string
     {
-        if ($query instanceof Builder) {
-            $query = $query->get();
-        }
-
         return match (true) {
-            $grammar->isExpression($query) => $grammar->getValue($query),
-            is_string($query) => $grammar->escape($query)
+            is_string($query) => $grammar->escape($query),
+            $query instanceof Builder => $grammar->escape($query->get()),
+            $query instanceof Expression => $grammar->getValue($query),
         };
     }
 
     protected function normalizeQuery(Grammar $grammar, ParadeExpression | Builder | string $query): ?string
     {
         return match (true) {
-            $query instanceof Builder,
-            is_string($query) => $this->toString($grammar, new Parse($query)),
+            is_string($query),
+            $query instanceof Builder => $this->toString($grammar, new Parse($query)),
             $query instanceof ParadeExpression => $this->toString($grammar, $query),
-            default => null,
         };
     }
 

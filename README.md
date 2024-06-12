@@ -138,16 +138,31 @@ For optimal performance it is recommended to let the `bm25` index do as much wor
 
 ## Testing
 
-The tests require a PostgreSQL database, which can easily be set up by running the following script (both `pg_search` and `pgvector` extensions need to be available already):
+The tests require a PostgreSQL database, which can easily be set up by running the following script:
 
 ```bash
 composer testdb
 ```
 
+> [!WARNING]
+> Please note that both [pg_search](https://github.com/paradedb/paradedb/tree/dev/pg_search#installation) and [pgvector](https://github.com/pgvector/pgvector#installation) extensions need to be available already.
+
 Then run the tests:
 
 ```bash
 composer test
+```
+
+Or with coverage:
+
+```bash
+composer test-coverage
+```
+
+Or run PHPStan: 
+
+```bash
+composer analyse
 ```
 
 ## Changelog
