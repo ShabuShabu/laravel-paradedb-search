@@ -4,29 +4,20 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Query\Expressions\Ranges;
 
-use Illuminate\Database\Grammar;
-
-readonly class Int8 implements RangeExpression
+class Int8 extends Number
 {
     public function __construct(
-        private ?int $lower,
-        private ?int $upper,
-        private Bounds $bounds = Bounds::excludeStartIncludeEnd
+        ?int $lower,
+        ?int $upper,
+        Bounds $bounds = Bounds::excludeStartIncludeEnd
     ) {
+        $this->lower = $lower;
+        $this->upper = $upper;
+        $this->bounds = $bounds;
     }
 
-    public function getValue(Grammar $grammar): string
+    protected function castAs(): string
     {
-        if (is_null($this->lower) && is_null($this->upper)) {
-            throw InvalidRange::unbounded();
-        }
-
-        if ($this->lower && $this->upper && $this->lower >= $this->upper) {
-            throw InvalidRange::wrongOrder();
-        }
-
-        $bounds = $this->bounds->wrap($this->lower, $this->upper);
-
-        return "$bounds::int8range";
+        return 'int8range';
     }
 }
