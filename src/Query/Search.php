@@ -37,7 +37,7 @@ class Search
 
     protected int | float $similarityWeight = 0.5;
 
-    protected ?Similarity $similarityQuery = null;
+    protected ?Similarity $similarityWhere = null;
 
     protected array $columns = ['*'];
 
@@ -53,9 +53,13 @@ class Search
         return $this;
     }
 
-    public function where(Builder | ParadeExpression $where): static
+    public function where(Builder | ParadeExpression | Similarity $where): static
     {
-        $this->where = $where;
+        if ($where instanceof Similarity) {
+            $this->similarityWhere = $where;
+        } else {
+            $this->where = $where;
+        }
 
         return $this;
     }
@@ -100,13 +104,6 @@ class Search
         );
     }
 
-    public function similarity(Similarity $query): static
-    {
-        $this->similarityQuery = $query;
-
-        return $this;
-    }
-
     public function bm25Limit(int $limit): static
     {
         $this->bm25Limit = $limit;
@@ -140,7 +137,7 @@ class Search
         return new HybridSearch(
             index: $this->indexName(),
             bm25Query: $this->where,
-            similarityQuery: $this->similarityQuery,
+            similarityQuery: $this->similarityWhere,
             bm25Limit: $this->bm25Limit,
             bm25Weight: $this->bm25Weight,
             similarityLimit: $this->similarityLimit,
@@ -187,7 +184,7 @@ class Search
             ->newQuery()
             ->select($this->columns)
             ->from(
-                $this->similarityQuery
+                $this->similarityWhere
                     ? $this->hybridSearch()
                     : $this->fullTextSearch()
             );

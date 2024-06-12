@@ -23,7 +23,7 @@ it('gets search results', function () {
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(1)
         ->sole()->id->toBe($vipTeam->id);
-})->skip('Causes the test suite to time out like 99% of the time. Passes when run as a single test... sigh...');
+})->skip('Times out when all tests are run...');
 
 it('paginates search results', function () {
     Team::factory()->isVip(false)->create();
@@ -38,7 +38,7 @@ it('paginates search results', function () {
         ->toBeInstanceOf(Paginator::class)
         ->count()->toBe(1)
         ->getCollection()->sole()->id->toBe($vipTeam->id);
-})->skip('Causes the test suite to time out like 99% of the time. Passes when run as a single test... sigh...');
+})->skip('Times out when all tests are run...');
 
 it('gets search results with an eloquent query', function () {
     Team::factory()->isVip(false)->create();
@@ -56,4 +56,13 @@ it('gets search results with an eloquent query', function () {
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(1)
         ->sole()->id->toBe($vipTeam->id);
-})->skip('Causes the test suite to time out like 99% of the time. Passes when run as a single test... sigh...');
+})->skip('Times out when all tests are run...');
+
+it('performs a hybrid search', function () {
+})->todo();
+
+it('combines paradedb and eloquent queries', function () {
+})->todo();
+
+it('combines paradedb and eloquent queries in a sub query', function () {
+})->todo();
