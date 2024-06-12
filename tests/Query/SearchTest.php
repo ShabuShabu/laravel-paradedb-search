@@ -78,7 +78,23 @@ it('performs a hybrid search', function () {
 })->skip('Times out when all tests are run...');
 
 it('combines paradedb and eloquent queries', function () {
-})->todo();
+    Team::factory()->isVip(false)->maxMembers(6)->create();
 
-it('combines paradedb and eloquent queries in a sub query', function () {
-})->todo();
+    Team::factory()->isVip()->maxMembers(5)->create();
+
+    $expected = Team::factory()->isVip()->maxMembers(6)->create();
+
+    $subQuery = Team::search()
+        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->toBaseQuery();
+
+    $results = Team::query()
+        ->from($subQuery, 'idx')
+        ->where('max_members', '>', 5)
+        ->get();
+
+    expect($results)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->sole()->id->toBe($expected->id);
+})->skip('Times out when all tests are run...');

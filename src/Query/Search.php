@@ -8,6 +8,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Pagination\Paginator as PaginatorContract;
 use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Pagination\Paginator;
 use InvalidArgumentException;
@@ -188,6 +189,11 @@ class Search
                     ? $this->hybridSearch()
                     : $this->fullTextSearch()
             );
+    }
+
+    public function toBaseQuery(): Query\Builder
+    {
+        return $this->toQuery()->toBase();
     }
 
     protected function grammar(): Grammar
