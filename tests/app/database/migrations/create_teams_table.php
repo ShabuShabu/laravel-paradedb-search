@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('is_vip')->default(false);
             $table->integer('max_members')->nullable();
             $table->jsonb('options')->nullable();
-            $table->vector('embedding')->nullable();
+            $table->vector('embedding', 3)->nullable();
             $table->timestamps();
         });
 
