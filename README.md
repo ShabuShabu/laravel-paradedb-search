@@ -7,11 +7,11 @@
 
 Integrates the `pg_search` Postgres extension by [ParadeDB](https://paradedb.com) into [Laravel](https://laravel.com)
 
-## Required minimum versions
+## Supported minimum versions
 
-| PHP | Laravel | pg_search |
-|-----|---------|-----------|
-| 8.2 | 11.0    | 0.7.5     |
+| PHP | Laravel | PostgreSQL | pg_search |
+|-----|---------|------------|-----------|
+| 8.2 | 11.0    | 16         | 0.7.5     |
 
 ## Installation
 
