@@ -20,6 +20,8 @@ return new class extends Migration
             $table->jsonb('options')->nullable();
             $table->vector('embedding', 3)->nullable();
             $table->timestamps();
+
+            $table->index('embedding vector_cosine_ops')->algorithm('hnsw');
         });
 
         Bm25::index('teams')

@@ -22,6 +22,7 @@ class TeamFactory extends Factory
             'is_vip' => $this->faker->boolean(),
             'max_members' => $this->faker->randomDigit(),
             'options' => null,
+            'embedding' => null,
         ];
     }
 
@@ -43,6 +44,13 @@ class TeamFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'options' => $options,
+        ]);
+    }
+
+    public function withEmbedding(array $vectors): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'embedding' => json_encode($vectors, JSON_THROW_ON_ERROR),
         ]);
     }
 }

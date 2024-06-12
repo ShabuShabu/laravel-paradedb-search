@@ -7,7 +7,9 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\Paginator;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Distance;
 use ShabuShabu\ParadeDB\Query\Expressions\FullTextSearch;
+use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 
 it('gets search results', function () {
@@ -59,7 +61,20 @@ it('gets search results with an eloquent query', function () {
 })->skip('Times out when all tests are run...');
 
 it('performs a hybrid search', function () {
-})->todo();
+    Team::factory()->isVip(false)->withEmbedding([7, 8, 9])->create();
+
+    $vipTeam = Team::factory()->isVip()->withEmbedding([1, 2, 3])->create();
+
+    $results = Team::search()
+        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+        ->get();
+
+    expect($results)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(2)
+        ->first()->id->toBe($vipTeam->id);
+})->skip('Times out when all tests are run...');
 
 it('combines paradedb and eloquent queries', function () {
 })->todo();
