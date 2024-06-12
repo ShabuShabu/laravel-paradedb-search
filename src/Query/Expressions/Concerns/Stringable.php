@@ -91,7 +91,7 @@ trait Stringable
         return $value === null ? 'NULL::integer' : (string) $value;
     }
 
-    protected function asReal(?int $value): string
+    protected function asReal(null | int | float $value): string
     {
         return $value === null ? 'NULL::real' : (string) $value;
     }
