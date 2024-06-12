@@ -36,7 +36,7 @@ class Bm25
 
     public static function index(string $table, string $schema = 'public', string $id = 'id'): static
     {
-        $suffix = config('paradedb-search.table_suffix', '_idx');
+        $suffix = config('paradedb-search.index_suffix', '_idx');
 
         return new static($table, $suffix, $schema, $id);
     }

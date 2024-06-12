@@ -197,6 +197,6 @@ class Search
 
     protected function indexName(): string
     {
-        return $this->model->getTable() . config('paradedb-search.table_suffix');
+        return $this->model->getTable() . config('paradedb-search.index_suffix', '_idx');
     }
 }

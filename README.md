@@ -33,7 +33,7 @@ These are the contents of the published config file:
 
 ```php
 return [
-    'table_suffix' => '_idx',
+    'index_suffix' => '_idx',
 ];
 ```
 

@@ -7,7 +7,7 @@ declare(strict_types=1);
 use ShabuShabu\ParadeDB\Indices\Bm25;
 
 it('creates and deletes a bm25 index', function () {
-    config(['paradedb-search.table_suffix' => '_index']);
+    config(['paradedb-search.index_suffix' => '_index']);
 
     $result = Bm25::index('teams')
         ->addNumericFields(['max_members'])
