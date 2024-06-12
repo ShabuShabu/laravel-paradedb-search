@@ -4,6 +4,9 @@ GREEN='\x1B[32m\x1B[1m'
 END='\x1B[0m'
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    echo -e "${GREEN}Description:${END}"
+    echo "Simplifies creating a database for use in feature tests"
+    echo ""
     echo -e "${GREEN}Usage:${END}"
     echo "testdb {database} {user} {password}"
     echo ""
