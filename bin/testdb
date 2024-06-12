@@ -5,7 +5,7 @@ END='\x1B[0m'
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     echo -e "${GREEN}Description:${END}"
-    echo "Simplifies creating a database for use in feature tests"
+    echo "Creates a database for use in feature/integration tests"
     echo ""
     echo -e "${GREEN}Usage:${END}"
     echo "testdb {database} {user} {password}"
