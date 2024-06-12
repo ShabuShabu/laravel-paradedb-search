@@ -148,7 +148,7 @@ To make this a bit easier, you can use the `paradedb:help` command that ships wi
 php artisan paradedb:help
 ```
 
-Please note that this command is just an implementation of the `paradedb.help()` command that ships with the extension. Please use it wisely!
+Please note that this command is just an implementation of the `paradedb.help()`. Please use the command wisely!
 
 ## Testing
 
