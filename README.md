@@ -171,7 +171,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [ParadeDB](https://github.com/paradedb) for creating the extension
+- [Taylor Otwell](https://github.com/taylorotwell) for creating Laravel
+- [ParadeDB](https://github.com/paradedb) for creating `pg_search`
 - [ShabuShabu](https://github.com/ShabuShabu)
 - [All Contributors](../../contributors)
 
