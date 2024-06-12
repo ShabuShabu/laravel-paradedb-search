@@ -175,6 +175,10 @@ Please review [our security policy](../../security/policy) on how to report secu
 - [ShabuShabu](https://github.com/ShabuShabu)
 - [All Contributors](../../contributors)
 
+## Disclaimer
+
+This is a 3rd party package and ShabuShabu is not affiliated with either Laravel or ParadeDB.
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
