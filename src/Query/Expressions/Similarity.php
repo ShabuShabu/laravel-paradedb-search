@@ -6,7 +6,7 @@ namespace ShabuShabu\ParadeDB\Query\Expressions;
 
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Grammar;
-use Illuminate\Support\Str;
+use InvalidArgumentException;
 use ShabuShabu\ParadeDB\Query\Expressions\Concerns\Stringable;
 
 readonly class Similarity implements Expression
@@ -16,8 +16,7 @@ readonly class Similarity implements Expression
     public function __construct(
         private string | Expression $column,
         private Distance $operator,
-        private array $values,
-        private bool $escape = true,
+        private array | string $values,
     ) {
     }
 
@@ -25,12 +24,25 @@ readonly class Similarity implements Expression
     {
         $column = $this->column instanceof Expression
             ? $this->column->getValue($grammar)
-            : $this->column;
+            : $grammar->wrap($this->column);
 
-        $wrap = $this->escape ? "''" : "'";
-
-        $values = Str::wrap(implode(',', $this->values), "{$wrap}[", "]$wrap");
+        $values = $this->formatValues($grammar, $this->values);
 
         return "$column {$this->operator->value} $values";
+    }
+
+    protected function formatValues(Grammar $grammar, array | string $values): string
+    {
+        if (is_string($values)) {
+            $values = json_decode($this->values, true, 2, JSON_THROW_ON_ERROR);
+        }
+
+        if (! array_is_list($values)) {
+            throw new InvalidArgumentException('Expected similarity values to be a list');
+        }
+
+        return $grammar->escape(
+            json_encode($values, JSON_THROW_ON_ERROR, 1)
+        );
     }
 }

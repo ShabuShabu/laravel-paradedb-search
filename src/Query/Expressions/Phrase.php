@@ -20,9 +20,9 @@ readonly class Phrase implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->parseText($this->field);
-        $phrases = $this->parseArray($this->phrases);
-        $slop = $this->parseInt($this->slop);
+        $field = $this->asText($grammar, $this->field);
+        $phrases = $this->asArray($grammar, $this->phrases);
+        $slop = $this->asInt($this->slop);
 
         return "paradedb.phrase(field => $field, phrases => $phrases, slop => $slop)";
     }

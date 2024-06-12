@@ -25,7 +25,7 @@ trait Stringable
 
         return match (true) {
             $grammar->isExpression($query) => $grammar->getValue($query),
-            is_string($query) => $this->wrap($query)
+            is_string($query) => $grammar->escape($query)
         };
     }
 
@@ -47,12 +47,12 @@ trait Stringable
             ->values();
     }
 
-    protected function parseArray(array $values): string
+    protected function asArray(Grammar $grammar, array $values): string
     {
         return $this->wrapArray(
             collect($values)
                 ->filter(fn (mixed $value) => is_string($value))
-                ->map(fn (string $value) => $this->wrap($value))
+                ->map(fn (string $value) => $grammar->escape($value))
         );
     }
 
@@ -70,14 +70,14 @@ trait Stringable
         return $value instanceof CarbonInterface ? $value : Date::parse($value);
     }
 
-    protected function parseDate(?CarbonInterface $value, string $format): string
+    protected function asDate(?CarbonInterface $value, string $format): string
     {
         return ! is_null($value)
-            ? $this->wrap($value->format($format))
+            ? Str::wrap($value->format($format), "'")
             : '';
     }
 
-    protected function parseBool(?bool $value): string
+    protected function asBool(?bool $value): string
     {
         return match ($value) {
             null => 'NULL::boolean',
@@ -86,23 +86,18 @@ trait Stringable
         };
     }
 
-    protected function parseInt(?int $value): string
+    protected function asInt(?int $value): string
     {
         return $value === null ? 'NULL::integer' : (string) $value;
     }
 
-    protected function parseReal(?int $value): string
+    protected function asReal(?int $value): string
     {
         return $value === null ? 'NULL::real' : (string) $value;
     }
 
-    protected function parseText(?string $value): string
+    protected function asText(Grammar $grammar, ?string $value): string
     {
-        return $value === null ? 'NULL::text' : $this->wrap($value);
-    }
-
-    protected function wrap(string $value): string
-    {
-        return Str::wrap($value, "'");
+        return $value === null ? 'NULL::text' : $grammar->escape($value);
     }
 }

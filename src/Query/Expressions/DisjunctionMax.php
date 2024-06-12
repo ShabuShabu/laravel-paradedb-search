@@ -20,7 +20,7 @@ readonly class DisjunctionMax implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $tieBreaker = $this->parseReal($this->tieBreaker);
+        $tieBreaker = $this->asReal($this->tieBreaker);
 
         $disjuncts = $this->wrapArray(
             $this->normalizeQueries($grammar, $this->disjuncts)

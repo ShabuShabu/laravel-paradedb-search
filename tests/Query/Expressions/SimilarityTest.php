@@ -9,13 +9,13 @@ use ShabuShabu\ParadeDB\Query\Expressions\Distance;
 use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
 
 it('parses a similarity query')
-    ->expect(new Similarity('embedding', Distance::l2, [1, 2, 3], false))
-    ->toBeExpression("embedding <-> '[1,2,3]'");
+    ->expect(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+    ->toBeExpression("\"embedding\" <-> '[1,2,3]'");
 
 it('parses a similarity expression query')
-    ->expect(new Similarity(new Expression('embedding'), Distance::l2, [1, 2, 3], false))
+    ->expect(new Similarity(new Expression('embedding'), Distance::l2, [1, 2, 3]))
     ->toBeExpression("embedding <-> '[1,2,3]'");
 
-it('parses and escapes a similarity query')
-    ->expect(new Similarity('embedding', Distance::l2, [1, 2, 3]))
-    ->toBeExpression("embedding <-> ''[1,2,3]''");
+it('parses a similarity query with string values')
+    ->expect(new Similarity('embedding', Distance::l2, '[1,2,3]'))
+    ->toBeExpression("\"embedding\" <-> '[1,2,3]'");

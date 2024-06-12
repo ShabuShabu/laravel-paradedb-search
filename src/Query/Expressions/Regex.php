@@ -19,8 +19,8 @@ readonly class Regex implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->parseText($this->field);
-        $pattern = $this->parseText($this->pattern);
+        $field = $this->asText($grammar, $this->field);
+        $pattern = $this->asText($grammar, $this->pattern);
 
         return "paradedb.regex(field => $field, pattern => $pattern)";
     }

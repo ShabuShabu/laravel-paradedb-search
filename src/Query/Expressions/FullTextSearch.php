@@ -25,10 +25,10 @@ readonly class FullTextSearch implements ParadeExpression
     public function getValue(Grammar $grammar): string
     {
         $query = $this->normalizeQuery($grammar, $this->query);
-        $limit = $this->parseInt($this->limit);
-        $offset = $this->parseInt($this->offset);
-        $alias = $this->parseText($this->alias);
-        $sort = $this->parseBool($this->stableSort);
+        $limit = $this->asInt($this->limit);
+        $offset = $this->asInt($this->offset);
+        $alias = $this->asText($grammar, $this->alias);
+        $sort = $this->asBool($this->stableSort);
 
         return "$this->index.search(query => $query, offset_rows => $offset, limit_rows => $limit, alias => $alias, stable_sort => $sort)";
     }

@@ -20,9 +20,9 @@ readonly class PhrasePrefix implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->parseText($this->field);
-        $phrases = $this->parseArray($this->phrases);
-        $expansion = $this->parseInt($this->expansion);
+        $field = $this->asText($grammar, $this->field);
+        $phrases = $this->asArray($grammar, $this->phrases);
+        $expansion = $this->asInt($this->expansion);
 
         return "paradedb.phrase_prefix(field => $field, phrases => $phrases, max_expansion => $expansion)";
     }

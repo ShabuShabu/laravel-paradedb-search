@@ -33,8 +33,8 @@ readonly class Date implements RangeExpression
         }
 
         $bounds = $this->bounds->wrap(
-            $this->parseDate($lower, 'Y-m-d'),
-            $this->parseDate($upper, 'Y-m-d'),
+            $this->asDate($lower, 'Y-m-d'),
+            $this->asDate($upper, 'Y-m-d'),
         );
 
         return "$bounds::daterange";

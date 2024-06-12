@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
+use ShabuShabu\ParadeDB\Indices\Bm25;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
@@ -20,5 +21,20 @@ return new class extends Migration
             $table->vector('embedding')->nullable();
             $table->timestamps();
         });
+
+        Bm25::index('teams')
+            ->addNumericFields(['max_members'])
+            ->addBooleanFields(['is_vip'])
+            ->addDateFields(['created_at'])
+            ->addJsonFields(['options'])
+            ->addTextFields([
+                'name',
+                'description' => [
+                    'tokenizer' => [
+                        'type' => 'default',
+                    ],
+                ],
+            ])
+            ->create(drop: true);
     }
 };

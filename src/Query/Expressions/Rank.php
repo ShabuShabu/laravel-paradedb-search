@@ -21,7 +21,7 @@ readonly class Rank implements ParadeExpression
     public function getValue(Grammar $grammar): string
     {
         $key = $grammar->wrap($this->key);
-        $alias = $this->parseText($this->alias);
+        $alias = $this->asText($grammar, $this->alias);
 
         return "paradedb.rank_bm25(key => $key, alias => $alias)";
     }

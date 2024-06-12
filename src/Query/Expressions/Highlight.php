@@ -24,11 +24,11 @@ readonly class Highlight implements ParadeExpression
     public function getValue(Grammar $grammar): string
     {
         $key = $grammar->wrap($this->key);
-        $field = $this->parseText($this->field);
-        $prefix = $this->parseText($this->prefix);
-        $postfix = $this->parseText($this->postfix);
-        $maxNumChars = $this->parseInt($this->maxNumChars);
-        $alias = $this->parseText($this->alias);
+        $field = $this->asText($grammar, $this->field);
+        $prefix = $this->asText($grammar, $this->prefix);
+        $postfix = $this->asText($grammar, $this->postfix);
+        $maxNumChars = $this->asInt($this->maxNumChars);
+        $alias = $this->asText($grammar, $this->alias);
 
         return "paradedb.highlight(key => $key, field => $field, prefix => $prefix, postfix => $postfix, max_num_chars => $maxNumChars, alias => $alias)";
     }

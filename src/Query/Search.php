@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Pagination\Paginator;
+use InvalidArgumentException;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
 use ShabuShabu\ParadeDB\Query\Expressions\FullTextSearch;
 use ShabuShabu\ParadeDB\Query\Expressions\HybridSearch;
@@ -18,7 +19,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
 
 class Search
 {
-    protected Builder | ParadeExpression $paradeQuery;
+    protected null | Builder | ParadeExpression $where = null;
 
     protected ?int $limit = null;
 
@@ -52,16 +53,16 @@ class Search
         return $this;
     }
 
-    public function where(Builder | ParadeExpression $query): static
+    public function where(Builder | ParadeExpression $where): static
     {
-        $this->paradeQuery = $query;
+        $this->where = $where;
 
         return $this;
     }
 
     public function offset(int $offset): static
     {
-        $this->offset = $offset;
+        $this->offset = max(0, $offset);
 
         return $this;
     }
@@ -87,11 +88,11 @@ class Search
         return $this;
     }
 
-    protected function fullText(): FullTextSearch
+    protected function fullTextSearch(): FullTextSearch
     {
         return new FullTextSearch(
             index: $this->indexName(),
-            query: $this->paradeQuery,
+            query: $this->where,
             limit: $this->limit,
             offset: $this->offset,
             alias: $this->alias,
@@ -134,11 +135,11 @@ class Search
         return $this;
     }
 
-    protected function hybrid(): HybridSearch
+    protected function hybridSearch(): HybridSearch
     {
         return new HybridSearch(
             index: $this->indexName(),
-            bm25Query: $this->paradeQuery,
+            bm25Query: $this->where,
             similarityQuery: $this->similarityQuery,
             bm25Limit: $this->bm25Limit,
             bm25Weight: $this->bm25Weight,
@@ -176,14 +177,20 @@ class Search
 
     public function toQuery(): Eloquent\Builder
     {
-        $from = $this->similarityQuery
-            ? $this->hybrid()
-            : $this->fullText();
+        if (! $this->where) {
+            throw new InvalidArgumentException(
+                'Both hybrid and full-text search require a ParadeDB query'
+            );
+        }
 
         return $this->model
             ->newQuery()
             ->select($this->columns)
-            ->from($from);
+            ->from(
+                $this->similarityQuery
+                    ? $this->hybridSearch()
+                    : $this->fullTextSearch()
+            );
     }
 
     protected function grammar(): Grammar

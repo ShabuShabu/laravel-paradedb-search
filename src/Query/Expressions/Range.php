@@ -20,7 +20,7 @@ readonly class Range implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->parseText($this->field);
+        $field = $this->asText($grammar, $this->field);
         $range = $this->range->getValue($grammar);
 
         return "paradedb.range(field => $field, range => $range)";
