@@ -28,18 +28,19 @@ it('gets search results', function () {
 })->skip('Times out when all tests are run...');
 
 it('paginates search results', function () {
-    Team::factory()->isVip(false)->create();
+    $nonVip = Team::factory()->isVip(false)->create();
 
-    $vipTeam = Team::factory()->isVip()->create();
+    Team::factory()->count(12)->isVip()->create();
 
     $results = Team::search()->where(
         Builder::make()->whereFilter('is_vip', '=', true)
-    )->simplePaginate();
+    )->simplePaginate(8);
 
     expect($results)
         ->toBeInstanceOf(Paginator::class)
-        ->count()->toBe(1)
-        ->getCollection()->sole()->id->toBe($vipTeam->id);
+        ->count()->toBe(8)
+        ->hasMorePages()->toBeTrue()
+        ->getCollection()->pluck('id')->not->toContain($nonVip->id);
 })->skip('Times out when all tests are run...');
 
 it('gets search results with an eloquent query', function () {
