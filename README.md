@@ -185,9 +185,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Todo
 
-- [ ] Sort test run issues when hitting the DB
-- [ ] Add the remaining tests
-- [ ] Create initial tag v0.1.0
 - [ ] Publish to Packagist
 
 ## Contributing
