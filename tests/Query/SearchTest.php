@@ -17,9 +17,14 @@ it('gets search results', function () {
 
     $vipTeam = Team::factory()->isVip()->create();
 
-    $results = Team::search()->where(
-        Builder::make()->whereFilter('is_vip', '=', true)
-    )->get();
+    $results = Team::search()
+        ->select(['*'])
+        ->where(
+            Builder::make()->whereFilter('is_vip', '=', true)
+        )
+        ->stableSort()
+        ->alias('s')
+        ->get();
 
     expect($results)
         ->toBeInstanceOf(Collection::class)
@@ -69,6 +74,10 @@ it('performs a hybrid search', function () {
     $results = Team::search()
         ->where(Builder::make()->whereFilter('is_vip', '=', true))
         ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+        ->bm25Limit(100)
+        ->bm25Weight(0.9)
+        ->similarityLimit(100)
+        ->similarityWeight(0.6)
         ->get();
 
     expect($results)
@@ -98,3 +107,10 @@ it('combines paradedb and eloquent queries', function () {
         ->count()->toBe(1)
         ->sole()->id->toBe($expected->id);
 });
+
+it('panics for a missing paradedb query', function () {
+    Team::search()->toQuery();
+})->throws(
+    InvalidArgumentException::class,
+    'Both hybrid and full-text search require a ParadeDB query'
+);

@@ -62,7 +62,7 @@ class Bm25
                 ? [$value => new stdClass()]
                 : [$key => $value]
         )->pipe(
-            fn ($encoded) => json_encode($encoded, JSON_THROW_ON_ERROR)
+            fn (mixed $encoded) => json_encode($encoded, JSON_THROW_ON_ERROR)
         );
     }
 
