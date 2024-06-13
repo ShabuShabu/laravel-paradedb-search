@@ -93,16 +93,19 @@ class Search
         return $this;
     }
 
-    protected function fullTextSearch(): FullTextSearch
+    protected function fullTextSearch(): Eloquent\Builder
     {
-        return new FullTextSearch(
-            index: $this->indexName(),
-            query: $this->where,
-            limit: $this->limit,
-            offset: $this->offset,
-            alias: $this->alias,
-            stableSort: $this->stableSort,
-        );
+        return $this
+            ->query()
+            ->select($this->columns)
+            ->from(new FullTextSearch(
+                index: $this->indexName(),
+                query: $this->where,
+                limit: $this->limit,
+                offset: $this->offset,
+                alias: $this->alias,
+                stableSort: $this->stableSort,
+            ));
     }
 
     public function bm25Limit(int $limit): static
@@ -133,17 +136,31 @@ class Search
         return $this;
     }
 
-    protected function hybridSearch(): HybridSearch
+    protected function hybridSearch(): Eloquent\Builder
     {
-        return new HybridSearch(
-            index: $this->indexName(),
-            bm25Query: $this->where,
-            similarityQuery: $this->similarityWhere,
-            bm25Limit: $this->bm25Limit,
-            bm25Weight: $this->bm25Weight,
-            similarityLimit: $this->similarityLimit,
-            similarityWeight: $this->similarityWeight,
-        );
+        $innerQuery = $this
+            ->query()
+            ->select(['*'])
+            ->from(new HybridSearch(
+                index: $this->indexName(),
+                bm25Query: $this->where,
+                similarityQuery: $this->similarityWhere,
+                bm25Limit: $this->bm25Limit,
+                bm25Weight: $this->bm25Weight,
+                similarityLimit: $this->similarityLimit,
+                similarityWeight: $this->similarityWeight,
+            ));
+
+        $table = $this->model->getTable();
+
+        $columns = collect($this->columns)
+            ->map(static fn (string $column) => "$table.$column")
+            ->push('search.rank_hybrid')
+            ->all();
+
+        return $this->query()
+            ->select($columns)
+            ->leftJoinSub($innerQuery, 'search', "$table.id", 'search.id');
     }
 
     public function get(): Collection
@@ -181,14 +198,9 @@ class Search
             );
         }
 
-        return $this->model
-            ->newQuery()
-            ->select($this->columns)
-            ->from(
-                $this->similarityWhere
-                    ? $this->hybridSearch()
-                    : $this->fullTextSearch()
-            );
+        return $this->similarityWhere
+            ? $this->hybridSearch()
+            : $this->fullTextSearch();
     }
 
     public function toBaseQuery(): Query\Builder
@@ -198,11 +210,16 @@ class Search
 
     protected function grammar(): Grammar
     {
-        return $this->model->newQuery()->getQuery()->grammar;
+        return $this->query()->getQuery()->grammar;
     }
 
     protected function indexName(): string
     {
         return $this->model->getTable() . config('paradedb-search.index_suffix', '_idx');
+    }
+
+    protected function query(): Eloquent\Builder
+    {
+        return $this->model->newQuery();
     }
 }
