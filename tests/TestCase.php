@@ -1,36 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as Orchestra;
 use ShabuShabu\ParadeDB\ParadeDBServiceProvider;
+use Tpetry\PostgresqlEnhanced\PostgresqlEnhancedServiceProvider;
 
 class TestCase extends Orchestra
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
+    use RefreshDatabase;
 
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'ShabuShabu\\ParadeDB\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
-    }
-
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
+            PostgresqlEnhancedServiceProvider::class,
             ParadeDBServiceProvider::class,
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    protected function defineDatabaseMigrations(): void
     {
-        config()->set('database.default', 'testing');
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_laravel-paradedb-search_table.php.stub';
-        $migration->up();
-        */
+        $this->loadMigrationsFrom(__DIR__ . '/app/database/migrations');
     }
 }
