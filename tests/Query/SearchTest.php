@@ -25,7 +25,7 @@ it('gets search results', function () {
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(1)
         ->sole()->id->toBe($vipTeam->id);
-})->skip('Times out when all tests are run...');
+});
 
 it('paginates search results', function () {
     $nonVip = Team::factory()->isVip(false)->create();
@@ -41,7 +41,7 @@ it('paginates search results', function () {
         ->count()->toBe(8)
         ->hasMorePages()->toBeTrue()
         ->getCollection()->pluck('id')->not->toContain($nonVip->id);
-})->skip('Times out when all tests are run...');
+});
 
 it('gets search results with an eloquent query', function () {
     Team::factory()->isVip(false)->create();
@@ -59,7 +59,7 @@ it('gets search results with an eloquent query', function () {
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(1)
         ->sole()->id->toBe($vipTeam->id);
-})->skip('Times out when all tests are run...');
+});
 
 it('performs a hybrid search', function () {
     Team::factory()->isVip(false)->withEmbedding([7, 8, 9])->create();
@@ -75,7 +75,7 @@ it('performs a hybrid search', function () {
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(2)
         ->first()->id->toBe($vipTeam->id);
-})->skip('Times out when all tests are run...');
+});
 
 it('combines paradedb and eloquent queries', function () {
     Team::factory()->isVip(false)->maxMembers(6)->create();
@@ -97,4 +97,4 @@ it('combines paradedb and eloquent queries', function () {
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(1)
         ->sole()->id->toBe($expected->id);
-})->skip('Times out when all tests are run...');
+});

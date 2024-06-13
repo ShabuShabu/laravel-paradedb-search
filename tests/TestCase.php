@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Tests;
 
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as Orchestra;
 use ShabuShabu\ParadeDB\ParadeDBServiceProvider;
 use Tpetry\PostgresqlEnhanced\PostgresqlEnhancedServiceProvider;
 
 class TestCase extends Orchestra
 {
-    use LazilyRefreshDatabase;
+    use RefreshDatabase;
 
     protected function getPackageProviders($app): array
     {

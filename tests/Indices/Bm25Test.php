@@ -31,7 +31,7 @@ it('creates and deletes a bm25 index', function () {
 
     expect('teams_index')->not->toBeSchema()
         ->and($result)->toBeTrue();
-})->skip('Times out when all tests are run...');
+});
 
 it('panics for an unknown field', function () {
     /** @noinspection PhpUndefinedMethodInspection */
