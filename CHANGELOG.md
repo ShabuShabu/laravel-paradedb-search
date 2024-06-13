@@ -8,7 +8,6 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 * added a command to create gh discussions ([f03b4c1](https://github.com/ShabuShabu/laravel-paradedb-search/commits/f03b4c1f1e7933d15c7a8cfd1458b93312183614))
-* added hnsw index helper ([12ec812](https://github.com/ShabuShabu/laravel-paradedb-search/commits/12ec81219ad07934766867c94a3601d83a178107))
 * added hybrid search ([a5b9478](https://github.com/ShabuShabu/laravel-paradedb-search/commits/a5b94783e08892ea11e48303787f1bc9c1b78a57))
 * added slop operator to paradeql builder ([7f64b6f](https://github.com/ShabuShabu/laravel-paradedb-search/commits/7f64b6fcb544231e975a0a01beca5be332ecc7c7))
 * first pass at a ParadeQL query builder ([e89d61a](https://github.com/ShabuShabu/laravel-paradedb-search/commits/e89d61a03c31a27b4e818efb7a72719dc048ff16))
