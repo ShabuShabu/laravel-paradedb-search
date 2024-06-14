@@ -7,7 +7,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* added ability to give bm25 indices a custom name ([370df0e](https://github.com/ShabuShabu/laravel-paradedb-search/commits/370df0e3dd709034d7bbf91fd3590d917f2fa8c3))
 * added custom index names to search ([5eff892](https://github.com/ShabuShabu/laravel-paradedb-search/commits/5eff892ec1d1e775e8dc0b0c25e2163f885f248d))
 
 ## [0.3.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.0) (2024-06-14)
