@@ -26,9 +26,10 @@ class Bm25
         'date' => [],
     ];
 
+    protected ?string $indexName = null;
+
     final protected function __construct(
         protected string $table,
-        protected string $suffix,
         protected string $schema,
         protected string $id,
     ) {
@@ -36,9 +37,7 @@ class Bm25
 
     public static function index(string $table, string $schema = 'public', string $id = 'id'): static
     {
-        $suffix = config('paradedb-search.index_suffix', '_idx');
-
-        return new static($table, $suffix, $schema, $id);
+        return new static($table, $schema, $id);
     }
 
     protected function addFields(string $name, array $config): static
@@ -66,6 +65,18 @@ class Bm25
         );
     }
 
+    public function name(string $name): static
+    {
+        $this->indexName = $name;
+
+        return $this;
+    }
+
+    protected function indexName(): string
+    {
+        return $this->indexName ?? $this->table . config('paradedb-search.index_suffix', '_idx');
+    }
+
     public function create(bool $drop = false): bool
     {
         if ($drop) {
@@ -91,7 +102,7 @@ class Bm25
             );
             QUERY,
             [
-                'index' => $this->table . $this->suffix,
+                'index' => $this->indexName(),
                 'schema' => $this->schema,
                 'table' => $this->table,
                 'key' => $this->id,
@@ -107,7 +118,7 @@ class Bm25
     public function drop(): bool
     {
         return DB::statement('CALL paradedb.drop_bm25(:index_name, :schema_name);', [
-            'index_name' => $this->table . $this->suffix,
+            'index_name' => $this->indexName(),
             'schema_name' => $this->schema,
         ]);
     }

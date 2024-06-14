@@ -148,7 +148,7 @@ To make this a bit easier, you can use the `paradedb:help` command that ships wi
 php artisan paradedb:help
 ```
 
-Please note that this command is just an implementation of the `paradedb.help()`. Please use the command wisely!
+Please note that this command is just an implementation of the `paradedb.help()` function. Please use this command wisely!
 
 ## Testing
 
@@ -167,10 +167,16 @@ Then run the tests:
 composer test
 ```
 
-Or with coverage:
+Or with test coverage:
 
 ```bash
 composer test-coverage
+```
+
+Or with type coverage:
+
+```bash
+composer type-coverage
 ```
 
 Or run PHPStan: 

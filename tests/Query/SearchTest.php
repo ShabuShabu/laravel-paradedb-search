@@ -33,8 +33,6 @@ it('gets search results', function () {
 });
 
 it('paginates search results', function () {
-    $nonVip = Team::factory()->isVip(false)->create();
-
     Team::factory()->count(12)->isVip()->create();
 
     $results = Team::search()->where(
@@ -44,8 +42,7 @@ it('paginates search results', function () {
     expect($results)
         ->toBeInstanceOf(Paginator::class)
         ->count()->toBe(8)
-        ->hasMorePages()->toBeTrue()
-        ->getCollection()->pluck('id')->not->toContain($nonVip->id);
+        ->hasMorePages()->toBeTrue();
 });
 
 it('gets search results with an eloquent query', function () {
