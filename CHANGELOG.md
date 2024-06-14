@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.0) (2024-06-14)
+
+
+### Features
+
+* added ability to give bm25 indices a custom name ([370df0e](https://github.com/ShabuShabu/laravel-paradedb-search/commits/370df0e3dd709034d7bbf91fd3590d917f2fa8c3))
+
 ## 0.2.0 (2024-06-13)
 
 
