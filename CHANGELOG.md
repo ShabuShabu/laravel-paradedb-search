@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.1) (2024-06-14)
+
+
+### Features
+
+* added custom index names to search ([5eff892](https://github.com/ShabuShabu/laravel-paradedb-search/commits/5eff892ec1d1e775e8dc0b0c25e2163f885f248d))
+
 ## [0.3.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.0) (2024-06-14)
 
 
