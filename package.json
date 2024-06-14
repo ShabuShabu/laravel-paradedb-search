@@ -2,12 +2,12 @@
   "name": "@shabushabu/laravel-paradedb-search",
   "author": "ShabuShabu - Glumpler GbR",
   "license": "MIT",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "scripts": {
     "release": "standard-version",
-    "release:minor": "standard-version --release-as minor",
     "release:patch": "standard-version --release-as patch",
+    "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
     "prepare": "husky"
   },
