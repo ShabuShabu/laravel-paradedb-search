@@ -43,6 +43,7 @@ class Search
 
     public function __construct(
         protected Eloquent\Model $model,
+        protected ?string $indexName = null,
     ) {
     }
 
@@ -209,7 +210,7 @@ class Search
 
     protected function indexName(): string
     {
-        return $this->model->getTable() . config('paradedb-search.index_suffix', '_idx');
+        return $this->indexName ?? $this->model->getTable() . config('paradedb-search.index_suffix', '_idx');
     }
 
     protected function query(): Eloquent\Builder

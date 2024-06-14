@@ -8,8 +8,11 @@ use ShabuShabu\ParadeDB\Query\Search;
 
 trait Searchable
 {
-    public static function search(): Search
+    public static function search(?string $name = null): Search
     {
-        return new Search(model: new static);
+        return new Search(
+            model: new static,
+            indexName: $name
+        );
     }
 }
