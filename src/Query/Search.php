@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Query;
 
+use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Pagination\Paginator as PaginatorContract;
 use Illuminate\Database\Eloquent;
@@ -41,6 +42,8 @@ class Search
 
     protected array $columns = ['*'];
 
+    protected ?Closure $modifyQueryCallback = null;
+
     public function __construct(
         protected Eloquent\Model $model,
         protected ?string $indexName = null,
@@ -50,6 +53,13 @@ class Search
     public function select(array $columns): static
     {
         $this->columns = $columns;
+
+        return $this;
+    }
+
+    public function modifyQueryUsing(Closure $callback): static
+    {
+        $this->modifyQueryCallback = $callback;
 
         return $this;
     }
@@ -96,7 +106,7 @@ class Search
     protected function fullTextSearch(): Eloquent\Builder
     {
         return $this
-            ->query()
+            ->applyQueryModifications()
             ->select($this->columns)
             ->from(new FullTextSearch(
                 index: $this->indexName(),
@@ -158,7 +168,8 @@ class Search
             ->push('search.rank_hybrid')
             ->all();
 
-        return $this->query()
+        return $this
+            ->applyQueryModifications()
             ->select($columns)
             ->leftJoinSub($innerQuery, 'search', "$table.id", 'search.id');
     }
@@ -211,6 +222,13 @@ class Search
     protected function indexName(): string
     {
         return $this->indexName ?? $this->model->getTable() . config('paradedb-search.index_suffix', '_idx');
+    }
+
+    protected function applyQueryModifications(): Eloquent\Builder
+    {
+        $callback = $this->modifyQueryCallback ?? static fn (Eloquent\Builder $query) => $query;
+
+        return $callback($this->query());
     }
 
     protected function query(): Eloquent\Builder
