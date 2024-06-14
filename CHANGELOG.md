@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.3](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.3) (2024-06-14)
+
+
+### Bug Fixes
+
+* switched to Model::newModelQuery() ([59e9b4a](https://github.com/ShabuShabu/laravel-paradedb-search/commits/59e9b4a40165b57d7dabe975a1ee77698c40021e))
+
 ### [0.3.2](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.2) (2024-06-14)
 
 

@@ -215,6 +215,6 @@ class Search
 
     protected function query(): Eloquent\Builder
     {
-        return $this->model->newQuery();
+        return $this->model->newModelQuery();
     }
 }
