@@ -4,6 +4,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\Paginator;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
@@ -43,6 +44,17 @@ it('paginates search results', function () {
         ->toBeInstanceOf(Paginator::class)
         ->count()->toBe(8)
         ->hasMorePages()->toBeTrue();
+});
+
+it('modifies the search query', function () {
+    Team::factory()->count(12)->isVip()->create();
+
+    $results = Team::search()
+        ->modifyQueryUsing(fn (Eloquent\Builder $builder) => $builder->with('user'))
+        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->get();
+
+    expect($results->first()->relationLoaded('user'))->toBeTrue();
 });
 
 it('gets search results with an eloquent query', function () {

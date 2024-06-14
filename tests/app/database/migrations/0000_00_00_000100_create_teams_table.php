@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('teams', static function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('name');
             $table->text('description')->nullable();
             $table->boolean('is_vip')->default(false);

@@ -130,6 +130,21 @@ Product::search()
     ->get();
 ```
 
+### Modifying the underlying query
+
+Occasionally, it will be necessary to modify the base query, for example to eager-load some relationships. This can be accomplished like so:
+
+```php
+use App\Models\Product;
+use Illuminate\Database\Eloquent;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+
+Product::search()
+    ->modifyQueryUsing(fn (Eloquent\Builder $builder) => $builder->with('tags'))
+    ->where(Builder::make()->where('description', 'keyboard'))
+    ->get();
+```
+
 ### A word of caution
 
 While it is possible to combine ParadeDB queries with regular Eloquent queries, you will incur some performance penalties.
