@@ -66,7 +66,7 @@ class Builder
         return $this->whereNot($column, $value, $boost, $slop, 'OR');
     }
 
-    public function whereFilter(string $column, string | Range | Filter $operator, bool | int | array $value, ?int $boost = null, string $boolean = 'AND'): static
+    public function whereFilter(string $column, string | Range | Filter $operator, bool | int | string | array $value, ?int $boost = null, string $boolean = 'AND'): static
     {
         $this->assertFilterOperator($operator, $value);
         $this->assertRangeOperator($operator, $value);
