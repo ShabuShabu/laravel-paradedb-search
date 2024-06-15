@@ -28,6 +28,6 @@ readonly class FuzzyTerm implements ParadeExpression
         $transpose = $this->asBool($this->transpose);
         $prefix = $this->asBool($this->prefix);
 
-        return "paradedb.fuzzy_term(field => $field, value => $value, distance => $distance, transpose_cost_one => $transpose, prefix => $prefix)";
+        return "paradedb.fuzzy_term(field => $field, value => $value, distance => $distance, tranposition_cost_one => $transpose, prefix => $prefix)";
     }
 }

@@ -31,7 +31,7 @@ readonly class Boolean implements ParadeExpression
     protected function process(Grammar $grammar, null | string | array | ParadeExpression | Builder $expressions): string
     {
         return is_null($expressions)
-            ? 'NULL::paradedb.searchqueryinput'
+            ? 'ARRAY[]::paradedb.searchqueryinput[]'
             : $this->wrapArray(
                 $this->normalizeQueries($grammar, $expressions)
             );
