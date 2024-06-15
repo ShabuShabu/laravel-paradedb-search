@@ -96,6 +96,19 @@ it('performs a hybrid search', function () {
         ->first()->hasAttribute('rank_hybrid')->toBeTrue();
 });
 
+it('modifies the query for a hybrid search', function () {
+    Team::factory()->isVip(false)->withEmbedding([7, 8, 9])->create();
+    Team::factory()->isVip()->withEmbedding([1, 2, 3])->create();
+
+    $results = Team::search()
+        ->modifyQueryUsing(fn (Eloquent\Builder $builder) => $builder->with('user'))
+        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+        ->get();
+
+    expect($results->first()->relationLoaded('user'))->toBeTrue();
+});
+
 it('combines paradedb and eloquent queries', function () {
     Team::factory()->isVip(false)->maxMembers(6)->create();
 
