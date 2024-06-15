@@ -111,7 +111,7 @@ use ShabuShabu\ParadeDB\ParadeQL\Builder;
 
 Product::search()
     ->where(Builder::make()->where('description', 'keyboard'))
-    ->simplePaginate(20);
+    ->paginate(20); // or ->simplePaginate(20);
 ```
 
 ### Hybrid search

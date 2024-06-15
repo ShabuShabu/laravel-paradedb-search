@@ -6,10 +6,10 @@ namespace ShabuShabu\ParadeDB\Query;
 
 use Closure;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Pagination\Paginator as PaginatorContract;
 use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use InvalidArgumentException;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
@@ -174,7 +174,36 @@ class Search
         return $this->toQuery()->get();
     }
 
-    public function simplePaginate(?int $perPage = null, string $pageName = 'page', ?int $page = null): PaginatorContract
+    public function paginate(?int $perPage = null, string $pageName = 'page', ?int $page = null): LengthAwarePaginator
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+
+        $alias = $this->alias;
+
+        $this->alias = 'total';
+
+        $total = $this->toQuery()->count();
+
+        $this->alias = $alias;
+
+        $items = $this
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
+
+        return Container::getInstance()->makeWith(LengthAwarePaginator::class, [
+            'items' => $items,
+            'total' => $total,
+            'perPage' => $perPage,
+            'currentPage' => $page,
+            'options' => [
+                'path' => Paginator::resolveCurrentPath(),
+                'pageName' => $pageName,
+            ],
+        ]);
+    }
+
+    public function simplePaginate(?int $perPage = null, string $pageName = 'page', ?int $page = null): Paginator
     {
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
 

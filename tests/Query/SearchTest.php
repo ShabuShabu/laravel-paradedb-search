@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
 use ShabuShabu\ParadeDB\Query\Expressions\Distance;
@@ -33,7 +34,7 @@ it('gets search results', function () {
         ->sole()->id->toBe($vipTeam->id);
 });
 
-it('paginates search results', function () {
+it('paginates search results using a simple paginator', function () {
     Team::factory()->count(12)->isVip()->create();
 
     $results = Team::search()->where(
@@ -42,6 +43,19 @@ it('paginates search results', function () {
 
     expect($results)
         ->toBeInstanceOf(Paginator::class)
+        ->count()->toBe(8)
+        ->hasMorePages()->toBeTrue();
+});
+
+it('paginates search results using a length-aware paginator', function () {
+    Team::factory()->count(12)->isVip()->create();
+
+    $results = Team::search()->where(
+        Builder::make()->whereFilter('is_vip', '=', true)
+    )->paginate(8);
+
+    expect($results)
+        ->toBeInstanceOf(LengthAwarePaginator::class)
         ->count()->toBe(8)
         ->hasMorePages()->toBeTrue();
 });
