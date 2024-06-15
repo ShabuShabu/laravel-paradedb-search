@@ -161,17 +161,12 @@ class Search
                 similarityWeight: $this->similarityWeight,
             ));
 
-        $table = $this->model->getTable();
-
-        $columns = collect($this->columns)
-            ->map(static fn (string $column) => "$table.$column")
-            ->push('search.rank_hybrid')
-            ->all();
+        $this->columns[] = 'search.rank_hybrid';
 
         return $this
             ->applyQueryModifications()
-            ->select($columns)
-            ->leftJoinSub($innerQuery, 'search', "$table.id", 'search.id');
+            ->select($this->columns)
+            ->leftJoinSub($innerQuery, 'search', $this->query()->qualifyColumn('id'), 'search.id');
     }
 
     public function get(): Collection

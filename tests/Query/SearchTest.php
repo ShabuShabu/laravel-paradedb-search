@@ -92,7 +92,8 @@ it('performs a hybrid search', function () {
     expect($results)
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(2)
-        ->first()->id->toBe($vipTeam->id);
+        ->first()->id->toBe($vipTeam->id)
+        ->first()->hasAttribute('rank_hybrid')->toBeTrue();
 });
 
 it('combines paradedb and eloquent queries', function () {
