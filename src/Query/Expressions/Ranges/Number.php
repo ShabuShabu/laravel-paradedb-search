@@ -26,7 +26,10 @@ abstract class Number implements RangeExpression
             throw InvalidRange::wrongOrder();
         }
 
-        $bounds = $this->bounds->wrap($this->lower, $this->upper);
+        $bounds = $grammar->escape($this->bounds->wrap(
+            $this->lower,
+            $this->upper
+        ));
 
         return "$bounds::{$this->castAs()}";
     }

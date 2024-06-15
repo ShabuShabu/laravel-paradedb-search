@@ -13,4 +13,4 @@ it('matches documents containing a specified term')
 
 it('matches documents containing a specified expression')
     ->expect(new Term('rating', new Int8(2, 5)))
-    ->toBeExpression("paradedb.term(field => 'rating', value => (2,5]::int8range)");
+    ->toBeExpression("paradedb.term(field => 'rating', value => '(2,5]'::int8range)");

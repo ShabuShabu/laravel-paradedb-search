@@ -36,10 +36,10 @@ abstract readonly class DateTime implements RangeExpression
             throw InvalidRange::wrongOrder();
         }
 
-        $bounds = $this->bounds->wrap(
-            $this->asDate($grammar, $lower, $this->format()),
-            $this->asDate($grammar, $upper, $this->format()),
-        );
+        $bounds = $grammar->escape($this->bounds->wrap(
+            $this->asDate($lower, $this->format()),
+            $this->asDate($upper, $this->format()),
+        ));
 
         return "$bounds::{$this->castAs()}";
     }

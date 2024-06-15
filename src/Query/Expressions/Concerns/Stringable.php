@@ -66,10 +66,10 @@ trait Stringable
         return $value instanceof CarbonInterface ? $value : Date::parse($value);
     }
 
-    protected function asDate(Grammar $grammar, ?CarbonInterface $value, string $format): string
+    protected function asDate(?CarbonInterface $value, string $format): string
     {
         return ! is_null($value)
-            ? $grammar->escape($value->format($format))
+            ? $value->format($format)
             : '';
     }
 
