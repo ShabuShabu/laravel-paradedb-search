@@ -24,6 +24,7 @@ return new class extends Migration
             $table->jsonb('options')->nullable();
             $table->vector('embedding', 3)->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('embedding vector_cosine_ops')->algorithm('hnsw');
         });
@@ -31,7 +32,7 @@ return new class extends Migration
         Bm25::index('teams')
             ->addNumericFields(['max_members'])
             ->addBooleanFields(['is_vip'])
-            ->addDateFields(['created_at'])
+            ->addDateFields(['created_at', 'deleted_at'])
             ->addJsonFields(['options'])
             ->addTextFields([
                 'name',
