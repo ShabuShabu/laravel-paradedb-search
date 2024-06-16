@@ -111,7 +111,7 @@ use ShabuShabu\ParadeDB\ParadeQL\Builder;
 
 Product::search()
     ->where(Builder::make()->where('description', 'keyboard'))
-    ->simplePaginate(20);
+    ->paginate(20); // or ->simplePaginate(20);
 ```
 
 ### Hybrid search
@@ -198,6 +198,14 @@ Or run PHPStan:
 
 ```bash
 composer analyse
+```
+
+### ParadeDB test table
+
+There is also a command that allows you to create and drop the built-in test table
+
+```bash
+php artisan paradedb:test-table create
 ```
 
 ## Changelog

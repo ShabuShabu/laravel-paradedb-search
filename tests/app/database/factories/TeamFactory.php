@@ -25,7 +25,15 @@ class TeamFactory extends Factory
             'max_members' => $this->faker->randomDigit(),
             'options' => null,
             'embedding' => null,
+            'deleted_at' => null,
         ];
+    }
+
+    public function softDeleted(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'deleted_at' => now()->subMinutes(5),
+        ]);
     }
 
     public function maxMembers(int $members): static

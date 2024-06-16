@@ -13,7 +13,7 @@ it('matches documents containing a specified term')
         new Term('description', 'shoes'),
         new Term('rating', new Int8(2, 5)),
     ]))
-    ->toBeExpression("paradedb.term_set(terms => ARRAY[paradedb.term(field => 'description', value => 'shoes'), paradedb.term(field => 'rating', value => (2,5]::int8range)])");
+    ->toBeExpression("paradedb.term_set(terms => ARRAY[paradedb.term(field => 'description', value => 'shoes'), paradedb.term(field => 'rating', value => '(2,5]'::int8range)])");
 
 it('provides a default value')
     ->expect(new TermSet([]))

@@ -18,9 +18,9 @@ it('filters documents based on logical relationships', function (string $type) {
     $query = "ARRAY[paradedb.parse(query_string => 'description:shoes'), paradedb.phrase_prefix(field => 'description', phrases => ARRAY['book'], max_expansion => NULL::integer), paradedb.parse(query_string => 'category:electronics')]";
 
     [$must, $should, $mustNot, $expression] = match ($type) {
-        'must' => [$queries, null, null, "paradedb.boolean(must => $query, should => NULL::paradedb.searchqueryinput, must_not => NULL::paradedb.searchqueryinput)"],
-        'should' => [null, $queries, null, "paradedb.boolean(must => NULL::paradedb.searchqueryinput, should => $query, must_not => NULL::paradedb.searchqueryinput)"],
-        'must_not' => [null, null, $queries, "paradedb.boolean(must => NULL::paradedb.searchqueryinput, should => NULL::paradedb.searchqueryinput, must_not => $query)"],
+        'must' => [$queries, null, null, "paradedb.boolean(must => $query, should => ARRAY[]::paradedb.searchqueryinput[], must_not => ARRAY[]::paradedb.searchqueryinput[])"],
+        'should' => [null, $queries, null, "paradedb.boolean(must => ARRAY[]::paradedb.searchqueryinput[], should => $query, must_not => ARRAY[]::paradedb.searchqueryinput[])"],
+        'must_not' => [null, null, $queries, "paradedb.boolean(must => ARRAY[]::paradedb.searchqueryinput[], should => ARRAY[]::paradedb.searchqueryinput[], must_not => $query)"],
     };
 
     expect(new Boolean($must, $should, $mustNot))->toBeExpression($expression);
