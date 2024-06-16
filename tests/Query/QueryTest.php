@@ -5,14 +5,23 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Collection;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
 use ShabuShabu\ParadeDB\Query\Expressions\All;
 use ShabuShabu\ParadeDB\Query\Expressions\Blank;
 use ShabuShabu\ParadeDB\Query\Expressions\Boolean;
 use ShabuShabu\ParadeDB\Query\Expressions\Boost;
+use ShabuShabu\ParadeDB\Query\Expressions\ConstScore;
+use ShabuShabu\ParadeDB\Query\Expressions\DisjunctionMax;
 use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
+use ShabuShabu\ParadeDB\Query\Expressions\Highlight;
+use ShabuShabu\ParadeDB\Query\Expressions\Phrase;
+use ShabuShabu\ParadeDB\Query\Expressions\PhrasePrefix;
 use ShabuShabu\ParadeDB\Query\Expressions\Range;
 use ShabuShabu\ParadeDB\Query\Expressions\Ranges\TimestampTz;
 use ShabuShabu\ParadeDB\Query\Expressions\Rank;
+use ShabuShabu\ParadeDB\Query\Expressions\Regex;
+use ShabuShabu\ParadeDB\Query\Expressions\Term;
+use ShabuShabu\ParadeDB\Query\Expressions\TermSet;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 
 it('gets all results', function () {
@@ -74,28 +83,112 @@ it('performs a ranked boolean query with various conditions', function () {
 });
 
 it('adds a constant score', function () {
-})->todo();
+    Team::factory()->count(2)->create();
+
+    $results = Team::search()
+        ->where(new ConstScore(new All(), 3.9))
+        ->get();
+
+    expect($results)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(2);
+});
 
 it('performs a disjunction max query', function () {
-})->todo();
+    Team::factory()->count(2)->create();
+
+    Team::factory()->create(['name' => 'Test team']);
+
+    $results = Team::search()
+        ->where(new DisjunctionMax(Builder::make()->where('name', 'team')))
+        ->get();
+
+    expect($results)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('Test team');
+});
 
 it('highlights search results', function () {
-})->todo();
+    Team::factory()->create(['name' => 'Test team']);
 
-it('parses a query', function () {
-})->todo();
+    $results = Team::search()
+        ->select(['*', new Highlight('id', 'name')])
+        ->where(new DisjunctionMax(Builder::make()->where('name', 'team')))
+        ->get();
 
-it('performs a phrase prefix query', function () {
-})->todo();
+    expect($results->first())->highlight->toBe('Test <b>team</b>');
+});
 
 it('searches for a phrase', function () {
-})->todo();
+    Team::factory()->create();
+
+    $team = Team::factory()->create([
+        'description' => 'This team sells robot building kits among other things...',
+    ]);
+
+    $results = Team::search()
+        ->where(new Phrase('description', ['robot', 'building', 'kits']))
+        ->get();
+
+    expect($results->first())->id->toBe($team->id);
+});
+
+it('performs a phrase prefix query', function () {
+    Team::factory()->create();
+
+    $team = Team::factory()->create([
+        'description' => 'This team sells robot building kits among other things...',
+    ]);
+
+    $results = Team::search()
+        ->where(new PhrasePrefix('description', ['robot', 'building', 'kits', 'am']))
+        ->get();
+
+    expect($results->first())->id->toBe($team->id);
+});
 
 it('performs a regex query', function () {
-})->todo();
+    Team::factory()->create();
+
+    $team = Team::factory()->create([
+        'description' => 'This team sells robot building kits among other things...',
+    ]);
+
+    $results = Team::search()
+        ->where(new Regex('description', '(team|kits|blabla)'))
+        ->get();
+
+    expect($results->first())->id->toBe($team->id);
+});
+
+it('searches for a term', function () {
+    Team::factory()->create();
+
+    $team = Team::factory()->create([
+        'description' => 'This team sells robot building kits among other things...',
+    ]);
+
+    $results = Team::search()
+        ->where(new Term('description', 'building'))
+        ->get();
+
+    expect($results->first())->id->toBe($team->id);
+});
 
 it('searches for a set of terms', function () {
-})->todo();
+    Team::factory()->create();
 
-it('searches for a terms', function () {
-})->todo();
+    $team = Team::factory()->create([
+        'description' => 'This team sells robot building kits among other things...',
+    ]);
+
+    $results = Team::search()
+        ->where(new TermSet([
+            new Term('description', 'building'),
+            new Term('description', 'things'),
+        ]))
+        ->get();
+
+    expect($results->first())->id->toBe($team->id);
+});
