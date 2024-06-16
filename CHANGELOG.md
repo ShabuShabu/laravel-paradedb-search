@@ -2,11 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.5.0) (2024-06-16)
+
+
+### Features
+
+* added a command to create and drop the paradedb test table ([a02c36f](https://github.com/ShabuShabu/laravel-paradedb-search/commits/a02c36ff1d4d2308027d477214168414ffed0cf5))
+* added a paginate method ([638947d](https://github.com/ShabuShabu/laravel-paradedb-search/commits/638947d9ef7c6fd8af16b1d6785b86b20b64d5a8))
+
+
+### Bug Fixes
+
+* boolean defaults and fuzzy term parameter name are fixed ([14ecf03](https://github.com/ShabuShabu/laravel-paradedb-search/commits/14ecf039ba9f4d42fa2d13add564bf9697ae2359))
+* ensured ranges are properly formatted ([bf67e16](https://github.com/ShabuShabu/laravel-paradedb-search/commits/bf67e16df2905510751a29c9b3b2a773beecf5f0))
+* setting columns for hybrid searches would throw errors for expressions ([b6dc80a](https://github.com/ShabuShabu/laravel-paradedb-search/commits/b6dc80a82eaf28c710a2048bcf3ee92c40ba2295))
+
+
 ## [0.4.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.4.0) (2024-06-14)
 
 ### Features
 
 * allow for base query to be modified ([58beb1b](https://github.com/ShabuShabu/laravel-paradedb-search/commits/58beb1be4fd64077e775b0db0a00e78fda15de68))
+
 
 ### [0.3.3](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.3) (2024-06-14)
 
@@ -51,8 +68,3 @@ All notable changes to this project will be documented in this file. See [standa
 
 * added missing real type ([bcc08b4](https://github.com/ShabuShabu/laravel-paradedb-search/commits/bcc08b45be6c122dc12d871ba61bf97a44059519))
 * changed to RefreshDatabase trait in testing, closes [#1](https://github.com/ShabuShabu/laravel-paradedb-search/issues/1) ([a2b5333](https://github.com/ShabuShabu/laravel-paradedb-search/commits/a2b5333b5e9b8dcd8c8a343a902fd8929592abd5))
-
-
-# Changelog
-
-All notable changes to `laravel-paradedb-search` will be documented in this file.
