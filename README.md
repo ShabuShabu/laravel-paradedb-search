@@ -200,6 +200,14 @@ Or run PHPStan:
 composer analyse
 ```
 
+### ParadeDB test table
+
+There is also a command that allows you to create and drop the built-in test table
+
+```bash
+php artisan paradedb:test-table create
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
