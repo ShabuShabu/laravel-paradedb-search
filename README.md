@@ -133,16 +133,6 @@ Builder::make()->whereFilter('rating', Filter::equals, 4)->get();
 // results in: rating:4
 ```
 
-#### Apply a basic range filter
-
-```php
-use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
-
-Builder::make()->whereFilter('rating', '>', 4)->get();
-
-// results in: rating:>4
-```
-
 #### Apply a boolean filter
 
 ```php
@@ -151,6 +141,16 @@ use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
 Builder::make()->whereFilter('is_available', '=', false)->get();
 
 // results in: is_available:false
+```
+
+#### Apply a basic range filter
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
+
+Builder::make()->whereFilter('rating', '>', 4)->get();
+
+// results in: rating:>4
 ```
 
 #### Apply an inclusive range filter
