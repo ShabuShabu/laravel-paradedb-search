@@ -59,24 +59,37 @@ class Product extends Model
 
 ParadeDB Search for Laravel comes with a fluent builder for ParadeQL, a simple query language.
 
-The builder has been modeled to be similar to the Eloquent/Query builder provided by Laravel. 
+This builder can be passed as a condition to a search `where` method or used within the various ParadeDB expressions.
 
 ```php
-use App\Models\Product;
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
 
-Product::search()
+Builder::make()
+    ->where('description', ['keyboard', 'toy'])
     ->where(
-        Builder::make()
-            ->where('description', ['keyboard', 'toy'])
-            ->where(
-                fn (Builder $builder) => $builder
-                    ->where('category', 'electronics')
-                    ->orWhere('tag', 'office')
-            )
+        fn (Builder $builder) => $builder
+            ->where('category', 'electronics')
+            ->orWhere('tag', 'office')
     )
-    ->limit(20)
     ->get();
+
+// results in: description:IN [keyboard, toy] AND (category:electronics OR tag:office)
+```
+
+Conditions can be boosted as well:
+
+```php
+Builder::make()->where('description', 'keyboard', boost: 1)->get();
+
+// results in: description:keyboard^1
+```
+
+Or you can apply the slop operator:
+
+```php
+Builder::make()->where('description', 'ergonomic keyboard', slop: 1)->get();
+
+// results in: description:"ergonomic keyboard"~1
 ```
 
 ### ParadeDB functions
