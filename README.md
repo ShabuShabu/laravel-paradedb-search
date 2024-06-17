@@ -94,26 +94,194 @@ Builder::make()->where('description', 'ergonomic keyboard', slop: 1)->get();
 
 ### ParadeDB functions
 
-For more complex operations, it will be necessary to use some of the provided [ParadeDB functions](https://docs.paradedb.com/search/full-text/complex), all of which have corresponding query expressions, like `FuzzyTerm`.
+For more complex operations, it will be necessary to use some of the provided [ParadeDB functions](https://docs.paradedb.com/search/full-text/complex), all of which have corresponding query expressions:
+
+#### Get all the records
+
+```php
+use ShabuShabu\ParadeDB\Query\Expressions\All;
+
+Product::search()->where(new All())->get();
+```
+
+#### Get none of the records
+
+```php
+use ShabuShabu\ParadeDB\Query\Expressions\Blank;
+
+Product::search()->where(new Blank())->get();
+```
+
+#### Boost a query
+
+```php
+use ShabuShabu\ParadeDB\Query\Expressions\All;
+use ShabuShabu\ParadeDB\Query\Expressions\Boost;
+
+Product::search()->where(new Boost(new All(), 3.9))->get();
+```
+
+#### Add a constant score
+
+```php
+use ShabuShabu\ParadeDB\Query\Expressions\All;
+use ShabuShabu\ParadeDB\Query\Expressions\ConstScore;
+
+Product::search()->where(new ConstScore(new All(), 3.9))->get();
+```
+
+#### Perform a disjunction max query
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\DisjunctionMax;
+
+Product::search()->where(
+    new DisjunctionMax(Builder::make()->where('description', 'keyboard'))
+)->get();
+```
+
+#### Search for a fuzzy term
+
+```php
+use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
+
+Product::search()->where(new FuzzyTerm('description', 'keyboard'))->get();
+```
+
+#### Highlight search terms
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Highlight;
+use ShabuShabu\ParadeDB\Query\Expressions\DisjunctionMax;
+
+Product::search()
+    ->select(['*', new Highlight('id', 'name')])
+    ->where(new DisjunctionMax(Builder::make()->where('description', 'keyboard')))
+    ->get();
+```
+
+#### Search for a phrase
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Phrase;
+
+Product::search()
+    ->where(new Phrase('description', ['robot', 'building', 'kits']))
+    ->get();
+```
+
+#### Perform a phrase prefix query
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\PhrasePrefix;
+
+Product::search()
+    ->where(new PhrasePrefix('description', ['robot', 'building', 'kits', 'am']))
+    ->get();
+```
+
+#### Search within a given range
+
+```php
+use ShabuShabu\ParadeDB\Query\Expressions\Range;
+use ShabuShabu\ParadeDB\Query\Expressions\Ranges\Int4;
+use ShabuShabu\ParadeDB\Query\Expressions\Ranges\Bounds;
+
+Product::search()
+    ->stableSort()
+    ->where(new Range('rating', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
+    ->get();
+```
+
+Here are the supported range types:
+
+- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Int4::class;`
+- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Int8::class;`
+- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Numeric::class;`
+- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Date::class;`
+- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Timestamp::class;`
+- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\TimestampTz::class;`
+
+#### Perform a regex query
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Regex;
+
+Product::search()
+    ->where(new Regex('description', '(team|kits|blabla)'))
+    ->get();
+```
+
+#### Search for a term
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Term;
+
+Product::search()
+    ->where(new Term('description', 'building'))
+    ->get();
+```
+
+#### Search for a set of terms
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Term;
+use ShabuShabu\ParadeDB\Query\Expressions\TermSet;
+
+Product::search()
+    ->where(new TermSet([
+        new Term('description', 'building'),
+        new Term('description', 'things'),
+    ]))
+    ->get();
+```
+
+#### Perform a complex boolean query
 
 ```php
 use App\Models\Product;
-use ShabuShabu\ParadeDB\Query\Expressions\Rank;
+use ShabuShabu\ParadeDB\Query\Expressions\Range;
 use ShabuShabu\ParadeDB\Query\Expressions\Boolean;
 use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
+use ShabuShabu\ParadeDB\Query\Expressions\Ranges\TimestampTz;
+
+Product::search()
+    ->where(new Boolean(
+        must: [
+            new Range('created_at', new TimestampTz(null, now())),
+        ],
+        should: [
+            new Boost(new FuzzyTerm('name', 'keyboard'), 2),
+            new FuzzyTerm('description', 'keyboard'),
+        ],
+        mustNot: [
+            new Range('deleted_at', new TimestampTz(null, now())),
+        ],
+    ))
+    ->get();
+```
+
+#### Sort by rank
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Query\Expressions\Term;
+use ShabuShabu\ParadeDB\Query\Expressions\Rank;
 
 Product::search()
     ->select(['*', new Rank('id')])
-    ->where(new Boolean(
-        should: [
-            new FuzzyTerm(field: 'description', value: 'keyboard'),
-            new FuzzyTerm(field: 'category', value: 'electronics'),
-        ]   
-    ))
-    ->limit(20)
-    ->offset(20)
+    ->where(new Term('description', 'building'))
     ->get();
 ```
+
+#### Pagination
 
 It's also possible to paginate the results:
 
