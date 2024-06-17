@@ -61,9 +61,56 @@ ParadeDB Search for Laravel comes with a fluent builder for ParadeQL, a simple q
 
 This builder can be passed as a condition to a search `where` method or used within the various ParadeDB expressions.
 
+#### Basic query
+
 ```php
 use ShabuShabu\ParadeDB\ParadeQL\Builder;
 
+Builder::make()->where('description', 'keyboard')->get();
+
+// results in: description:keyboard
+```
+
+#### Add an IN condition
+
+```php
+Builder::make()
+    ->where('description', ['keyboard', 'toy'])
+    ->get();
+
+// results in: description:IN [keyboard, toy]
+```
+
+#### Add an AND NOT condition
+
+```php
+Builder::make()
+    ->where('category', 'electronics')
+    ->whereNot('description', 'keyboard')
+    ->get();
+
+// results in: category:electronics AND NOT description:keyboard
+```
+
+#### Boost a condition
+
+```php
+Builder::make()->where('description', 'keyboard', boost: 1)->get();
+
+// results in: description:keyboard^1
+```
+
+#### Apply the slop operator
+
+```php
+Builder::make()->where('description', 'ergonomic keyboard', slop: 1)->get();
+
+// results in: description:"ergonomic keyboard"~1
+```
+
+#### More complex example with a sub condition
+
+```php
 Builder::make()
     ->where('description', ['keyboard', 'toy'])
     ->where(
@@ -76,20 +123,50 @@ Builder::make()
 // results in: description:IN [keyboard, toy] AND (category:electronics OR tag:office)
 ```
 
-Conditions can be boosted as well:
+#### Apply a simple filter
 
 ```php
-Builder::make()->where('description', 'keyboard', boost: 1)->get();
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
 
-// results in: description:keyboard^1
+Builder::make()->whereFilter('rating', Filter::equals, 4)->get();
+
+// results in: rating:4
 ```
 
-Or you can apply the slop operator:
+#### Apply a basic range filter
 
 ```php
-Builder::make()->where('description', 'ergonomic keyboard', slop: 1)->get();
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
 
-// results in: description:"ergonomic keyboard"~1
+Builder::make()->whereFilter('rating', '>', 4)->get();
+
+// results in: rating:>4
+```
+
+#### Apply a boolean filter
+
+```php
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
+
+Builder::make()->whereFilter('is_available', '=', false)->get();
+
+// results in: is_available:false
+```
+
+#### Apply an inclusive range filter
+
+```php
+Builder::make()->whereInclusiveRange('rating', [2, 5])->get();
+
+// results in: rating:[2 TO 5]
+```
+
+#### Apply an exclusive range filter
+
+```php
+Builder::make()->whereExclusiveRange('rating', [2, 5])->get();
+
+// results in: rating:{2 TO 5}
 ```
 
 ### ParadeDB functions
@@ -197,14 +274,14 @@ Product::search()
     ->get();
 ```
 
-Here are the supported range types:
+Here are the supported range types (all within the `ShabuShabu\ParadeDB\Query\Expressions\Ranges` namespace), plus their corresponding Postgres type:
 
-- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Int4::class;`
-- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Int8::class;`
-- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Numeric::class;`
-- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Date::class;`
-- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\Timestamp::class;`
-- `ShabuShabu\ParadeDB\Query\Expressions\Ranges\TimestampTz::class;`
+- `Int4::class;` or `int4range`
+- `Int8::class;` or `int8range`
+- `Numeric::class;` or `numrange`
+- `Date::class;` or `daterange`
+- `Timestamp::class;` or `tsrange`
+- `TimestampTz::class;` or `tstzrange`
 
 #### Perform a regex query
 
@@ -283,7 +360,7 @@ Product::search()
 
 #### Pagination
 
-It's also possible to paginate the results:
+It's also possible to paginate the results. Both the `paginate` and `simplePaginate` methods use  the underlying `limit` & `offset` functionality, so will be more performant:
 
 ```php
 use App\Models\Product;
@@ -292,7 +369,7 @@ use ShabuShabu\ParadeDB\ParadeQL\Builder;
 
 Product::search()
     ->where(Builder::make()->where('description', 'keyboard'))
-    ->paginate(20); // or ->simplePaginate(20);
+    ->paginate(20);
 ```
 
 ### Hybrid search
