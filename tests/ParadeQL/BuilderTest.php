@@ -177,7 +177,7 @@ it('compiles a boolean filter', function () {
 
 it('compiles an inclusive range filter', function () {
     $query = Builder::make()
-        ->whereInclusiveRange('rating', [2, 5])
+        ->whereFIlter('rating', Range::includeAll, [2, 5])
         ->get();
 
     expect($query)->toBe('rating:[2 TO 5]');
@@ -185,7 +185,7 @@ it('compiles an inclusive range filter', function () {
 
 it('compiles an exclusive range filter', function () {
     $query = Builder::make()
-        ->whereExclusiveRange('rating', [2, 5])
+        ->whereFilter('rating', Range::excludeAll, [2, 5])
         ->get();
 
     expect($query)->toBe('rating:{2 TO 5}');
@@ -203,7 +203,7 @@ it('compiles an OR filter', function () {
 it('compiles an inclusive OR filter', function () {
     $query = Builder::make()
         ->where('description', 'keyboard')
-        ->orWhereInclusiveRange('rating', [2, 5])
+        ->orWhereFilter('rating', Range::includeAll, [2, 5])
         ->get();
 
     expect($query)->toBe('description:keyboard OR rating:[2 TO 5]');
@@ -212,7 +212,7 @@ it('compiles an inclusive OR filter', function () {
 it('compiles an exclusive OR filter', function () {
     $query = Builder::make()
         ->where('description', 'keyboard')
-        ->orWhereExclusiveRange('rating', [2, 5])
+        ->orWhereFilter('rating', Range::excludeAll, [2, 5])
         ->get();
 
     expect($query)->toBe('description:keyboard OR rating:{2 TO 5}');
@@ -222,7 +222,7 @@ it('panics for an unknown range operator', function () {
     Builder::make()->whereFilter('rating', '()', [2, 4]);
 })->throws(
     InvalidFilter::class,
-    'Operator `()` is not a valid range operator. Valid operators are `[]` and `{}`',
+    'Operator `()` is not a valid range operator. Valid operators are `[}`, `[]`, `{]` and `{}`',
 );
 
 it('panics for an unknown filter operator', function () {
@@ -233,7 +233,7 @@ it('panics for an unknown filter operator', function () {
 );
 
 it('panics for a range filter consisting of more than two values', function () {
-    Builder::make()->whereFilter('rating', Range::incl, [2, 4, 6]);
+    Builder::make()->whereFilter('rating', Range::includeAll, [2, 4, 6]);
 })->throws(
     InvalidFilter::class,
     'A range filter must be an array of exactly two values',

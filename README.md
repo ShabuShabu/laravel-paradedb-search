@@ -156,7 +156,9 @@ Builder::make()->whereFilter('rating', '>', 4)->get();
 #### Apply an inclusive range filter
 
 ```php
-Builder::make()->whereInclusiveRange('rating', [2, 5])->get();
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Range;
+
+Builder::make()->whereFilter('rating', Range::includeAll, [2, 5])->get();
 
 // results in: rating:[2 TO 5]
 ```
@@ -164,7 +166,9 @@ Builder::make()->whereInclusiveRange('rating', [2, 5])->get();
 #### Apply an exclusive range filter
 
 ```php
-Builder::make()->whereExclusiveRange('rating', [2, 5])->get();
+use ShabuShabu\ParadeDB\ParadeQL\Operators\Range;
+
+Builder::make()->whereFilter('rating', Range::excludeAll, [2, 5])->get();
 
 // results in: rating:{2 TO 5}
 ```
