@@ -73,7 +73,7 @@ return new class extends Migration
     
     public function down(): void
     {
-        Bm25::index('products')->drop()
+        Bm25::index('products')->drop();
     }
 };
 ```
