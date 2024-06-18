@@ -39,6 +39,43 @@ return [
 
 ## Usage
 
+### Add a bm25 index
+
+Each model that you want to be searchable needs a corresponding `bm25` index. These can be generated within a migration like so:
+
+```php
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('products', static function (Blueprint $table) {
+            // all your product fields
+        });
+
+        Bm25::index('products')
+            ->addNumericFields(['amount'])
+            ->addBooleanFields(['is_available'])
+            ->addDateFields(['created_at', 'deleted_at'])
+            ->addJsonFields(['options'])
+            ->addTextFields([
+                'name',
+                'currency',
+                'description' => [
+                    'tokenizer' => [
+                        'type' => 'default',
+                    ],
+                ],
+            ])
+            ->create(drop: true);
+    }
+    
+    public function down(): void
+    {
+        Bm25::index('products')->drop()
+    }
+};
+```
+
 ### Preparing your model
 
 Just add the `Searchable` trait to your model to enable search:
