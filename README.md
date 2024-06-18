@@ -44,6 +44,8 @@ return [
 Each model that you want to be searchable needs a corresponding `bm25` index. These can be generated within a migration like so:
 
 ```php
+use ShabuShabu\ParadeDB\Indices\Bm25;
+
 return new class extends Migration
 {
     public function up(): void
