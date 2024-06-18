@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.5.1) (2024-06-18)
+
+
+### Features
+
+* added missing paradeql range operators ([cb7b512](https://github.com/ShabuShabu/laravel-paradedb-search/commits/cb7b5129105c2137234c346ee6be3adec70faa36))
+
+
 ## [0.5.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.5.0) (2024-06-16)
 
 
