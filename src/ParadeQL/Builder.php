@@ -82,26 +82,6 @@ class Builder
         return $this->whereFilter($column, $operator, $value, $boost, 'OR');
     }
 
-    public function whereInclusiveRange(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
-    {
-        return $this->whereFilter($column, Range::incl, $values, $boost, $boolean);
-    }
-
-    public function whereExclusiveRange(string $column, array $values, ?int $boost = null, string $boolean = 'AND'): static
-    {
-        return $this->whereFilter($column, Range::excl, $values, $boost, $boolean);
-    }
-
-    public function orWhereInclusiveRange(string $column, array $values, ?int $boost = null): static
-    {
-        return $this->whereFilter($column, Range::incl, $values, $boost, 'OR');
-    }
-
-    public function orWhereExclusiveRange(string $column, array $values, ?int $boost = null): static
-    {
-        return $this->whereFilter($column, Range::excl, $values, $boost, 'OR');
-    }
-
     public function get(): string
     {
         return collect($this->wheres)
@@ -163,8 +143,8 @@ class Builder
 
         $query = match (true) {
             is_bool($value) => "$column:" . ($value ? 'true' : 'false'),
-            is_array($value) && $operator === Range::incl->value => sprintf('%s:[%d TO %d]', $column, $value[0], $value[1]),
-            is_array($value) && $operator === Range::excl->value => sprintf('%s:{%d TO %d}', $column, $value[0], $value[1]),
+            is_array($value) && $operator === Range::includeAll->value => sprintf('%s:[%d TO %d]', $column, $value[0], $value[1]),
+            is_array($value) && $operator === Range::excludeAll->value => sprintf('%s:{%d TO %d}', $column, $value[0], $value[1]),
             $operator !== '=' => "$column:$operator$value",
             default => "$column:$value",
         };

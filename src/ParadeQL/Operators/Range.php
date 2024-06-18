@@ -8,8 +8,10 @@ enum Range: string
 {
     use CanQuery;
 
-    case incl = '[]';
-    case excl = '{}';
+    case includeStartExcludeEnd = '[}';
+    case includeAll = '[]';
+    case excludeStartIncludeEnd = '{]';
+    case excludeAll = '{}';
 
     public static function isInvalidFilter(mixed $value): bool
     {
