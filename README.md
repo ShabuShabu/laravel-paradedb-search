@@ -423,7 +423,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\Term;
 use ShabuShabu\ParadeDB\Query\Expressions\Rank;
 
 Product::search()
-    ->select(['*', new Rank('id')])
+    ->addSelect(new Rank('id'))
     ->where(new Term('description', 'building'))
     ->get();
 ```
