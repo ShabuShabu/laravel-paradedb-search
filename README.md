@@ -371,8 +371,8 @@ The above query can also be written in a fluid manner:
 ```php
 Product::search()->where(
     TermSet::query()
-        ->term(new Term('description', 'building'))
-        ->term(new Term('description', 'things'))
+        ->add(new Term('description', 'building'))
+        ->add(new Term('description', 'things'))
 )->get();
 ```
 

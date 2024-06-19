@@ -16,7 +16,7 @@ class TermSet implements ParadeExpression
     ) {
     }
 
-    public function term(Term $query, bool $when = true): static
+    public function add(Term $query, bool $when = true): static
     {
         if ($when) {
             $this->terms[] = $query;
