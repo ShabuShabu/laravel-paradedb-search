@@ -43,7 +43,7 @@ class Boolean implements ParadeExpression
         }
 
         if (! is_array($this->$type)) {
-            $this->$type = [];
+            $this->$type = array_filter(Arr::wrap($this->$type));
         }
 
         foreach (Arr::wrap(value($query)) as $condition) {

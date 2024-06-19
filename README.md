@@ -264,6 +264,26 @@ Product::search()->where(
 )->get();
 ```
 
+The `DisjunctionMax` constructor also accepts an array of queries, so using the fluid interface might be more convenient for multiple queries:
+
+```php
+Product::search()->where(
+    DisjunctionMax::query()
+        ->add(Builder::make()->where('description', 'keyboard'))
+        ->add('description:blue')
+)->get();
+```
+
+This also allows you to conditionally add queries:
+
+```php
+Product::search()->where(
+    DisjunctionMax::query()
+        ->add(Builder::make()->where('description', 'keyboard'))
+        ->add('description:blue', when: false)
+)->get();
+```
+
 #### Search for a fuzzy term
 
 ```php

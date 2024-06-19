@@ -19,9 +19,9 @@ it('matches documents containing a specified term in a fliud manner')
     ->expect(
         TermSet::query()
             ->add(new Term('description', 'shoes'))
-            ->add(new Term('rating', new Int8(2, 5)))
+            ->add(new Term('rating', new Int8(2, 5)), when: false)
     )
-    ->toBeExpression("paradedb.term_set(terms => ARRAY[paradedb.term(field => 'description', value => 'shoes'), paradedb.term(field => 'rating', value => '(2,5]'::int8range)])");
+    ->toBeExpression("paradedb.term_set(terms => ARRAY[paradedb.term(field => 'description', value => 'shoes')])");
 
 it('provides a default value')
     ->expect(new TermSet([]))
