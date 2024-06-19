@@ -15,6 +15,9 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 ## Installation
 
+> [!CAUTION]
+> Please note that this is a new package and, even though it is well tested, it should be considered pre-release software
+
 Before installing the package you should install and enable the [pg_search](https://github.com/paradedb/paradedb/tree/dev/pg_search) extension.
 
 You can then install the package via composer:
@@ -400,7 +403,7 @@ Product::search()->where(
 )->get();
 ```
 
-The two queries above are identical. The fluent methods allow you to conditionally add queries, tho:
+The two queries above are identical. The fluent methods allow you to conditionally add queries, though:
 
 ```php
 $when = false;
