@@ -22,8 +22,9 @@ it('returns documents that match one or more of the specified subqueries in a fl
             ->add(Builder::make()->where('description', 'shoes'))
             ->add(new Regex('category', '(hardcover|wireless)'))
             ->add('color:IN [blue, green]', when: false)
+            ->tieBreaker(1.3)
     )
-    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes'), paradedb.regex(field => 'category', pattern => '(hardcover|wireless)')], tie_breaker => NULL::real)");
+    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes'), paradedb.regex(field => 'category', pattern => '(hardcover|wireless)')], tie_breaker => 1.3)");
 
 it('applies a tie breaker')
     ->expect(new DisjunctionMax([

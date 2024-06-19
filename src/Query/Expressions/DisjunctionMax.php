@@ -15,7 +15,7 @@ class DisjunctionMax implements ParadeExpression
 
     final public function __construct(
         private array | ParadeExpression | Builder | string $disjuncts,
-        private readonly null | int | float $tieBreaker = null,
+        private null | int | float $tieBreaker = null,
     ) {
     }
 
@@ -28,6 +28,13 @@ class DisjunctionMax implements ParadeExpression
         if ($when) {
             $this->disjuncts[] = $query;
         }
+
+        return $this;
+    }
+
+    public function tieBreaker(int | float $tieBreaker): static
+    {
+        $this->tieBreaker = $tieBreaker;
 
         return $this;
     }

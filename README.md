@@ -271,6 +271,7 @@ Product::search()->where(
     DisjunctionMax::query()
         ->add(Builder::make()->where('description', 'keyboard'))
         ->add('description:blue')
+        ->tieBreaker(1.2)
 )->get();
 ```
 
