@@ -6,6 +6,7 @@ namespace ShabuShabu\ParadeDB\Query;
 
 use Closure;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query;
@@ -53,6 +54,15 @@ class Search
     public function select(array $columns): static
     {
         $this->columns = $columns;
+
+        return $this;
+    }
+
+    public function addSelect(string | Expression ...$columns): static
+    {
+        foreach ($columns as $column) {
+            $this->columns[] = $column;
+        }
 
         return $this;
     }

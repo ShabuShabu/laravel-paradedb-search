@@ -7,13 +7,22 @@ namespace ShabuShabu\ParadeDB\Query\Expressions;
 use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Query\Expressions\Concerns\Stringable;
 
-readonly class TermSet implements ParadeExpression
+class TermSet implements ParadeExpression
 {
     use Stringable;
 
-    public function __construct(
+    final public function __construct(
         private array $terms,
     ) {
+    }
+
+    public function add(Term $query, bool $when = true): static
+    {
+        if ($when) {
+            $this->terms[] = $query;
+        }
+
+        return $this;
     }
 
     public function getValue(Grammar $grammar): string
@@ -27,5 +36,10 @@ readonly class TermSet implements ParadeExpression
             );
 
         return "paradedb.term_set(terms => $terms)";
+    }
+
+    public static function query(): static
+    {
+        return new static([]);
     }
 }

@@ -53,7 +53,7 @@
         "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage --min=90",
+        "test-coverage": "vendor/bin/pest --coverage --min=95",
         "type-coverage": "vendor/bin/pest --type-coverage --min=95",
         "format": "vendor/bin/pint",
         "testdb": "./bin/testdb"

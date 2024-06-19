@@ -15,6 +15,9 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 ## Installation
 
+> [!CAUTION]
+> Please note that this is a new package and, even though it is well tested, it should be considered pre-release software
+
 Before installing the package you should install and enable the [pg_search](https://github.com/paradedb/paradedb/tree/dev/pg_search) extension.
 
 You can then install the package via composer:
@@ -38,6 +41,45 @@ return [
 ```
 
 ## Usage
+
+### Add a bm25 index
+
+Each model that you want to be searchable needs a corresponding `bm25` index. These can be generated within a migration like so:
+
+```php
+use ShabuShabu\ParadeDB\Indices\Bm25;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('products', static function (Blueprint $table) {
+            // all your product fields
+        });
+
+        Bm25::index('products')
+            ->addNumericFields(['amount'])
+            ->addBooleanFields(['is_available'])
+            ->addDateFields(['created_at', 'deleted_at'])
+            ->addJsonFields(['options'])
+            ->addTextFields([
+                'name',
+                'currency',
+                'description' => [
+                    'tokenizer' => [
+                        'type' => 'default',
+                    ],
+                ],
+            ])
+            ->create(drop: true);
+    }
+    
+    public function down(): void
+    {
+        Bm25::index('products')->drop();
+    }
+};
+```
 
 ### Preparing your model
 
@@ -324,6 +366,26 @@ Product::search()
     ->get();
 ```
 
+The above query can also be written in a fluid manner:
+
+```php
+Product::search()->where(
+    TermSet::query()
+        ->add(new Term('description', 'building'))
+        ->add(new Term('description', 'things'))
+)->get();
+```
+
+The `term` method allows you to conditionally add terms:
+
+```php
+$when = false;
+
+Product::search()->where(
+    TermSet::query()->add(new Term('description', 'things'), $when)
+)->get();
+```
+
 #### Perform a complex boolean query
 
 ```php
@@ -349,6 +411,30 @@ Product::search()
     ->get();
 ```
 
+Boolean queries can also be constructed in a fluid manner:
+
+```php
+Product::search()->where(
+    Boolean::query()
+        ->must(new Range('created_at', new TimestampTz(null, now())))
+        ->should(new Boost(new FuzzyTerm('name', 'keyboard'), 2))
+        ->should(new FuzzyTerm('description', 'keyboard'))
+        ->mustNot(new Range('deleted_at', new TimestampTz(null, now())))
+)->get();
+```
+
+The two queries above are identical. The fluent methods allow you to conditionally add queries, though:
+
+```php
+$when = false;
+
+Product::search()->where(
+    Boolean::query()
+        ->must(new Range('created_at', new TimestampTz(null, now())))
+        ->should(new Boost(new FuzzyTerm('name', 'keyboard'), 2), $when)
+)->get();
+```
+
 #### Sort by rank
 
 ```php
@@ -357,7 +443,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\Term;
 use ShabuShabu\ParadeDB\Query\Expressions\Rank;
 
 Product::search()
-    ->select(['*', new Rank('id')])
+    ->addSelect(new Rank('id'))
     ->where(new Term('description', 'building'))
     ->get();
 ```
@@ -376,6 +462,24 @@ Product::search()
     ->paginate(20);
 ```
 
+#### Search parameters
+
+The ParadeDB `search` function allows you to set a variety of parameters to fine-tune your search. All of these can be set here as well:
+
+```php
+use App\Models\Product;
+use App\Models\Product;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+
+Product::search()
+    ->where(Builder::make()->where('description', 'keyboard'))
+    ->alias('alias')
+    ->stableSort()
+    ->limit(12)
+    ->offset(24)
+    ->get();
+```
+
 ### Hybrid search
 
 Whenever a similarity query is provided, the package will automatically perform a [hybrid search](https://docs.paradedb.com/search/hybrid/basic). Please note that a ParadeDB query is still required!
@@ -389,6 +493,21 @@ use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
 Product::search()
     ->where(Builder::make()->where('description', 'keyboard'))
     ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+    ->get();
+```
+
+#### Search parameters
+
+Similarly to the full-text search, there are also parameters you can set for a hybrid search:
+
+```php
+Product::search()
+    ->where(Builder::make()->where('description', 'keyboard'))
+    ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+    ->bm25Limit(100)
+    ->bm25Weight(0.5)
+    ->similarityLimit(100)
+    ->similarityWeight(0.5)
     ->get();
 ```
 
@@ -473,10 +592,6 @@ php artisan paradedb:test-table create
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Todo
-
-- [ ] Publish to Packagist
 
 ## Contributing
 

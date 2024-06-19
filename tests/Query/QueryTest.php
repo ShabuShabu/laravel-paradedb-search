@@ -113,7 +113,7 @@ it('highlights search results', function () {
     Team::factory()->create(['name' => 'Test team']);
 
     $results = Team::search()
-        ->select(['*', new Highlight('id', 'name')])
+        ->addSelect(new Highlight('id', 'name'))
         ->where(new DisjunctionMax(Builder::make()->where('name', 'team')))
         ->get();
 

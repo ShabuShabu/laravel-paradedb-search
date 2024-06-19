@@ -29,3 +29,16 @@ it('filters documents based on logical relationships', function (string $type) {
     'should' => ['should'],
     'must_not' => ['must_not'],
 ]);
+
+it('builds a boolean query in a fluid manner', function (bool $when, string $expression) {
+    $boolean = Boolean::query()
+        ->must(Builder::make()->where('description', 'shoes'))
+        ->should(new PhrasePrefix('description', ['book']))
+        ->should([Builder::make()->where('description', 'blue')], $when)
+        ->mustNot('category:electronics');
+
+    expect($boolean)->toBeExpression($expression);
+})->with([
+    'true' => [true, "paradedb.boolean(must => ARRAY[paradedb.parse(query_string => 'description:shoes')], should => ARRAY[paradedb.phrase_prefix(field => 'description', phrases => ARRAY['book'], max_expansion => NULL::integer), paradedb.parse(query_string => 'description:blue')], must_not => ARRAY[paradedb.parse(query_string => 'category:electronics')])"],
+    'false' => [false, "paradedb.boolean(must => ARRAY[paradedb.parse(query_string => 'description:shoes')], should => ARRAY[paradedb.phrase_prefix(field => 'description', phrases => ARRAY['book'], max_expansion => NULL::integer)], must_not => ARRAY[paradedb.parse(query_string => 'category:electronics')])"],
+]);
