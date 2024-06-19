@@ -7,6 +7,7 @@ namespace ShabuShabu\ParadeDB\Query\Expressions;
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Grammar;
 use InvalidArgumentException;
+use JsonException;
 use ShabuShabu\ParadeDB\Query\Expressions\Concerns\Stringable;
 
 readonly class Similarity implements Expression
@@ -20,6 +21,9 @@ readonly class Similarity implements Expression
     ) {
     }
 
+    /**
+     * @throws JsonException
+     */
     public function getValue(Grammar $grammar): string
     {
         $column = $this->column instanceof Expression
@@ -31,6 +35,9 @@ readonly class Similarity implements Expression
         return "$column {$this->operator->value} $values";
     }
 
+    /**
+     * @throws JsonException
+     */
     protected function formatValues(Grammar $grammar, array | string $values): string
     {
         if (is_string($values)) {

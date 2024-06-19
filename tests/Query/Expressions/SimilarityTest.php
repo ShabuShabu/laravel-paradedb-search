@@ -19,3 +19,10 @@ it('parses a similarity expression query')
 it('parses a similarity query with string values')
     ->expect(new Similarity('embedding', Distance::l2, '[1,2,3]'))
     ->toBeExpression("\"embedding\" <-> '[1,2,3]'");
+
+it('panics for an associative array', function () {
+    (new Similarity('embedding', Distance::l2, ['1st' => 1, '2nd' => 2, '3rd' => 3]))->getValue(grammar());
+})->throws(
+    InvalidArgumentException::class,
+    'Expected similarity values to be a list'
+);

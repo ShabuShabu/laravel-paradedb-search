@@ -388,6 +388,30 @@ Product::search()
     ->get();
 ```
 
+Boolean queries can also be constructed in a fluid manner:
+
+```php
+Product::search()->where(
+    Boolean::query()
+        ->must(new Range('created_at', new TimestampTz(null, now()))
+        ->should(new Boost(new FuzzyTerm('name', 'keyboard'), 2))
+        ->should(new FuzzyTerm('description', 'keyboard'))
+        ->mustNot(new Range('deleted_at', new TimestampTz(null, now())))
+)->get();
+```
+
+The two queries above are identical. The fluent methods allow you to conditionally add queries, tho:
+
+```php
+$when = false;
+
+Product::search()->where(
+    Boolean::query()
+        ->must(new Range('created_at', new TimestampTz(null, now()))
+        ->should(new Boost(new FuzzyTerm('name', 'keyboard'), 2), $when)
+)->get();
+```
+
 #### Sort by rank
 
 ```php
