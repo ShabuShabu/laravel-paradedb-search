@@ -393,7 +393,7 @@ Boolean queries can also be constructed in a fluid manner:
 ```php
 Product::search()->where(
     Boolean::query()
-        ->must(new Range('created_at', new TimestampTz(null, now()))
+        ->must(new Range('created_at', new TimestampTz(null, now())))
         ->should(new Boost(new FuzzyTerm('name', 'keyboard'), 2))
         ->should(new FuzzyTerm('description', 'keyboard'))
         ->mustNot(new Range('deleted_at', new TimestampTz(null, now())))
@@ -407,7 +407,7 @@ $when = false;
 
 Product::search()->where(
     Boolean::query()
-        ->must(new Range('created_at', new TimestampTz(null, now()))
+        ->must(new Range('created_at', new TimestampTz(null, now())))
         ->should(new Boost(new FuzzyTerm('name', 'keyboard'), 2), $when)
 )->get();
 ```
