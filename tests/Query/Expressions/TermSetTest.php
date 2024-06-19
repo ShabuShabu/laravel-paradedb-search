@@ -15,6 +15,14 @@ it('matches documents containing a specified term')
     ]))
     ->toBeExpression("paradedb.term_set(terms => ARRAY[paradedb.term(field => 'description', value => 'shoes'), paradedb.term(field => 'rating', value => '(2,5]'::int8range)])");
 
+it('matches documents containing a specified term in a fliud manner')
+    ->expect(
+        TermSet::query()
+            ->term(new Term('description', 'shoes'))
+            ->term(new Term('rating', new Int8(2, 5)))
+    )
+    ->toBeExpression("paradedb.term_set(terms => ARRAY[paradedb.term(field => 'description', value => 'shoes'), paradedb.term(field => 'rating', value => '(2,5]'::int8range)])");
+
 it('provides a default value')
     ->expect(new TermSet([]))
     ->toBeExpression('paradedb.term_set(terms => ARRAY[]::paradedb.searchqueryinput[])');

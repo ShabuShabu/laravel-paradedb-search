@@ -366,6 +366,26 @@ Product::search()
     ->get();
 ```
 
+The above query can also be written in a fluid manner:
+
+```php
+Product::search()->where(
+    TermSet::query()
+        ->term(new Term('description', 'building'))
+        ->term(new Term('description', 'things'))
+)->get();
+```
+
+The `term` method allows you to conditionally add terms:
+
+```php
+$when = false;
+
+Product::search()->where(
+    TermSet::query()->term(new Term('description', 'things'), $when)
+)->get();
+```
+
 #### Perform a complex boolean query
 
 ```php
@@ -442,6 +462,24 @@ Product::search()
     ->paginate(20);
 ```
 
+#### Search parameters
+
+The ParadeDB `search` function allows you to set a variety of parameters to fine-tune your search. All of these can be set here as well:
+
+```php
+use App\Models\Product;
+use App\Models\Product;
+use ShabuShabu\ParadeDB\ParadeQL\Builder;
+
+Product::search()
+    ->where(Builder::make()->where('description', 'keyboard'))
+    ->alias('alias')
+    ->stableSort()
+    ->limit(12)
+    ->offset(24)
+    ->get();
+```
+
 ### Hybrid search
 
 Whenever a similarity query is provided, the package will automatically perform a [hybrid search](https://docs.paradedb.com/search/hybrid/basic). Please note that a ParadeDB query is still required!
@@ -455,6 +493,21 @@ use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
 Product::search()
     ->where(Builder::make()->where('description', 'keyboard'))
     ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+    ->get();
+```
+
+#### Search parameters
+
+Similarly to the full-text search, there are also parameters you can set for a hybrid search:
+
+```php
+Product::search()
+    ->where(Builder::make()->where('description', 'keyboard'))
+    ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
+    ->bm25Limit(100)
+    ->bm25Weight(0.5)
+    ->similarityLimit(100)
+    ->similarityWeight(0.5)
     ->get();
 ```
 
