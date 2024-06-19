@@ -382,7 +382,7 @@ The `term` method allows you to conditionally add terms:
 $when = false;
 
 Product::search()->where(
-    TermSet::query()->term(new Term('description', 'things'), $when)
+    TermSet::query()->add(new Term('description', 'things'), $when)
 )->get();
 ```
 
