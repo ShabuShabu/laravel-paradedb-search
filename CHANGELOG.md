@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.6.0) (2024-06-19)
+
+
+### Features
+
+* added new Search::addSelect method ([e9bba0e](https://github.com/ShabuShabu/laravel-paradedb-search/commits/e9bba0edc86862625838400351cec541d9bbe38d))
+* added TermSet::add method for fluid query creation ([4e7a716](https://github.com/ShabuShabu/laravel-paradedb-search/commits/4e7a7162cfbe2a6032fda999f803ddf2e1c7ba5c))
+* boolean queries can now be constructed in a fluid manner ([c52ae96](https://github.com/ShabuShabu/laravel-paradedb-search/commits/c52ae96e4419ae7bea3e1c2127253943acd735ac))
+
+
 ### [0.5.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.5.1) (2024-06-18)
 
 
