@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [0.6.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.6.0) (2024-06-19)
+## [0.6.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.5.1...v0.6.0) (2024-06-19)
 
 
 ### Features
@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file. See [standa
 * boolean queries can now be constructed in a fluid manner ([c52ae96](https://github.com/ShabuShabu/laravel-paradedb-search/commits/c52ae96e4419ae7bea3e1c2127253943acd735ac))
 
 
-### [0.5.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.5.1) (2024-06-18)
+### [0.5.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.5.0...v0.5.1) (2024-06-18)
 
 
 ### Features
@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file. See [standa
 * added missing paradeql range operators ([cb7b512](https://github.com/ShabuShabu/laravel-paradedb-search/commits/cb7b5129105c2137234c346ee6be3adec70faa36))
 
 
-## [0.5.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.5.0) (2024-06-16)
+## [0.5.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.4.0...v0.5.0) (2024-06-16)
 
 
 ### Features
@@ -36,28 +36,28 @@ All notable changes to this project will be documented in this file. See [standa
 * setting columns for hybrid searches would throw errors for expressions ([b6dc80a](https://github.com/ShabuShabu/laravel-paradedb-search/commits/b6dc80a82eaf28c710a2048bcf3ee92c40ba2295))
 
 
-## [0.4.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.4.0) (2024-06-14)
+## [0.4.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.3.3...v0.4.0) (2024-06-14)
 
 ### Features
 
 * allow for base query to be modified ([58beb1b](https://github.com/ShabuShabu/laravel-paradedb-search/commits/58beb1be4fd64077e775b0db0a00e78fda15de68))
 
 
-### [0.3.3](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.3) (2024-06-14)
+### [0.3.3](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.3.2...v0.3.3) (2024-06-14)
 
 ### Bug Fixes
 
 * switched to Model::newModelQuery() ([59e9b4a](https://github.com/ShabuShabu/laravel-paradedb-search/commits/59e9b4a40165b57d7dabe975a1ee77698c40021e))
 
 
-### [0.3.2](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.2) (2024-06-14)
+### [0.3.2](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.3.1...v0.3.2) (2024-06-14)
 
 ### Bug Fixes
 
 * whereFilter value can be a string now ([a1cc657](https://github.com/ShabuShabu/laravel-paradedb-search/commits/a1cc6571660d0b5a73d008b2aa1c37b58059c19b))
 
 
-### [0.3.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.3.1) (2024-06-14)
+### [0.3.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.3.0...v0.3.1) (2024-06-14)
 
 ### Features
 
