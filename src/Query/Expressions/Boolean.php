@@ -18,8 +18,7 @@ class Boolean implements ParadeExpression
         private null | string | array | ParadeExpression | Builder $must = null,
         private null | string | array | ParadeExpression | Builder $should = null,
         private null | string | array | ParadeExpression | Builder $mustNot = null,
-    ) {
-    }
+    ) {}
 
     public function must(Closure | string | array | ParadeExpression | Builder $query, bool $when = true): static
     {
@@ -73,6 +72,6 @@ class Boolean implements ParadeExpression
 
     public static function query(): static
     {
-        return new static();
+        return new static;
     }
 }

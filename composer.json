@@ -47,7 +47,10 @@
             "ShabuShabu\\ParadeDB\\Tests\\": "tests/",
             "ShabuShabu\\ParadeDB\\Tests\\App\\": "tests/app",
             "ShabuShabu\\ParadeDB\\Tests\\Database\\Factories\\": "tests/app/database/factories"
-        }
+        },
+        "files": [
+            "tests/app/helpers.php"
+        ]
     },
     "scripts": {
         "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",

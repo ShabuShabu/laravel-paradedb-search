@@ -17,8 +17,7 @@ readonly class FuzzyTerm implements ParadeExpression
         private null | int | float $distance = null,
         private ?bool $transpose = null,
         private ?bool $prefix = null,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

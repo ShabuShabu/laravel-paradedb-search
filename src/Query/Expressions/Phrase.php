@@ -15,8 +15,7 @@ readonly class Phrase implements ParadeExpression
         private string $field,
         private array $phrases,
         private ?int $slop = null,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

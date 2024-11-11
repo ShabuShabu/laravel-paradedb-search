@@ -27,7 +27,7 @@ use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 it('gets all results', function () {
     Team::factory()->count(2)->create();
 
-    $results = Team::search()->where(new All())->get();
+    $results = Team::search()->where(new All)->get();
 
     expect($results)
         ->toBeInstanceOf(Collection::class)
@@ -37,7 +37,7 @@ it('gets all results', function () {
 it('gets no results', function () {
     Team::factory()->count(2)->create();
 
-    $results = Team::search()->where(new Blank())->get();
+    $results = Team::search()->where(new Blank)->get();
 
     expect($results)
         ->toBeInstanceOf(Collection::class)
@@ -86,7 +86,7 @@ it('adds a constant score', function () {
     Team::factory()->count(2)->create();
 
     $results = Team::search()
-        ->where(new ConstScore(new All(), 3.9))
+        ->where(new ConstScore(new All, 3.9))
         ->get();
 
     expect($results)

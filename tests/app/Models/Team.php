@@ -25,7 +25,7 @@ class Team extends Model
 
     protected static function newFactory(): TeamFactory
     {
-        return new TeamFactory();
+        return new TeamFactory;
     }
 
     public function user(): BelongsTo

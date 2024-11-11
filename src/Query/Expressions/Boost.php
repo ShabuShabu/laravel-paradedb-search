@@ -15,8 +15,7 @@ readonly class Boost implements ParadeExpression
     public function __construct(
         private ParadeExpression | Builder | string $query,
         private int | float $boost,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

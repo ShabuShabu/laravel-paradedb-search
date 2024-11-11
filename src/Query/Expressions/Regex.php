@@ -14,8 +14,7 @@ readonly class Regex implements ParadeExpression
     public function __construct(
         private string $field,
         private string $pattern,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

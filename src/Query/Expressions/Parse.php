@@ -14,8 +14,7 @@ readonly class Parse implements ParadeExpression
 
     public function __construct(
         private string | Builder $query,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

@@ -15,8 +15,7 @@ readonly class Help implements Expression
     public function __construct(
         private string $subject,
         private string $body,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

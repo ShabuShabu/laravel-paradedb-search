@@ -9,7 +9,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\All;
 use ShabuShabu\ParadeDB\Query\Expressions\ConstScore;
 
 it('applies a constant score to an expression query')
-    ->expect(new ConstScore(new All(), 2))
+    ->expect(new ConstScore(new All, 2))
     ->toBeExpression('paradedb.const_score(score => 2, query => paradedb.all())');
 
 it('applies a constant score to a string query')

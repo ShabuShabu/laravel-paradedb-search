@@ -15,8 +15,7 @@ readonly class PhrasePrefix implements ParadeExpression
         private string $field,
         private array $phrases,
         private ?int $expansion = null,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

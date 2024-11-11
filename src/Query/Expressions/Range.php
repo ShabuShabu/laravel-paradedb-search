@@ -15,8 +15,7 @@ readonly class Range implements ParadeExpression
     public function __construct(
         private string $field,
         private RangeExpression $range,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

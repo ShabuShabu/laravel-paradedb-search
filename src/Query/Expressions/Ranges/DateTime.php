@@ -16,8 +16,7 @@ abstract readonly class DateTime implements RangeExpression
         private null | string | CarbonInterface $lower,
         private null | string | CarbonInterface $upper,
         private Bounds $bounds = Bounds::excludeStartIncludeEnd
-    ) {
-    }
+    ) {}
 
     abstract protected function format(): string;
 

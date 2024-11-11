@@ -15,8 +15,7 @@ readonly class ConstScore implements ParadeExpression
     public function __construct(
         private ParadeExpression | Builder | string $query,
         private int | float $score,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

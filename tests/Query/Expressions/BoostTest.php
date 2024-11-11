@@ -9,7 +9,7 @@ use ShabuShabu\ParadeDB\Query\Expressions\All;
 use ShabuShabu\ParadeDB\Query\Expressions\Boost;
 
 it('boosts an expression query')
-    ->expect(new Boost(new All(), 2))
+    ->expect(new Boost(new All, 2))
     ->toBeExpression('paradedb.boost(boost => 2, query => paradedb.all())');
 
 it('boosts a string query')

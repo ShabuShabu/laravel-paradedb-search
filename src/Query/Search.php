@@ -48,8 +48,7 @@ class Search
     public function __construct(
         protected Eloquent\Model $model,
         protected ?string $indexName = null,
-    ) {
-    }
+    ) {}
 
     public function select(array $columns): static
     {

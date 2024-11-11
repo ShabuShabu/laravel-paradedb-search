@@ -18,8 +18,7 @@ readonly class Similarity implements Expression
         private string | Expression $column,
         private Distance $operator,
         private array | string $values,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws JsonException

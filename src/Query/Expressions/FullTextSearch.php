@@ -19,8 +19,7 @@ readonly class FullTextSearch implements ParadeExpression
         private ?int $offset = null,
         private ?string $alias = null,
         private ?bool $stableSort = null,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

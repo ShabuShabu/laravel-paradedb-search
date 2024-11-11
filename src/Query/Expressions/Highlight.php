@@ -18,8 +18,7 @@ readonly class Highlight implements ParadeExpression
         private ?string $postfix = null,
         private ?int $maxNumChars = null,
         private ?string $alias = null,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

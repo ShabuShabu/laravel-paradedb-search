@@ -6,6 +6,14 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Indices\Bm25;
 
+beforeEach(function () {
+    Bm25::index('teams')->drop();
+});
+
+afterEach(function () {
+    create_teams_index();
+});
+
 it('creates and deletes a bm25 index', function () {
     config(['paradedb-search.index_suffix' => '_index']);
 
@@ -14,6 +22,7 @@ it('creates and deletes a bm25 index', function () {
         ->addBooleanFields(['is_vip'])
         ->addDateFields(['created_at'])
         ->addJsonFields(['options'])
+        ->addRangeFields(['size'])
         ->addTextFields([
             'name',
             'description' => [
@@ -24,12 +33,12 @@ it('creates and deletes a bm25 index', function () {
         ])
         ->create(drop: true);
 
-    expect('teams_index')->toBeSchema()
+    expect('teams_index')->toBeIndex(table: 'teams')
         ->and($result)->toBeTrue();
 
     $result = Bm25::index('teams')->drop();
 
-    expect('teams_index')->not->toBeSchema()
+    expect('teams_index')->not->toBeIndex(table: 'teams')
         ->and($result)->toBeTrue();
 });
 
@@ -40,6 +49,7 @@ it('creates and deletes a bm25 index with a custom name', function () {
         ->addBooleanFields(['is_vip'])
         ->addDateFields(['created_at'])
         ->addJsonFields(['options'])
+        ->addRangeFields(['size'])
         ->addTextFields([
             'name',
             'description' => [
@@ -50,14 +60,14 @@ it('creates and deletes a bm25 index with a custom name', function () {
         ])
         ->create(drop: true);
 
-    expect('teams_test_idx')->toBeSchema()
+    expect('teams_test_idx')->toBeIndex(table: 'teams')
         ->and($result)->toBeTrue();
 
     $result = Bm25::index('teams')
         ->name('teams_test_idx')
         ->drop();
 
-    expect('teams_test_idx')->not->toBeSchema()
+    expect('teams_test_idx')->not->toBeIndex(table: 'teams')
         ->and($result)->toBeTrue();
 });
 

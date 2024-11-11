@@ -15,8 +15,7 @@ readonly class Term implements ParadeExpression
     public function __construct(
         private string $field,
         private string | Expression $value,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

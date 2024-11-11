@@ -15,8 +15,7 @@ readonly class Rank implements ParadeExpression
     public function __construct(
         private string | Expression $key = 'id',
         private ?string $alias = null,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

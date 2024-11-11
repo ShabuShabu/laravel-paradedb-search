@@ -20,8 +20,7 @@ readonly class HybridSearch implements ParadeExpression
         private float | int $bm25Weight = 0.5,
         private int $similarityLimit = 100,
         private float | int $similarityWeight = 0.5,
-    ) {
-    }
+    ) {}
 
     public function getValue(Grammar $grammar): string
     {

@@ -13,8 +13,7 @@ class TermSet implements ParadeExpression
 
     final public function __construct(
         private array $terms,
-    ) {
-    }
+    ) {}
 
     public function add(Term $query, bool $when = true): static
     {

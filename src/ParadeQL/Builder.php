@@ -23,7 +23,7 @@ class Builder
     public static function make(): static
     {
         /** @phpstan-ignore-next-line */
-        return new static();
+        return new static;
     }
 
     public function where(Closure | string $column, null | int | string | array $value = null, ?int $boost = null, ?int $slop = null, string $boolean = 'AND'): static
