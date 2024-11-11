@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Indices\Bm25;
 
-function create_teams_index(bool $drop = true): void
+function create_teams_index(bool $drop = false): void
 {
     Bm25::index('teams')
         ->addNumericFields(['max_members'])

@@ -30,6 +30,8 @@ class Bm25
 
     protected ?string $indexName = null;
 
+    protected string $predicates = '';
+
     final protected function __construct(
         protected string $table,
         protected string $schema,
@@ -39,6 +41,13 @@ class Bm25
     public static function index(string $table, string $schema = 'public', string $id = 'id'): static
     {
         return new static($table, $schema, $id);
+    }
+
+    public function partialBy(string $predicates): static
+    {
+        $this->predicates = $predicates;
+
+        return $this;
     }
 
     protected function addFields(string $name, array $config): static
@@ -100,7 +109,8 @@ class Bm25
                 boolean_fields => :boolean,
                 datetime_fields => :date,
                 json_fields => :json,
-                range_fields => :range
+                range_fields => :range,
+                predicates => :predicates
             );
             QUERY,
             [
@@ -114,6 +124,7 @@ class Bm25
                 'date' => $fields->get('date'),
                 'json' => $fields->get('json'),
                 'range' => $fields->get('range'),
+                'predicates' => $this->predicates,
             ]
         );
     }

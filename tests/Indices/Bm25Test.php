@@ -14,6 +14,33 @@ afterEach(function () {
     create_teams_index();
 });
 
+it('creates and drops a partial bm25 index', function () {
+    $result = Bm25::index('teams')
+        ->partialBy('max_members > 2')
+        ->addNumericFields(['max_members'])
+        ->addBooleanFields(['is_vip'])
+        ->addDateFields(['created_at'])
+        ->addJsonFields(['options'])
+        ->addRangeFields(['size'])
+        ->addTextFields([
+            'name',
+            'description' => [
+                'tokenizer' => [
+                    'type' => 'default',
+                ],
+            ],
+        ])
+        ->create(drop: true);
+
+    expect('teams_idx')->toBeIndex(table: 'teams')
+        ->and($result)->toBeTrue();
+
+    $result = Bm25::index('teams')->drop();
+
+    expect('teams_idx')->not->toBeIndex(table: 'teams')
+        ->and($result)->toBeTrue();
+});
+
 it('creates and deletes a bm25 index', function () {
     config(['paradedb-search.index_suffix' => '_index']);
 
