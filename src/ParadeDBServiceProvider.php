@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB;
 
+use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use ShabuShabu\ParadeDB\Commands\Help;
 use ShabuShabu\ParadeDB\Commands\TestTable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -26,5 +27,10 @@ class ParadeDBServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->askToStarRepoOnGitHub('ShabuShabu/laravel-paradedb-search');
             });
+    }
+
+    public function bootingPackage(): void
+    {
+        PostgresGrammar::customOperators(['@@@']);
     }
 }

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('is_vip')->default(false);
             $table->integer('max_members')->nullable();
             $table->jsonb('options')->nullable();
+            $table->integerRange('size');
             $table->vector('embedding', 3)->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -34,6 +35,7 @@ return new class extends Migration
             ->addBooleanFields(['is_vip'])
             ->addDateFields(['created_at', 'deleted_at'])
             ->addJsonFields(['options'])
+            ->addRangeFields(['size'])
             ->addTextFields([
                 'name',
                 'description' => [
