@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\Regex;
+use ShabuShabu\ParadeDB\Expressions\Regex;
 
 it('finds documents based on a regex expression')
     ->expect(new Regex('description', '(hardcover|plush|leather|running|wireless)'))

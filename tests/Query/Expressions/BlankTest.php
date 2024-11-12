@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\Blank;
+use ShabuShabu\ParadeDB\Expressions\Blank;
 
 it('matches no documents')
     ->expect(new Blank)

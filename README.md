@@ -106,9 +106,9 @@ This builder can be passed as a condition to a search `where` method or used wit
 #### Basic query
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
-Builder::make()->where('description', 'keyboard')->get();
+Query::string()->where('description', 'keyboard')->get();
 
 // results in: description:keyboard
 ```
@@ -168,7 +168,7 @@ Builder::make()
 #### Apply a simple filter
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Filter;
 
 Builder::make()->whereFilter('rating', Filter::equals, 4)->get();
 
@@ -178,7 +178,7 @@ Builder::make()->whereFilter('rating', Filter::equals, 4)->get();
 #### Apply a boolean filter
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Filter;
 
 Builder::make()->whereFilter('is_available', '=', false)->get();
 
@@ -188,7 +188,7 @@ Builder::make()->whereFilter('is_available', '=', false)->get();
 #### Apply a basic range filter
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Operators\Filter;
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Filter;
 
 Builder::make()->whereFilter('rating', '>', 4)->get();
 
@@ -198,7 +198,7 @@ Builder::make()->whereFilter('rating', '>', 4)->get();
 #### Apply an inclusive range filter
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Operators\Range;
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Range;
 
 Builder::make()->whereFilter('rating', Range::includeAll, [2, 5])->get();
 
@@ -208,7 +208,7 @@ Builder::make()->whereFilter('rating', Range::includeAll, [2, 5])->get();
 #### Apply an exclusive range filter
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Operators\Range;
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Range;
 
 Builder::make()->whereFilter('rating', Range::excludeAll, [2, 5])->get();
 
@@ -222,7 +222,7 @@ For more complex operations, it will be necessary to use some of the provided [P
 #### Get all the records
 
 ```php
-use ShabuShabu\ParadeDB\Query\Expressions\All;
+use ShabuShabu\ParadeDB\Expressions\All;
 
 Product::search()->where(new All())->get();
 ```
@@ -230,7 +230,7 @@ Product::search()->where(new All())->get();
 #### Get none of the records
 
 ```php
-use ShabuShabu\ParadeDB\Query\Expressions\Blank;
+use ShabuShabu\ParadeDB\Expressions\Blank;
 
 Product::search()->where(new Blank())->get();
 ```
@@ -238,8 +238,7 @@ Product::search()->where(new Blank())->get();
 #### Boost a query
 
 ```php
-use ShabuShabu\ParadeDB\Query\Expressions\All;
-use ShabuShabu\ParadeDB\Query\Expressions\Boost;
+use ShabuShabu\ParadeDB\Expressions\All;use ShabuShabu\ParadeDB\Expressions\Boost;
 
 Product::search()->where(new Boost(new All(), 3.9))->get();
 ```
@@ -247,8 +246,7 @@ Product::search()->where(new Boost(new All(), 3.9))->get();
 #### Add a constant score
 
 ```php
-use ShabuShabu\ParadeDB\Query\Expressions\All;
-use ShabuShabu\ParadeDB\Query\Expressions\ConstScore;
+use ShabuShabu\ParadeDB\Expressions\All;use ShabuShabu\ParadeDB\Expressions\ConstScore;
 
 Product::search()->where(new ConstScore(new All(), 3.9))->get();
 ```
@@ -256,11 +254,10 @@ Product::search()->where(new ConstScore(new All(), 3.9))->get();
 #### Perform a disjunction max query
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\DisjunctionMax;
+use ShabuShabu\ParadeDB\TantivyQL\Query;use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
 
 Product::search()->where(
-    new DisjunctionMax(Builder::make()->where('description', 'keyboard'))
+    new DisjunctionMax(Query::string()->where('description', 'keyboard'))
 )->get();
 ```
 
@@ -288,7 +285,7 @@ Product::search()->where(
 #### Search for a fuzzy term
 
 ```php
-use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
+use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
 
 Product::search()->where(new FuzzyTerm('description', 'keyboard'))->get();
 ```
@@ -296,21 +293,18 @@ Product::search()->where(new FuzzyTerm('description', 'keyboard'))->get();
 #### Highlight search terms
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Highlight;
-use ShabuShabu\ParadeDB\Query\Expressions\DisjunctionMax;
+use ShabuShabu\ParadeDB\TantivyQL\Query;use ShabuShabu\ParadeDB\Expressions\Snippet;use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
 
 Product::search()
-    ->select(['*', new Highlight('id', 'name')])
-    ->where(new DisjunctionMax(Builder::make()->where('description', 'keyboard')))
+    ->select(['*', new Snippet('id', 'name')])
+    ->where(new DisjunctionMax(Query::string()->where('description', 'keyboard')))
     ->get();
 ```
 
 #### Search for a phrase
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Phrase;
+use ShabuShabu\ParadeDB\Expressions\Phrase;
 
 Product::search()
     ->where(new Phrase('description', ['robot', 'building', 'kits']))
@@ -320,8 +314,7 @@ Product::search()
 #### Perform a phrase prefix query
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\PhrasePrefix;
+use ShabuShabu\ParadeDB\Expressions\PhrasePrefix;
 
 Product::search()
     ->where(new PhrasePrefix('description', ['robot', 'building', 'kits', 'am']))
@@ -331,9 +324,7 @@ Product::search()
 #### Search within a given range
 
 ```php
-use ShabuShabu\ParadeDB\Query\Expressions\Range;
-use ShabuShabu\ParadeDB\Query\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Query\Expressions\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\Range;use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 
 Product::search()
     ->stableSort()
@@ -353,8 +344,7 @@ Here are the supported range types (all within the `ShabuShabu\ParadeDB\Query\Ex
 #### Perform a regex query
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Regex;
+use ShabuShabu\ParadeDB\Expressions\Regex;
 
 Product::search()
     ->where(new Regex('description', '(team|kits|blabla)'))
@@ -364,8 +354,7 @@ Product::search()
 #### Search for a term
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Term;
+use ShabuShabu\ParadeDB\Expressions\Term;
 
 Product::search()
     ->where(new Term('description', 'building'))
@@ -375,9 +364,7 @@ Product::search()
 #### Search for a set of terms
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Term;
-use ShabuShabu\ParadeDB\Query\Expressions\TermSet;
+use ShabuShabu\ParadeDB\Expressions\Term;use ShabuShabu\ParadeDB\Expressions\TermSet;
 
 Product::search()
     ->where(new TermSet([
@@ -410,11 +397,7 @@ Product::search()->where(
 #### Perform a complex boolean query
 
 ```php
-use App\Models\Product;
-use ShabuShabu\ParadeDB\Query\Expressions\Range;
-use ShabuShabu\ParadeDB\Query\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
-use ShabuShabu\ParadeDB\Query\Expressions\Ranges\TimestampTz;
+use App\Models\Product;use ShabuShabu\ParadeDB\Expressions\Range;use ShabuShabu\ParadeDB\Expressions\Boolean;use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
 
 Product::search()
     ->where(new Boolean(
@@ -459,12 +442,10 @@ Product::search()->where(
 #### Sort by rank
 
 ```php
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Term;
-use ShabuShabu\ParadeDB\Query\Expressions\Rank;
+use ShabuShabu\ParadeDB\Expressions\Term;use ShabuShabu\ParadeDB\Expressions\Score;
 
 Product::search()
-    ->addSelect(new Rank('id'))
+    ->addSelect(new Score('id'))
     ->where(new Term('description', 'building'))
     ->get();
 ```
@@ -476,10 +457,10 @@ It's also possible to paginate the results. Both the `paginate` and `simplePagin
 ```php
 use App\Models\Product;
 use App\Models\Product;
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 Product::search()
-    ->where(Builder::make()->where('description', 'keyboard'))
+    ->where(Query::string()->where('description', 'keyboard'))
     ->paginate(20);
 ```
 
@@ -490,10 +471,10 @@ The ParadeDB `search` function allows you to set a variety of parameters to fine
 ```php
 use App\Models\Product;
 use App\Models\Product;
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 Product::search()
-    ->where(Builder::make()->where('description', 'keyboard'))
+    ->where(Query::string()->where('description', 'keyboard'))
     ->alias('alias')
     ->stableSort()
     ->limit(12)
@@ -506,13 +487,10 @@ Product::search()
 Whenever a similarity query is provided, the package will automatically perform a [hybrid search](https://docs.paradedb.com/search/hybrid/basic). Please note that a ParadeDB query is still required!
 
 ```php
-use App\Models\Product;
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Distance;
-use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
+use App\Models\Product;use ShabuShabu\ParadeDB\TantivyQL\Query;use ShabuShabu\ParadeDB\Expressions\Distance;use ShabuShabu\ParadeDB\Expressions\Similarity;
 
 Product::search()
-    ->where(Builder::make()->where('description', 'keyboard'))
+    ->where(Query::string()->where('description', 'keyboard'))
     ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
     ->get();
 ```
@@ -539,11 +517,11 @@ Occasionally, it will be necessary to modify the base query, for example to eage
 ```php
 use App\Models\Product;
 use Illuminate\Database\Eloquent;
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 Product::search()
     ->modifyQueryUsing(fn (Eloquent\Builder $builder) => $builder->with('tags'))
-    ->where(Builder::make()->where('description', 'keyboard'))
+    ->where(Query::string()->where('description', 'keyboard'))
     ->get();
 ```
 

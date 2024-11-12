@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\Help;
+use ShabuShabu\ParadeDB\Expressions\Help;
 
 it('asks for help')
     ->expect(new Help('Need help!', 'Not exactly sure what the problem is, tho...'))

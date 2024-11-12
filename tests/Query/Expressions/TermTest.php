@@ -4,8 +4,8 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\Ranges\Int8;
-use ShabuShabu\ParadeDB\Query\Expressions\Term;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Int8;
+use ShabuShabu\ParadeDB\Expressions\Term;
 
 it('matches documents containing a specified term')
     ->expect(new Term('description', 'shoes'))

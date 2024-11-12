@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\All;
+use ShabuShabu\ParadeDB\Expressions\All;
 
 it('matches all documents')
     ->expect(new All)

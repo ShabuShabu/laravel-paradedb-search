@@ -7,7 +7,6 @@ namespace ShabuShabu\ParadeDB\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use JsonException;
-use ShabuShabu\ParadeDB\Query\Expressions;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
@@ -69,7 +68,7 @@ class Help extends Command
     protected function runQuery(string $subject, string $body): void
     {
         DB::select(
-            (new Expressions\Help($subject, $body))->getValue(
+            (new \ShabuShabu\ParadeDB\Expressions\Help($subject, $body))->getValue(
                 DB::connection()->getQueryGrammar()
             )
         );

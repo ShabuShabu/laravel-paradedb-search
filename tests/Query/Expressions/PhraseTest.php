@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\Phrase;
+use ShabuShabu\ParadeDB\Expressions\Phrase;
 
 it('searches for exact matches')
     ->expect(new Phrase('description', ['robot', 'building', 'kit']))

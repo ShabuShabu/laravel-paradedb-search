@@ -4,13 +4,13 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Query\Expressions\PhrasePrefix;
+use ShabuShabu\ParadeDB\Expressions\Boolean;
+use ShabuShabu\ParadeDB\Expressions\PhrasePrefix;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 it('filters documents based on logical relationships', function (string $type) {
     $queries = [
-        Builder::make()->where('description', 'shoes'),
+        Query::string()->where('description', 'shoes'),
         new PhrasePrefix('description', ['book']),
         'category:electronics',
     ];
@@ -32,9 +32,9 @@ it('filters documents based on logical relationships', function (string $type) {
 
 it('builds a boolean query in a fluid manner', function (bool $when, string $expression) {
     $boolean = Boolean::query()
-        ->must(Builder::make()->where('description', 'shoes'))
+        ->must(Query::string()->where('description', 'shoes'))
         ->should(new PhrasePrefix('description', ['book']))
-        ->should([Builder::make()->where('description', 'blue')], $when)
+        ->should([Query::string()->where('description', 'blue')], $when)
         ->mustNot('category:electronics');
 
     expect($boolean)->toBeExpression($expression);

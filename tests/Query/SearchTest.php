@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\Distance;
+use ShabuShabu\ParadeDB\Expressions\Distance;
+use ShabuShabu\ParadeDB\Expressions\Similarity;
 use ShabuShabu\ParadeDB\Query\Expressions\FullTextSearch;
-use ShabuShabu\ParadeDB\Query\Expressions\Similarity;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 
 it('gets search results', function () {
@@ -22,7 +22,7 @@ it('gets search results', function () {
     $results = Team::search()
         ->select(['*'])
         ->where(
-            Builder::make()->whereFilter('is_vip', '=', true)
+            Query::string()->whereFilter('is_vip', '=', true)
         )
         ->stableSort()
         ->alias('s')
@@ -38,7 +38,7 @@ it('paginates search results using a simple paginator', function () {
     Team::factory()->count(12)->isVip()->create();
 
     $results = Team::search()->where(
-        Builder::make()->whereFilter('is_vip', '=', true)
+        Query::string()->whereFilter('is_vip', '=', true)
     )->simplePaginate(8);
 
     expect($results)
@@ -51,7 +51,7 @@ it('paginates search results using a length-aware paginator', function () {
     Team::factory()->count(12)->isVip()->create();
 
     $results = Team::search()->where(
-        Builder::make()->whereFilter('is_vip', '=', true)
+        Query::string()->whereFilter('is_vip', '=', true)
     )->paginate(8);
 
     expect($results)
@@ -65,7 +65,7 @@ it('modifies the search query', function () {
 
     $results = Team::search()
         ->modifyQueryUsing(fn (Eloquent\Builder $builder) => $builder->with('user'))
-        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->where(Query::string()->whereFilter('is_vip', '=', true))
         ->get();
 
     expect($results->first()->relationLoaded('user'))->toBeTrue();
@@ -79,7 +79,7 @@ it('gets search results with an eloquent query', function () {
     $results = Team::query()->from(
         new FullTextSearch(
             index: 'teams_idx',
-            query: Builder::make()->whereFilter('is_vip', '=', true),
+            query: Query::string()->whereFilter('is_vip', '=', true),
         )
     )->get();
 
@@ -95,7 +95,7 @@ it('performs a hybrid search', function () {
     $vipTeam = Team::factory()->isVip()->withEmbedding([1, 2, 3])->create();
 
     $results = Team::search()
-        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->where(Query::string()->whereFilter('is_vip', '=', true))
         ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
         ->bm25Limit(100)
         ->bm25Weight(0.9)
@@ -116,7 +116,7 @@ it('modifies the query for a hybrid search', function () {
 
     $results = Team::search()
         ->modifyQueryUsing(fn (Eloquent\Builder $builder) => $builder->with('user'))
-        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->where(Query::string()->whereFilter('is_vip', '=', true))
         ->where(new Similarity('embedding', Distance::l2, [1, 2, 3]))
         ->get();
 
@@ -131,7 +131,7 @@ it('combines paradedb and eloquent queries', function () {
     $expected = Team::factory()->isVip()->maxMembers(6)->create();
 
     $subQuery = Team::search()
-        ->where(Builder::make()->whereFilter('is_vip', '=', true))
+        ->where(Query::string()->whereFilter('is_vip', '=', true))
         ->toBaseQuery();
 
     $results = Team::query()

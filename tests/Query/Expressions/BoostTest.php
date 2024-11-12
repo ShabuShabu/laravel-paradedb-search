@@ -4,9 +4,9 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\All;
-use ShabuShabu\ParadeDB\Query\Expressions\Boost;
+use ShabuShabu\ParadeDB\Expressions\All;
+use ShabuShabu\ParadeDB\Expressions\Boost;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 it('boosts an expression query')
     ->expect(new Boost(new All, 2))
@@ -17,5 +17,5 @@ it('boosts a string query')
     ->toBeExpression("paradedb.boost(boost => 1.5, query => paradedb.parse(query_string => 'description:shoes'))");
 
 it('boosts a builder query')
-    ->expect(new Boost(Builder::make()->where('description', 'shoes'), 2))
+    ->expect(new Boost(Query::string()->where('description', 'shoes'), 2))
     ->toBeExpression("paradedb.boost(boost => 2, query => paradedb.parse(query_string => 'description:shoes'))");

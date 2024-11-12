@@ -5,23 +5,23 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Collection;
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
-use ShabuShabu\ParadeDB\Query\Expressions\All;
-use ShabuShabu\ParadeDB\Query\Expressions\Blank;
-use ShabuShabu\ParadeDB\Query\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Query\Expressions\Boost;
-use ShabuShabu\ParadeDB\Query\Expressions\ConstScore;
-use ShabuShabu\ParadeDB\Query\Expressions\DisjunctionMax;
-use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
-use ShabuShabu\ParadeDB\Query\Expressions\Highlight;
-use ShabuShabu\ParadeDB\Query\Expressions\Phrase;
-use ShabuShabu\ParadeDB\Query\Expressions\PhrasePrefix;
-use ShabuShabu\ParadeDB\Query\Expressions\Range;
-use ShabuShabu\ParadeDB\Query\Expressions\Ranges\TimestampTz;
-use ShabuShabu\ParadeDB\Query\Expressions\Rank;
-use ShabuShabu\ParadeDB\Query\Expressions\Regex;
-use ShabuShabu\ParadeDB\Query\Expressions\Term;
-use ShabuShabu\ParadeDB\Query\Expressions\TermSet;
+use ShabuShabu\ParadeDB\Expressions\All;
+use ShabuShabu\ParadeDB\Expressions\Blank;
+use ShabuShabu\ParadeDB\Expressions\Boolean;
+use ShabuShabu\ParadeDB\Expressions\Boost;
+use ShabuShabu\ParadeDB\Expressions\ConstScore;
+use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
+use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
+use ShabuShabu\ParadeDB\Expressions\Phrase;
+use ShabuShabu\ParadeDB\Expressions\PhrasePrefix;
+use ShabuShabu\ParadeDB\Expressions\Range;
+use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
+use ShabuShabu\ParadeDB\Expressions\Regex;
+use ShabuShabu\ParadeDB\Expressions\Score;
+use ShabuShabu\ParadeDB\Expressions\Snippet;
+use ShabuShabu\ParadeDB\Expressions\Term;
+use ShabuShabu\ParadeDB\Expressions\TermSet;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 
 it('gets all results', function () {
@@ -60,7 +60,7 @@ it('performs a ranked boolean query with various conditions', function () {
     $searchTerm = 'test';
 
     $results = Team::search()
-        ->select(['*', new Rank('id')])
+        ->select(['*', new Score('id')])
         ->where(new Boolean(
             must: [
                 new Range('created_at', new TimestampTz(null, now())),
@@ -100,7 +100,7 @@ it('performs a disjunction max query', function () {
     Team::factory()->create(['name' => 'Test team']);
 
     $results = Team::search()
-        ->where(new DisjunctionMax(Builder::make()->where('name', 'team')))
+        ->where(new DisjunctionMax(Query::string()->where('name', 'team')))
         ->get();
 
     expect($results)
@@ -113,8 +113,8 @@ it('highlights search results', function () {
     Team::factory()->create(['name' => 'Test team']);
 
     $results = Team::search()
-        ->addSelect(new Highlight('id', 'name'))
-        ->where(new DisjunctionMax(Builder::make()->where('name', 'team')))
+        ->addSelect(new Snippet('id', 'name'))
+        ->where(new DisjunctionMax(Query::string()->where('name', 'team')))
         ->get();
 
     expect($results->first())->highlight->toBe('Test <b>team</b>');

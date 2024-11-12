@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\PhrasePrefix;
+use ShabuShabu\ParadeDB\Expressions\PhrasePrefix;
 
 it('identifies documents containing a given sequence of words followed by a term prefix')
     ->expect(new PhrasePrefix('description', ['har']))

@@ -4,17 +4,17 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\ParadeQL\Builder;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use ShabuShabu\ParadeDB\Expressions\Parse;
 use ShabuShabu\ParadeDB\Query\Expressions\FullTextSearch;
-use ShabuShabu\ParadeDB\Query\Expressions\ParadeExpression;
-use ShabuShabu\ParadeDB\Query\Expressions\Parse;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
-it('performs a full-text search: ', function (string | Builder | ParadeExpression $query) {
+it('performs a full-text search: ', function (string | Query | ParadeExpression $query) {
     expect(new FullTextSearch('teams_idx', $query))->toBeExpression(
         "teams_idx.search(query => paradedb.parse(query_string => 'description:shoes'), offset_rows => NULL::integer, limit_rows => NULL::integer, alias => NULL::text, stable_sort => NULL::boolean)"
     );
 })->with([
-    'with builder' => [Builder::make()->where('description', 'shoes')],
+    'with builder' => [Query::string()->where('description', 'shoes')],
     'with expression' => [new Parse('description:shoes')],
     'with string' => ['description:shoes'],
 ]);

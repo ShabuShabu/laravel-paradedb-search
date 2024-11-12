@@ -7,6 +7,7 @@ namespace ShabuShabu\ParadeDB;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use ShabuShabu\ParadeDB\Commands\Help;
 use ShabuShabu\ParadeDB\Commands\TestTable;
+use ShabuShabu\ParadeDB\Expressions\Distance;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -31,6 +32,11 @@ class ParadeDBServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
-        PostgresGrammar::customOperators(['@@@']);
+        $operators = collect(Distance::cases())
+            ->map(fn (Distance $distance) => $distance->value)
+            ->prepend('@@@')
+            ->all();
+
+        PostgresGrammar::customOperators($operators);
     }
 }

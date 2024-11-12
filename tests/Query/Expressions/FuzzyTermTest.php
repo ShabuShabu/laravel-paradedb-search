@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Query\Expressions\FuzzyTerm;
+use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
 
 it('gets documents matching a fuzzy term: ', function (?int $distance, ?bool $cost, ?bool $prefix, string $expression) {
     expect(new FuzzyTerm('description', 'wolo', $distance, $cost, $prefix))->toBeExpression($expression);
