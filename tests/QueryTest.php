@@ -49,3 +49,7 @@ it('highlights a search term', function () {})->todo();
 it('searches for a given term', function () {})->todo();
 
 it('searches for a given term set', function () {})->todo();
+
+it('paginates search results', function () {})->todo();
+
+it('combines paradedb and eloquent queries', function () {})->todo();
