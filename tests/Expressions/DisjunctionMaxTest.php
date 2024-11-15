@@ -14,7 +14,7 @@ it('returns documents that match one or more of the specified subqueries')
         new Regex('category', '(hardcover|wireless)'),
         'color:IN [blue, green]',
     ]))
-    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes'), paradedb.regex(field => 'category', pattern => '(hardcover|wireless)'), paradedb.parse(query_string => 'color:IN [blue, green]')], tie_breaker => NULL::real)");
+    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes', lenient => NULL::boolean, conjunction_mode => NULL::boolean), paradedb.regex(field => 'category', pattern => '(hardcover|wireless)'), paradedb.parse(query_string => 'color:IN [blue, green]', lenient => NULL::boolean, conjunction_mode => NULL::boolean)], tie_breaker => NULL::real)");
 
 it('returns documents that match one or more of the specified subqueries in a fluid manner')
     ->expect(
@@ -24,11 +24,11 @@ it('returns documents that match one or more of the specified subqueries in a fl
             ->add('color:IN [blue, green]', when: false)
             ->tieBreaker(1.3)
     )
-    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes'), paradedb.regex(field => 'category', pattern => '(hardcover|wireless)')], tie_breaker => 1.3)");
+    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes', lenient => NULL::boolean, conjunction_mode => NULL::boolean), paradedb.regex(field => 'category', pattern => '(hardcover|wireless)')], tie_breaker => 1.3)");
 
 it('applies a tie breaker')
     ->expect(new DisjunctionMax([
         Query::string()->where('description', 'shoes'),
         'color:IN [blue, green]',
     ], 2))
-    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes'), paradedb.parse(query_string => 'color:IN [blue, green]')], tie_breaker => 2)");
+    ->toBeExpression("paradedb.disjunction_max(disjuncts => ARRAY[paradedb.parse(query_string => 'description:shoes', lenient => NULL::boolean, conjunction_mode => NULL::boolean), paradedb.parse(query_string => 'color:IN [blue, green]', lenient => NULL::boolean, conjunction_mode => NULL::boolean)], tie_breaker => 2)");

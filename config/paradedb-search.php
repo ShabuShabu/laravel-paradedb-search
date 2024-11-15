@@ -15,4 +15,15 @@ return [
     */
 
     'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', '_idx'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Highlighting tag
+    |--------------------------------------------------------------------------
+    |
+    | Set a global highlighting tag when using the `Snippet` expression. Must
+    | include the closing tag!
+    |
+    */
+    'highlighting_tag' => env('PG_SEARCH_HIGHLIGHTING_TAG', '<b></b>'),
 ];

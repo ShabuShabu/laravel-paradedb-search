@@ -4,7 +4,7 @@ export default {
     'composer test-coverage',
     'composer type-coverage',
     'composer analyse',
-    */
+       */
     'composer format'
   ]
 }

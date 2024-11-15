@@ -37,6 +37,7 @@ These are the contents of the published config file:
 ```php
 return [
     'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', '_idx'),
+    'highlighting_tag' => env('PG_SEARCH_HIGHLIGHTING_TAG', '<b></b>'),
 ];
 ```
 

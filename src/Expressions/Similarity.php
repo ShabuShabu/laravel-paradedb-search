@@ -37,8 +37,12 @@ readonly class Similarity implements Expression
      */
     protected function formatValues(Grammar $grammar, array | string | Expression $values): string
     {
-        if (is_string($values) || $values instanceof Expression) {
+        if ($values instanceof Expression) {
             return $this->stringize($grammar, $values);
+        }
+
+        if (is_string($values)) {
+            $values = json_decode($values, true, 512, JSON_THROW_ON_ERROR);
         }
 
         if (! array_is_list($values)) {
