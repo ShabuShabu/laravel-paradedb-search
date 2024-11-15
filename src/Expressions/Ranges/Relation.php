@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ShabuShabu\ParadeDB\Expressions;
+namespace ShabuShabu\ParadeDB\Expressions\Ranges;
 
-enum RangeRelation: string
+enum Relation: string
 {
     case intersects = 'Intersects';
     case contains = 'Contains';

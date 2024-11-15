@@ -7,6 +7,7 @@ namespace ShabuShabu\ParadeDB\Expressions;
 use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 use ShabuShabu\ParadeDB\Expressions\Ranges\RangeExpression;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Relation;
 
 readonly class RangeTerm implements ParadeExpression
 {
@@ -15,7 +16,7 @@ readonly class RangeTerm implements ParadeExpression
     public function __construct(
         private string $field,
         private int | float | string | RangeExpression $term,
-        private ?RangeRelation $relation = null,
+        private ?Relation $relation = null,
     ) {}
 
     public function getValue(Grammar $grammar): string

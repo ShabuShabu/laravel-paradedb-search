@@ -557,13 +557,13 @@ Ranges can also be compared to other ranges:
 ```php
 use ShabuShabu\ParadeDB\Expressions\RangeTerm;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\RangeRelation;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Relation;
 
 Product::query()
     ->where('id', '@@@', new RangeTerm(
         field: 'weight_range',
         term: new Int4(10, 12),
-        relation: RangeRelation::intersects,
+        relation: Relation::intersects,
     ))
     ->get();
 ```
