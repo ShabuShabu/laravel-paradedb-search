@@ -6,7 +6,6 @@ namespace ShabuShabu\ParadeDB\Expressions;
 
 use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
-use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 readonly class ParseWithField implements ParadeExpression
 {
@@ -14,7 +13,7 @@ readonly class ParseWithField implements ParadeExpression
 
     public function __construct(
         private string $field,
-        private string | Query $query,
+        private string $query,
         private ?bool $lenient = null,
         private ?bool $conjunctionMode = null,
     ) {}

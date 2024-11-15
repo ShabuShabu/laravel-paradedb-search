@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\Distance;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\Parse;
 use ShabuShabu\ParadeDB\Expressions\Similarity;
+use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Query\Expressions\HybridSearch;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 

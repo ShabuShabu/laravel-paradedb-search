@@ -96,4 +96,12 @@ trait Stringable
     {
         return $value === null ? 'NULL::text' : $grammar->escape($value);
     }
+
+    protected function stringize(Grammar $grammar, string | Expression $expression): float | int | string
+    {
+        return match ($grammar->isExpression($expression)) {
+            true => $grammar->getValue($expression),
+            false => $grammar->wrap($expression),
+        };
+    }
 }

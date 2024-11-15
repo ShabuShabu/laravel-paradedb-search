@@ -8,7 +8,7 @@ use Illuminate\Database\Grammar;
 use JsonException;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
-readonly class Json implements ParadeExpression
+readonly class JsonB implements ParadeExpression
 {
     use Stringable;
 

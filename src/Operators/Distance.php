@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ShabuShabu\ParadeDB\Expressions;
+namespace ShabuShabu\ParadeDB\Operators;
 
 enum Distance: string
 {

@@ -14,5 +14,5 @@ return [
     |
     */
 
-    'index_suffix' => '_idx',
+    'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', '_idx'),
 ];

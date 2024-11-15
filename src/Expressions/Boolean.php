@@ -15,8 +15,8 @@ class Boolean implements ParadeExpression
     use Stringable;
 
     final public function __construct(
-        private null | string | array | ParadeExpression | Query $must = null,
         private null | string | array | ParadeExpression | Query $should = null,
+        private null | string | array | ParadeExpression | Query $must = null,
         private null | string | array | ParadeExpression | Query $mustNot = null,
     ) {}
 
