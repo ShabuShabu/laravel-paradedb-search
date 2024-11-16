@@ -225,7 +225,7 @@ Query::string()
 
 ### Performing a basic search
 
-To search, you just use the custom `@@@` operator in a regular Eloquent query.
+To search, you just use the custom `@@@` operator in a regular Eloquent where condition.
 
 ```php
 Product::query()
