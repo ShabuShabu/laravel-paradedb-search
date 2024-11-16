@@ -818,7 +818,7 @@ See: https://docs.paradedb.com/documentation/guides/hybrid
 
 While it is possible to combine ParadeDB queries with regular Eloquent queries, you will incur some performance penalties.
 
-For optimal performance it is recommended to let the `bm25` index do as much work as possible, so wherever possible you should use the [built-in filters](https://docs.paradedb.com/search/full-text/bm25#efficient-filtering) as well as [limit & offset](https://docs.paradedb.com/search/full-text/bm25#limit-and-offset)!
+For optimal performance it is recommended to let the `bm25` index do as much work as possible!
 
 ### Getting help
 
