@@ -22,7 +22,7 @@ readonly class Snippet implements ParadeExpression
     public function getValue(Grammar $grammar): string
     {
         $params = $this->toParams([
-            'field' => $this->cast($grammar, $this->field),
+            'field' => $this->stringize($grammar, $this->field),
             'start_tag' => $this->cast($grammar, $this->startTag ?? $this->defaultTag('opening')),
             'end_tag' => $this->cast($grammar, $this->endTag ?? $this->defaultTag('closing')),
             'max_num_chars' => $this->cast($grammar, $this->maxNumChars),

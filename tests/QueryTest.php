@@ -4,15 +4,20 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use ShabuShabu\ParadeDB\Expressions\All;
 use ShabuShabu\ParadeDB\Expressions\Blank;
 use ShabuShabu\ParadeDB\Expressions\Boolean;
 use ShabuShabu\ParadeDB\Expressions\Boost;
 use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
+use ShabuShabu\ParadeDB\Expressions\JsonB;
+use ShabuShabu\ParadeDB\Expressions\Parse;
+use ShabuShabu\ParadeDB\Expressions\ParseWithField;
 use ShabuShabu\ParadeDB\Expressions\Range;
 use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
 use ShabuShabu\ParadeDB\Expressions\Score;
+use ShabuShabu\ParadeDB\Expressions\Snippet;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 
 it('gets all results', function () {
@@ -39,27 +44,25 @@ it('gets no results', function () {
         ->count()->toBe(0);
 });
 
-it('performs a ranked boolean query with various conditions', function () {
+it('performs a boosted boolean query with various conditions', function () {
     Team::factory()->softDeleted()->create();
 
     Team::factory()->create([
-        'name' => 'Test team',
-        'description' => 'Something or other...',
+        'name' => 'nice team',
+        'description' => 'test something...',
     ]);
 
     Team::factory()->create([
-        'name' => 'Nice team',
-        'description' => 'testing...',
+        'name' => 'test team',
+        'description' => 'something or other...',
     ]);
 
-    $searchTerm = 'test';
-
-    $results = Team::query()
+    $teams = Team::query()
         ->select(['*', new Score])
         ->where('id', '@@@', new Boolean(
             should: [
-                new Boost(new FuzzyTerm('name', $searchTerm), 2),
-                new FuzzyTerm('description', $searchTerm),
+                new Boost(new FuzzyTerm('name', 'test'), 2),
+                new FuzzyTerm('description', 'test'),
             ],
             must: [
                 new Range('created_at', new TimestampTz(null, now())),
@@ -68,55 +71,125 @@ it('performs a ranked boolean query with various conditions', function () {
                 new Range('deleted_at', new TimestampTz(null, now())),
             ],
         ))
-        ->get();
+        ->orderByDesc(new Score)
+        ->paginate();
 
-    expect($results)
-        ->toBeInstanceOf(Collection::class)
+    expect($teams)
+        ->toBeInstanceOf(LengthAwarePaginator::class)
         ->count()->toBe(2)
-        ->first()->name->toBe('Test team')
-        ->last()->name->toBe('Nice team');
+        ->first()->name->toBe('test team')
+        ->last()->name->toBe('nice team');
 });
 
-it('boosts a query', function () {});
+it('searches for a given json query string', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
 
-it('applies a constant score', function () {});
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
 
-it('applies a disjunction max query', function () {});
+    $teams = Team::query()
+        ->where('id', '@@@', new JsonB([
+            'term' => [
+                'field' => 'description',
+                'value' => 'something',
+            ],
+        ]))
+        ->get();
 
-it('checks for a field existence', function () {});
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
 
-it('searches for a fuzzy phrase', function () {});
+it('parses a query string', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
 
-it('searches for a fuzzy term', function () {});
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
 
-it('searches for a given json query string', function () {});
+    $teams = Team::query()
+        ->where('id', '@@@', new Parse('description:test'))
+        ->get();
 
-it('gets more like this', function () {});
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('nice team');
+});
 
-it('parses a query string', function () {});
+it('parses a query string for a given field', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
 
-it('parses a query string for a given field', function () {});
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
 
-it('searches for a phrase', function () {});
+    $teams = Team::query()
+        ->whereSearch(new ParseWithField('description', 'test'))
+        ->get();
 
-it('searches for a phrase prefix', function () {});
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('nice team');
+});
 
-it('searches for a given range', function () {});
+it('highlights a search term', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
 
-it('searches for a given range term', function () {});
+    $teams = Team::query()
+        ->select(['id', new Snippet('description')])
+        ->where('description', '@@@', 'test')
+        ->get();
 
-it('applies a rank', function () {});
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->snippet->toBe('<b>test</b> description');
+});
 
-it('searches for a given regular expression', function () {});
+it('searches for a fuzzy phrase', function () {})->todo();
 
-it('applies a score', function () {});
+it('applies a constant score', function () {})->todo();
 
-it('highlights a search term', function () {});
+it('applies a disjunction max query', function () {})->todo();
 
-it('searches for a given term', function () {});
+it('checks for a field existence', function () {})->todo();
 
-it('searches for a given term set', function () {});
+it('gets more like this', function () {})->todo();
 
-it('paginates search results', function () {});
+it('searches for a phrase', function () {})->todo();
 
-it('combines paradedb and eloquent queries', function () {});
+it('searches for a phrase prefix', function () {})->todo();
+
+it('searches for a given range', function () {})->todo();
+
+it('searches for a given range term', function () {})->todo();
+
+it('applies a rank', function () {})->todo();
+
+it('searches for a given regular expression', function () {})->todo();
+
+it('searches for a given term', function () {})->todo();
+
+it('searches for a given term set', function () {})->todo();
+
+it('combines paradedb and eloquent queries', function () {})->todo();

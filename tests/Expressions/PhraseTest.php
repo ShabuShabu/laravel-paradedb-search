@@ -8,7 +8,7 @@ use ShabuShabu\ParadeDB\Expressions\Phrase;
 
 it('searches for exact matches')
     ->expect(new Phrase('description', ['robot', 'building', 'kit']))
-    ->toBeExpression("paradedb.phrase(field => 'description', phrases => ARRAY['robot', 'building', 'kit'], slop => NULL::integer)");
+    ->toBeExpression("paradedb.phrase(field => 'description', phrases => ARRAY['robot', 'building', 'kit'])");
 
 it('searches for exact matches with slop enabled')
     ->expect(new Phrase('description', ['robot', 'building', 'kit'], 1))
