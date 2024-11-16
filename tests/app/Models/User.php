@@ -16,6 +16,6 @@ class User extends Model
 
     protected static function newFactory(): UserFactory
     {
-        return new UserFactory();
+        return new UserFactory;
     }
 }

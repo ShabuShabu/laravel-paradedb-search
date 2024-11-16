@@ -25,8 +25,7 @@ it('creates and drops the test table', function () {
 });
 
 it('panics for an existing table when creating', function () {
-    Schema::create('paradedb.bm25_test_table', function () {
-    });
+    Schema::create('paradedb.bm25_test_table', function () {});
 
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:test-table')

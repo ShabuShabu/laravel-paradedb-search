@@ -10,11 +10,12 @@ use JsonException;
 use stdClass;
 
 /**
- * @method static addNumericFields(array $config)
  * @method static addTextFields(array $config)
- * @method static addJsonFields(array $config)
+ * @method static addNumericFields(array $config)
  * @method static addBooleanFields(array $config)
  * @method static addDateFields(array $config)
+ * @method static addJsonFields(array $config)
+ * @method static addRangeFields(array $config)
  */
 class Bm25
 {
@@ -22,22 +23,31 @@ class Bm25
         'text' => [],
         'numeric' => [],
         'boolean' => [],
-        'json' => [],
         'date' => [],
+        'json' => [],
+        'range' => [],
     ];
 
     protected ?string $indexName = null;
+
+    protected string $predicates = '';
 
     final protected function __construct(
         protected string $table,
         protected string $schema,
         protected string $id,
-    ) {
-    }
+    ) {}
 
     public static function index(string $table, string $schema = 'public', string $id = 'id'): static
     {
         return new static($table, $schema, $id);
+    }
+
+    public function partialBy(string $predicates): static
+    {
+        $this->predicates = $predicates;
+
+        return $this;
     }
 
     protected function addFields(string $name, array $config): static
@@ -58,7 +68,7 @@ class Bm25
     {
         return collect($config)->mapWithKeys(
             fn (mixed $value, int | string $key) => is_int($key)
-                ? [$value => new stdClass()]
+                ? [$value => new stdClass]
                 : [$key => $value]
         )->pipe(
             fn (mixed $encoded) => json_encode($encoded, JSON_THROW_ON_ERROR)
@@ -97,8 +107,10 @@ class Bm25
                 text_fields => :text,
                 numeric_fields => :numeric,
                 boolean_fields => :boolean,
+                datetime_fields => :date,
                 json_fields => :json,
-                datetime_fields => :date
+                range_fields => :range,
+                predicates => :predicates
             );
             QUERY,
             [
@@ -109,8 +121,10 @@ class Bm25
                 'text' => $fields->get('text'),
                 'numeric' => $fields->get('numeric'),
                 'boolean' => $fields->get('boolean'),
-                'json' => $fields->get('json'),
                 'date' => $fields->get('date'),
+                'json' => $fields->get('json'),
+                'range' => $fields->get('range'),
+                'predicates' => $this->predicates,
             ]
         );
     }
