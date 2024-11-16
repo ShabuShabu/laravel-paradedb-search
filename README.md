@@ -774,9 +774,9 @@ Product::query()
     ->withExpression('semantic_search', Product::query()
         ->select([
             'id',
-            new Alias(new Rank(
-                new Similarity('embedding', Distance::cosine, [1, 2, 3])
-            ), 'rank'),
+            new Alias(new Rank([
+                [new Similarity('embedding', Distance::cosine, [1, 2, 3]), 'asc']
+            ]), 'rank'),
         ])
         ->orderBy(new Similarity('embedding', Distance::cosine, [1, 2, 3]))
         ->limit(20)
@@ -784,7 +784,7 @@ Product::query()
     ->withExpression('bm25_search', Product::query()
         ->select([
             'id', 
-            new Alias(new Rank(new Score()), 'rank'),
+            new Alias(new Rank([new Score(), 'asc']), 'rank'),
         ])
         ->where('description', '@@@', 'keyboard')
         ->limit(20)

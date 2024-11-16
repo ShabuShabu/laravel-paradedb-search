@@ -48,24 +48,9 @@ readonly class MoreLikeThis implements ParadeExpression
             'min_word_length' => $this->cast($grammar, $this->minWordLength),
             'max_word_length' => $this->cast($grammar, $this->maxWordLength),
             'boost_factor' => $this->cast($grammar, $this->boostFactor),
-            'stop_words' => $this->stopWords !== null ? $this->buildStopWords($grammar) : null,
+            'stop_words' => is_array($this->stopWords) ? $this->asArray($grammar, $this->stopWords) : null,
         ]);
 
         return "paradedb.more_like_this($params)";
-    }
-
-    /**
-     * @throws JsonException
-     */
-    protected function buildStopWords(Grammar $grammar): string
-    {
-        $words = collect($this->stopWords)
-            ->filter(fn (mixed $word) => is_string($word))
-            ->values()
-            ->all();
-
-        $words = $grammar->escape(json_encode($words, JSON_THROW_ON_ERROR));
-
-        return "$words::json";
     }
 }

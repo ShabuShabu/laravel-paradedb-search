@@ -22,7 +22,7 @@ it('finds similar documents by id with options')
         boostFactor: 1.5,
         stopWords: ['and', 'or'],
     ))
-    ->toBeExpression("paradedb.more_like_this(document_id => 3, min_doc_frequency => 1, max_doc_frequency => 2, min_term_frequency => 3, max_query_terms => 4, min_word_length => 5, max_word_length => 6, boost_factor => 1.5, stop_words => '[\"and\",\"or\"]'::json)");
+    ->toBeExpression("paradedb.more_like_this(document_id => 3, min_doc_frequency => 1, max_doc_frequency => 2, min_term_frequency => 3, max_query_terms => 4, min_word_length => 5, max_word_length => 6, boost_factor => 1.5, stop_words => ARRAY['and', 'or'])");
 
 it('finds similar documents by fields')
     ->expect(new MoreLikeThis(['description' => 'shoes']))
