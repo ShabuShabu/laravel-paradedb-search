@@ -7,28 +7,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* added a command to create and drop the paradedb test table ([a02c36f](https://github.com/ShabuShabu/laravel-paradedb-search/commits/a02c36ff1d4d2308027d477214168414ffed0cf5))
-* added a fluid interface to DisjunctionMax expression ([44bc88e](https://github.com/ShabuShabu/laravel-paradedb-search/commits/44bc88ec852de1d224c82d85d712788979e720d0))
-* added a paginate method ([638947d](https://github.com/ShabuShabu/laravel-paradedb-search/commits/638947d9ef7c6fd8af16b1d6785b86b20b64d5a8))
 * added ability to add partial bm25 indices ([fc2f1da](https://github.com/ShabuShabu/laravel-paradedb-search/commits/fc2f1daaadb82e5eaee1b7c9e549636937b5142d))
-* added ability to give bm25 indices a custom name ([370df0e](https://github.com/ShabuShabu/laravel-paradedb-search/commits/370df0e3dd709034d7bbf91fd3590d917f2fa8c3))
-* added custom index names to search ([5eff892](https://github.com/ShabuShabu/laravel-paradedb-search/commits/5eff892ec1d1e775e8dc0b0c25e2163f885f248d))
-* added missing paradeql range operators ([cb7b512](https://github.com/ShabuShabu/laravel-paradedb-search/commits/cb7b5129105c2137234c346ee6be3adec70faa36))
-* added new Search::addSelect method ([e9bba0e](https://github.com/ShabuShabu/laravel-paradedb-search/commits/e9bba0edc86862625838400351cec541d9bbe38d))
-* added range fields to bm25 index creation ([6d1e534](https://github.com/ShabuShabu/laravel-paradedb-search/commits/6d1e5340e97c63122943786f256bf55d5f1c18fa))
-* added TermSet::term method for fluid query creation ([4e7a716](https://github.com/ShabuShabu/laravel-paradedb-search/commits/4e7a7162cfbe2a6032fda999f803ddf2e1c7ba5c))
-* allow for base query to be modified ([58beb1b](https://github.com/ShabuShabu/laravel-paradedb-search/commits/58beb1be4fd64077e775b0db0a00e78fda15de68))
-* boolean queries can now be constructed in a fluid manner ([c52ae96](https://github.com/ShabuShabu/laravel-paradedb-search/commits/c52ae96e4419ae7bea3e1c2127253943acd735ac))
 * implemented all new v0.12.0 expressions ([1b10a68](https://github.com/ShabuShabu/laravel-paradedb-search/commits/1b10a6855130592a54b1155fb01c4382e9e8ace4))
-
-
-### Bug Fixes
-
-* boolean defaults and fuzzy term parameter name ([14ecf03](https://github.com/ShabuShabu/laravel-paradedb-search/commits/14ecf039ba9f4d42fa2d13add564bf9697ae2359))
-* ensured ranges are properly formatted ([bf67e16](https://github.com/ShabuShabu/laravel-paradedb-search/commits/bf67e16df2905510751a29c9b3b2a773beecf5f0))
-* setting columns for hybrid searches would throw errors for expressions ([b6dc80a](https://github.com/ShabuShabu/laravel-paradedb-search/commits/b6dc80a82eaf28c710a2048bcf3ee92c40ba2295))
-* switched to Model::newModelQuery() ([59e9b4a](https://github.com/ShabuShabu/laravel-paradedb-search/commits/59e9b4a40165b57d7dabe975a1ee77698c40021e))
-* whereFilter value can be a string now ([a1cc657](https://github.com/ShabuShabu/laravel-paradedb-search/commits/a1cc6571660d0b5a73d008b2aa1c37b58059c19b))
 
 ## [0.6.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.5.1...v0.6.0) (2024-06-19)
 
