@@ -14,8 +14,8 @@ it('applies a constant score to an expression query')
 
 it('applies a constant score to a string query')
     ->expect(new ConstScore('description:shoes', 2))
-    ->toBeExpression("paradedb.const_score(score => 2, query => paradedb.parse(query_string => 'description:shoes', lenient => NULL::boolean, conjunction_mode => NULL::boolean))");
+    ->toBeExpression("paradedb.const_score(score => 2, query => paradedb.parse(query_string => 'description:shoes'))");
 
 it('applies a constant score to a builder query')
     ->expect(new ConstScore(Query::string()->where('description', 'shoes'), 2))
-    ->toBeExpression("paradedb.const_score(score => 2, query => paradedb.parse(query_string => 'description:shoes', lenient => NULL::boolean, conjunction_mode => NULL::boolean))");
+    ->toBeExpression("paradedb.const_score(score => 2, query => paradedb.parse(query_string => 'description:shoes'))");

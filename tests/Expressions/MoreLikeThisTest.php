@@ -8,7 +8,7 @@ use ShabuShabu\ParadeDB\Expressions\MoreLikeThis;
 
 it('finds similar documents by id')
     ->expect(new MoreLikeThis(3))
-    ->toBeExpression('paradedb.more_like_this(document_id => 3, min_doc_frequency => NULL::integer, max_doc_frequency => NULL::integer, min_term_frequency => NULL::integer, max_query_terms => NULL::integer, min_word_length => NULL::integer, max_word_length => NULL::integer, boost_factor => NULL::real, stop_words => NULL::text[])');
+    ->toBeExpression('paradedb.more_like_this(document_id => 3)');
 
 it('finds similar documents by id with options')
     ->expect(new MoreLikeThis(
@@ -26,4 +26,4 @@ it('finds similar documents by id with options')
 
 it('finds similar documents by fields')
     ->expect(new MoreLikeThis(['description' => 'shoes']))
-    ->toBeExpression("paradedb.more_like_this(document_fields => '{\"description\":\"shoes\"}', min_doc_frequency => NULL::integer, max_doc_frequency => NULL::integer, min_term_frequency => NULL::integer, max_query_terms => NULL::integer, min_word_length => NULL::integer, max_word_length => NULL::integer, boost_factor => NULL::real, stop_words => NULL::text[])");
+    ->toBeExpression("paradedb.more_like_this(document_fields => '{\"description\":\"shoes\"}')");

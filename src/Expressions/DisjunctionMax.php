@@ -40,13 +40,14 @@ class DisjunctionMax implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $disjuncts = $this->wrapArray(
-            $this->normalizeQueries($grammar, $this->disjuncts)
-        );
+        $params = $this->toParams([
+            'disjuncts' => $this->wrapArray(
+                $this->normalizeQueries($grammar, $this->disjuncts)
+            ),
+            'tie_breaker' => $this->cast($grammar, $this->tieBreaker),
+        ]);
 
-        $tieBreaker = $this->asReal($this->tieBreaker);
-
-        return "paradedb.disjunction_max(disjuncts => $disjuncts, tie_breaker => $tieBreaker)";
+        return "paradedb.disjunction_max($params)";
     }
 
     public static function query(): static

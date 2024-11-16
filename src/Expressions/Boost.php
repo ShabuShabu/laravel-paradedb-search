@@ -19,8 +19,11 @@ readonly class Boost implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $query = $this->normalizeQuery($grammar, $this->query);
+        $params = $this->toParams([
+            'boost' => $this->boost,
+            'query' => $this->normalizeQuery($grammar, $this->query),
+        ]);
 
-        return "paradedb.boost(boost => $this->boost, query => $query)";
+        return "paradedb.boost($params)";
     }
 }

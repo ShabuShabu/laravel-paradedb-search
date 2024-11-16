@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('is_vip')->default(false);
             $table->integer('max_members')->nullable();
             $table->jsonb('options')->nullable();
-            $table->integerRange('size');
+            $table->integerRange('size')->nullable();
             $table->vector('embedding', 3)->nullable();
             $table->timestamps();
             $table->softDeletes();

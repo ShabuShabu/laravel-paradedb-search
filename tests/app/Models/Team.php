@@ -7,13 +7,11 @@ namespace ShabuShabu\ParadeDB\Tests\App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use ShabuShabu\ParadeDB\Concerns\Searchable;
 use ShabuShabu\ParadeDB\Tests\Database\Factories\TeamFactory;
 
 class Team extends Model
 {
     use HasFactory;
-    use Searchable;
 
     protected $guarded = [];
 

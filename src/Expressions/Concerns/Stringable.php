@@ -17,6 +17,16 @@ use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 trait Stringable
 {
+    protected function toParams(array $params): string
+    {
+        return collect($params)
+            ->filter()
+            ->map(function (string $value, string $key) {
+                return "$key => $value";
+            })
+            ->implode(', ');
+    }
+
     protected function toString(Grammar $grammar, string | Expression | Query $query): float | int | string
     {
         return match (true) {
@@ -66,35 +76,23 @@ trait Stringable
         return $value instanceof CarbonInterface ? $value : Date::parse($value);
     }
 
-    protected function asDate(?CarbonInterface $value, string $format): ?string
+    protected function asDate(?CarbonInterface $value, string $format): string
     {
         return ! is_null($value)
             ? $value->format($format)
-            : null;
+            : '';
     }
 
-    protected function asBool(?bool $value): string
+    protected function cast(Grammar $grammar, float | int | string | null | bool $value): ?string
     {
-        return match ($value) {
-            null => 'NULL::boolean',
-            true => 'true',
-            false => 'false',
+        return match (true) {
+            is_float($value),
+            is_int($value) => (string) $value,
+            is_null($value) => null,
+            is_string($value) => $grammar->escape($value),
+            $value === true => 'true',
+            $value === false => 'false',
         };
-    }
-
-    protected function asInt(?int $value): string
-    {
-        return $value === null ? 'NULL::integer' : (string) $value;
-    }
-
-    protected function asReal(null | int | float $value): string
-    {
-        return $value === null ? 'NULL::real' : (string) $value;
-    }
-
-    protected function asText(Grammar $grammar, ?string $value): string
-    {
-        return $value === null ? 'NULL::text' : $grammar->escape($value);
     }
 
     protected function stringize(Grammar $grammar, string | Expression $expression): float | int | string

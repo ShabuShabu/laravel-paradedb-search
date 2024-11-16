@@ -21,12 +21,14 @@ readonly class FuzzyTerm implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->asText($grammar, $this->field);
-        $value = $this->asText($grammar, $this->value);
-        $distance = $this->asInt($this->distance);
-        $transpose = $this->asBool($this->transpose);
-        $prefix = $this->asBool($this->prefix);
+        $params = $this->toParams([
+            'field' => $this->cast($grammar, $this->field),
+            'value' => $this->cast($grammar, $this->value),
+            'distance' => $this->cast($grammar, $this->distance),
+            'tranposition_cost_one' => $this->cast($grammar, $this->transpose),
+            'prefix' => $this->cast($grammar, $this->prefix),
+        ]);
 
-        return "paradedb.fuzzy_term(field => $field, value => $value, distance => $distance, tranposition_cost_one => $transpose, prefix => $prefix)";
+        return "paradedb.fuzzy_term($params)";
     }
 }

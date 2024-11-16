@@ -16,25 +16,31 @@ readonly class Snippet implements ParadeExpression
         private string $field,
         private ?string $startTag = null,
         private ?string $endTag = null,
-        private int $maxNumChars = 150,
+        private ?int $maxNumChars = null,
     ) {}
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->asText($grammar, $this->field);
-        $startTag = $this->asText($grammar, $this->startTag ?? $this->defaultTag('opening'));
-        $endTag = $this->asText($grammar, $this->endTag ?? $this->defaultTag('closing'));
-        $maxNumChars = $this->asInt($this->maxNumChars);
+        $params = $this->toParams([
+            'field' => $this->cast($grammar, $this->field),
+            'start_tag' => $this->cast($grammar, $this->startTag ?? $this->defaultTag('opening')),
+            'end_tag' => $this->cast($grammar, $this->endTag ?? $this->defaultTag('closing')),
+            'max_num_chars' => $this->cast($grammar, $this->maxNumChars),
+        ]);
 
-        return "paradedb.snippet(field => $field, start_tag => $startTag, end_tag => $endTag, max_num_chars => $maxNumChars)";
+        return "paradedb.snippet($params)";
     }
 
-    protected function defaultTag(string $type): string
+    protected function defaultTag(string $type): ?string
     {
         $tags = explode('><', config('paradedb-search.highlighting_tag'));
 
         if (count($tags) !== 2) {
             throw new RuntimeException('Invalid highlighting tag');
+        }
+
+        if ($tags[0] . '>' === '<b>') {
+            return null;
         }
 
         return match ($type) {

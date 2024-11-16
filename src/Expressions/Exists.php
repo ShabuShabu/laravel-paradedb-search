@@ -17,8 +17,10 @@ readonly class Exists implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->asText($grammar, $this->field);
+        $params = $this->toParams([
+            'field' => $this->cast($grammar, $this->field),
+        ]);
 
-        return "paradedb.exists(field => $field)";
+        return "paradedb.exists($params)";
     }
 }

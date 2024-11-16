@@ -19,8 +19,11 @@ readonly class ConstScore implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $query = $this->normalizeQuery($grammar, $this->query);
+        $params = $this->toParams([
+            'score' => $this->score,
+            'query' => $this->normalizeQuery($grammar, $this->query),
+        ]);
 
-        return "paradedb.const_score(score => $this->score, query => $query)";
+        return "paradedb.const_score($params)";
     }
 }

@@ -26,17 +26,18 @@ readonly class RangeTerm implements ParadeExpression
             throw new RuntimeException('A relation is needed when comparing a range');
         }
 
-        $field = $this->asText($grammar, $this->field);
-        $term = match (true) {
-            is_int($this->term) => $this->asInt($this->term),
-            is_float($this->term) => $this->asReal($this->term),
-            is_string($this->term) => $this->asText($grammar, $this->term),
-            default => $this->term->getValue($grammar),
-        };
+        $params = $this->toParams([
+            'field' => $this->cast($grammar, $this->field),
+            'term' => match (true) {
+                $this->isRangeExpression() => $this->term->getValue($grammar),
+                default => $this->cast($grammar, $this->term),
+            },
+            'relation' => $this->isRangeExpression() && $this->relation
+                ? "'{$this->relation->value}'"
+                : null,
+        ]);
 
-        return $this->isRangeExpression() && $this->relation
-            ? "paradedb.range_term(field => $field, term => $term, relation => '{$this->relation->value}')"
-            : "paradedb.range_term(field => $field, term => $term)";
+        return "paradedb.range_term($params)";
     }
 
     protected function isRangeExpression(): bool

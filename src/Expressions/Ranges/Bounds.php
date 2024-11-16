@@ -13,8 +13,8 @@ enum Bounds
 
     public function wrap(int | float | string | null $lower, int | float | string | null $upper): string
     {
-        $lower ??= 'NULL';
-        $upper ??= 'NULL';
+        $lower ??= '';
+        $upper ??= '';
 
         return match ($this) {
             self::includeStartExcludeEnd => "[$lower,$upper)",

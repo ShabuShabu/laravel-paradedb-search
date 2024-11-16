@@ -20,11 +20,13 @@ readonly class ParseWithField implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->asText($grammar, $this->field);
-        $query = $this->toString($grammar, $this->query);
-        $lenient = $this->asBool($this->lenient);
-        $conjunctionMode = $this->asBool($this->conjunctionMode);
+        $params = $this->toParams([
+            'field' => $this->cast($grammar, $this->field),
+            'query_string' => $this->toString($grammar, $this->query),
+            'lenient' => $this->cast($grammar, $this->lenient),
+            'conjunction_mode' => $this->cast($grammar, $this->conjunctionMode),
+        ]);
 
-        return "paradedb.parse_with_field(field => $field, query_string => $query, lenient => $lenient, conjunction_mode => $conjunctionMode)";
+        return "paradedb.parse_with_field($params)";
     }
 }

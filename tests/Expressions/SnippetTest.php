@@ -13,6 +13,6 @@ it('gets documents matching a fuzzy term: ', function (?string $startTag, ?strin
 
     expect($snippet)->toBeExpression($expression);
 })->with([
-    'no options' => [null, null, null, "paradedb.snippet(field => 'description', start_tag => '<b>', end_tag => '</b>', max_num_chars => 150)"],
+    'no options' => [null, null, null, "paradedb.snippet(field => 'description')"],
     'with options' => ['<pre>', '</pre>', 10, "paradedb.snippet(field => 'description', start_tag => '<pre>', end_tag => '</pre>', max_num_chars => 10)"],
 ]);

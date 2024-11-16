@@ -32,28 +32,26 @@ readonly class MoreLikeThis implements ParadeExpression
     {
         $docField = is_int($this->idOrFields) ? 'document_id' : 'document_fields';
 
-        $docValue = match (true) {
-            is_int($this->idOrFields) => $this->asInt($this->idOrFields),
-            is_array($this->idOrFields) => $grammar->escape(json_encode($this->idOrFields, JSON_THROW_ON_ERROR)),
-        };
-
-        $minDocFrequency = $this->asInt($this->minDocFrequency);
-        $maxDocFrequency = $this->asInt($this->maxDocFrequency);
-        $minTermFrequency = $this->asInt($this->minTermFrequency);
-        $maxQueryTerms = $this->asInt($this->maxQueryTerms);
-        $minWordLength = $this->asInt($this->minWordLength);
-        $maxWordLength = $this->asInt($this->maxWordLength);
-        $boostFactor = $this->asReal($this->boostFactor);
-
         if ($this->stopWords && ! array_is_list($this->stopWords)) {
             throw new RuntimeException('Stop words must be a list of strings');
         }
 
-        $stopWords = $this->stopWords === null
-            ? 'NULL::text[]'
-            : $this->buildStopWords($grammar);
+        $params = $this->toParams([
+            $docField => match (true) {
+                is_int($this->idOrFields) => $this->cast($grammar, $this->idOrFields),
+                is_array($this->idOrFields) => $grammar->escape(json_encode($this->idOrFields, JSON_THROW_ON_ERROR)),
+            },
+            'min_doc_frequency' => $this->cast($grammar, $this->minDocFrequency),
+            'max_doc_frequency' => $this->cast($grammar, $this->maxDocFrequency),
+            'min_term_frequency' => $this->cast($grammar, $this->minTermFrequency),
+            'max_query_terms' => $this->cast($grammar, $this->maxQueryTerms),
+            'min_word_length' => $this->cast($grammar, $this->minWordLength),
+            'max_word_length' => $this->cast($grammar, $this->maxWordLength),
+            'boost_factor' => $this->cast($grammar, $this->boostFactor),
+            'stop_words' => $this->stopWords !== null ? $this->buildStopWords($grammar) : null,
+        ]);
 
-        return "paradedb.more_like_this($docField => $docValue, min_doc_frequency => $minDocFrequency, max_doc_frequency => $maxDocFrequency, min_term_frequency => $minTermFrequency, max_query_terms => $maxQueryTerms, min_word_length => $minWordLength, max_word_length => $maxWordLength, boost_factor => $boostFactor, stop_words => $stopWords)";
+        return "paradedb.more_like_this($params)";
     }
 
     /**

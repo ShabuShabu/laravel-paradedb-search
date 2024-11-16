@@ -20,10 +20,12 @@ readonly class Parse implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $query = $this->toString($grammar, $this->query);
-        $lenient = $this->asBool($this->lenient);
-        $conjunctionMode = $this->asBool($this->conjunctionMode);
+        $params = $this->toParams([
+            'query_string' => $this->toString($grammar, $this->query),
+            'lenient' => $this->cast($grammar, $this->lenient),
+            'conjunction_mode' => $this->cast($grammar, $this->conjunctionMode),
+        ]);
 
-        return "paradedb.parse(query_string => $query, lenient => $lenient, conjunction_mode => $conjunctionMode)";
+        return "paradedb.parse($params)";
     }
 }

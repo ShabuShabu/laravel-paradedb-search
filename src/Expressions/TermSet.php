@@ -26,15 +26,17 @@ class TermSet implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $terms = count($this->terms) <= 0
-            ? 'ARRAY[]::paradedb.searchqueryinput[]'
-            : $this->wrapArray(
-                collect($this->terms)
-                    ->ensure(Term::class)
-                    ->map(fn (Term $term) => $term->getValue($grammar))
-            );
+        $params = $this->toParams([
+            'terms' => count($this->terms) <= 0
+                ? null
+                : $this->wrapArray(
+                    collect($this->terms)
+                        ->ensure(Term::class)
+                        ->map(fn (Term $term) => $term->getValue($grammar))
+                ),
+        ]);
 
-        return "paradedb.term_set(terms => $terms)";
+        return "paradedb.term_set($params)";
     }
 
     public static function query(): static

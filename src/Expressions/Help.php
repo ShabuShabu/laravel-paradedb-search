@@ -19,9 +19,11 @@ readonly class Help implements Expression
 
     public function getValue(Grammar $grammar): string
     {
-        $subject = $this->toString($grammar, $this->subject);
-        $body = $this->toString($grammar, $this->body);
+        $params = $this->toParams([
+            'subject' => $this->toString($grammar, $this->subject),
+            'body' => $this->toString($grammar, $this->body),
+        ]);
 
-        return "paradedb.help(subject => $subject, body => $body)";
+        return "paradedb.help($params)";
     }
 }

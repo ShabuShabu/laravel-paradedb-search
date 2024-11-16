@@ -29,11 +29,11 @@ it('finds documents within a given range: ', function (Ranges\RangeExpression $r
     ],
     'date range unbounded start' => [
         new Ranges\Date(null, '2024-06-12', Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[NULL,2024-06-12)'::daterange)",
+        "paradedb.range(field => 'column', range => '[,2024-06-12)'::daterange)",
     ],
     'date range unbounded end' => [
         new Ranges\Date('2024-06-10', null, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[2024-06-10,NULL)'::daterange)",
+        "paradedb.range(field => 'column', range => '[2024-06-10,)'::daterange)",
     ],
     'timestamp range include exclude' => [
         new Ranges\Timestamp('2024-06-10 15:27:32', '2024-06-12 15:27:32', Ranges\Bounds::includeStartExcludeEnd),
@@ -53,11 +53,11 @@ it('finds documents within a given range: ', function (Ranges\RangeExpression $r
     ],
     'timestamp range unbounded start' => [
         new Ranges\Timestamp(null, '2024-06-12 15:27:32', Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[NULL,2024-06-12 15:27:32)'::tsrange)",
+        "paradedb.range(field => 'column', range => '[,2024-06-12 15:27:32)'::tsrange)",
     ],
     'timestamp range unbounded end' => [
         new Ranges\Timestamp('2024-06-10 15:27:32', null, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[2024-06-10 15:27:32,NULL)'::tsrange)",
+        "paradedb.range(field => 'column', range => '[2024-06-10 15:27:32,)'::tsrange)",
     ],
     'timestamptz range include exclude' => [
         new Ranges\TimestampTz('2024-06-10 15:27:32+05:45', '2024-06-12 15:27:32+05:45', Ranges\Bounds::includeStartExcludeEnd),
@@ -77,11 +77,11 @@ it('finds documents within a given range: ', function (Ranges\RangeExpression $r
     ],
     'timestamptz range unbounded start' => [
         new Ranges\TimestampTz(null, '2024-06-12 15:27:32+05:45', Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[NULL,2024-06-12 15:27:32+05:45)'::tstzrange)",
+        "paradedb.range(field => 'column', range => '[,2024-06-12 15:27:32+05:45)'::tstzrange)",
     ],
     'timestamptz range unbounded end' => [
         new Ranges\TimestampTz('2024-06-10 15:27:32+05:45', null, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[2024-06-10 15:27:32+05:45,NULL)'::tstzrange)",
+        "paradedb.range(field => 'column', range => '[2024-06-10 15:27:32+05:45,)'::tstzrange)",
     ],
     'int4 range include exclude' => [
         new Ranges\Int4(2, 5, Ranges\Bounds::includeStartExcludeEnd),
@@ -101,11 +101,11 @@ it('finds documents within a given range: ', function (Ranges\RangeExpression $r
     ],
     'int4 range unbounded start' => [
         new Ranges\Int4(null, 5, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[NULL,5)'::int4range)",
+        "paradedb.range(field => 'column', range => '[,5)'::int4range)",
     ],
     'int4 range unbounded end' => [
         new Ranges\Int4(2, null, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[2,NULL)'::int4range)",
+        "paradedb.range(field => 'column', range => '[2,)'::int4range)",
     ],
     'int8 range include exclude' => [
         new Ranges\Int8(2, 5, Ranges\Bounds::includeStartExcludeEnd),
@@ -125,11 +125,11 @@ it('finds documents within a given range: ', function (Ranges\RangeExpression $r
     ],
     'int8 range unbounded start' => [
         new Ranges\Int8(null, 5, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[NULL,5)'::int8range)",
+        "paradedb.range(field => 'column', range => '[,5)'::int8range)",
     ],
     'int8 range unbounded end' => [
         new Ranges\Int8(2, null, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[2,NULL)'::int8range)",
+        "paradedb.range(field => 'column', range => '[2,)'::int8range)",
     ],
     'numeric range include exclude' => [
         new Ranges\Numeric(1.5, 3.5, Ranges\Bounds::includeStartExcludeEnd),
@@ -149,11 +149,11 @@ it('finds documents within a given range: ', function (Ranges\RangeExpression $r
     ],
     'numeric range unbounded start' => [
         new Ranges\Numeric(null, 3.5, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[NULL,3.5)'::numrange)",
+        "paradedb.range(field => 'column', range => '[,3.5)'::numrange)",
     ],
     'numeric range unbounded end' => [
         new Ranges\Numeric(1.5, null, Ranges\Bounds::includeStartExcludeEnd),
-        "paradedb.range(field => 'column', range => '[1.5,NULL)'::numrange)",
+        "paradedb.range(field => 'column', range => '[1.5,)'::numrange)",
     ],
 ]);
 

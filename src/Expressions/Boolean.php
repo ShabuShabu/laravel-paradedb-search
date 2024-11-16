@@ -54,17 +54,19 @@ class Boolean implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $must = $this->process($grammar, $this->must);
-        $should = $this->process($grammar, $this->should);
-        $mustNot = $this->process($grammar, $this->mustNot);
+        $params = $this->toParams([
+            'must' => $this->process($grammar, $this->must),
+            'should' => $this->process($grammar, $this->should),
+            'must_not' => $this->process($grammar, $this->mustNot),
+        ]);
 
-        return "paradedb.boolean(must => $must, should => $should, must_not => $mustNot)";
+        return "paradedb.boolean($params)";
     }
 
-    protected function process(Grammar $grammar, null | string | array | ParadeExpression | Query $expressions): string
+    protected function process(Grammar $grammar, null | string | array | ParadeExpression | Query $expressions): ?string
     {
         return is_null($expressions)
-            ? 'ARRAY[]::paradedb.searchqueryinput[]'
+            ? null
             : $this->wrapArray(
                 $this->normalizeQueries($grammar, $expressions)
             );

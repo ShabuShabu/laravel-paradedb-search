@@ -19,9 +19,11 @@ readonly class Range implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->asText($grammar, $this->field);
-        $range = $this->range->getValue($grammar);
+        $params = $this->toParams([
+            'field' => $this->cast($grammar, $this->field),
+            'range' => $this->range->getValue($grammar),
+        ]);
 
-        return "paradedb.range(field => $field, range => $range)";
+        return "paradedb.range($params)";
     }
 }

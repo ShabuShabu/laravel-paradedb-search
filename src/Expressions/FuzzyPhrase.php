@@ -22,13 +22,15 @@ readonly class FuzzyPhrase implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $field = $this->asText($grammar, $this->field);
-        $value = $this->asText($grammar, $this->value);
-        $distance = $this->asInt($this->distance);
-        $transpose = $this->asBool($this->transpose);
-        $prefix = $this->asBool($this->prefix);
-        $matchAll = $this->asBool($this->matchAll);
+        $params = $this->toParams([
+            'field' => $this->cast($grammar, $this->field),
+            'value' => $this->cast($grammar, $this->value),
+            'distance' => $this->cast($grammar, $this->distance),
+            'tranposition_cost_one' => $this->cast($grammar, $this->transpose),
+            'prefix' => $this->cast($grammar, $this->prefix),
+            'match_all_terms' => $this->cast($grammar, $this->matchAll),
+        ]);
 
-        return "paradedb.fuzzy_phrase(field => $field, value => $value, distance => $distance, tranposition_cost_one => $transpose, prefix => $prefix, match_all_terms => $matchAll)";
+        return "paradedb.fuzzy_phrase($params)";
     }
 }

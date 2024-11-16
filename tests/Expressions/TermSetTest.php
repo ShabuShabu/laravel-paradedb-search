@@ -25,7 +25,7 @@ it('matches documents containing a specified term in a fliud manner')
 
 it('provides a default value')
     ->expect(new TermSet([]))
-    ->toBeExpression('paradedb.term_set(terms => ARRAY[]::paradedb.searchqueryinput[])');
+    ->toBeExpression('paradedb.term_set()');
 
 it('panics for non-terms in the set', function () {
     (new TermSet(['description:shoes']))->getValue(grammar());
