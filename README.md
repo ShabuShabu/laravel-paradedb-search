@@ -598,7 +598,8 @@ See: https://docs.paradedb.com/documentation/advanced/term/term
 #### Search for a set of terms
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;use ShabuShabu\ParadeDB\Expressions\TermSet;
+use ShabuShabu\ParadeDB\Expressions\Term;
+use ShabuShabu\ParadeDB\Expressions\TermSet;
 
 Product::query()
     ->where('id', '@@@', new TermSet([
