@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.7.0) (2024-11-16)
+
+
+### Features
+
+* added ability to add partial bm25 indices ([fc2f1da](https://github.com/ShabuShabu/laravel-paradedb-search/commits/fc2f1daaadb82e5eaee1b7c9e549636937b5142d))
+* implemented all new v0.12.0 expressions ([1b10a68](https://github.com/ShabuShabu/laravel-paradedb-search/commits/1b10a6855130592a54b1155fb01c4382e9e8ace4))
+
 ## [0.6.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.5.1...v0.6.0) (2024-06-19)
 
 
