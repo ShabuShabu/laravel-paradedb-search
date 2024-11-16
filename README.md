@@ -659,13 +659,14 @@ Boolean queries can also be constructed in a fluid manner:
 
 ```php
 use ShabuShabu\ParadeDB\Expressions\Term;
+use ShabuShabu\ParadeDB\Operators\FullText;
 use ShabuShabu\ParadeDB\Expressions\Boolean;
 use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 
 Product::query()
-    ->where('id', '@@@', Boolean::query()
+    ->where('id', FullText::search->value, Boolean::query()
         ->should(new Term('description', 'headphones'))
         ->must(new Term('category', 'electronics'))
         ->must(new FuzzyTerm('description', 'bluetooht'))
