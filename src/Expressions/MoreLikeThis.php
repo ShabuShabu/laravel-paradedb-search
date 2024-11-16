@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB\Expressions;
 
 use Illuminate\Database\Grammar;
-use Illuminate\Support\Str;
 use JsonException;
 use RuntimeException;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
@@ -35,10 +34,7 @@ readonly class MoreLikeThis implements ParadeExpression
 
         $docValue = match (true) {
             is_int($this->idOrFields) => $this->asInt($this->idOrFields),
-            is_array($this->idOrFields) => Str::wrap(
-                $grammar->escape(json_encode($this->idOrFields, JSON_THROW_ON_ERROR)),
-                "'"
-            ),
+            is_array($this->idOrFields) => $grammar->escape(json_encode($this->idOrFields, JSON_THROW_ON_ERROR)),
         };
 
         $minDocFrequency = $this->asInt($this->minDocFrequency);
@@ -55,12 +51,23 @@ readonly class MoreLikeThis implements ParadeExpression
 
         $stopWords = $this->stopWords === null
             ? 'NULL::text[]'
-            : collect($this->stopWords)
-                ->filter(fn (mixed $word) => is_string($word))
-                ->map(fn (string $word) => $grammar->escape($word))
-                ->values()
-                ->all();
+            : $this->buildStopWords($grammar);
 
         return "paradedb.more_like_this($docField => $docValue, min_doc_frequency => $minDocFrequency, max_doc_frequency => $maxDocFrequency, min_term_frequency => $minTermFrequency, max_query_terms => $maxQueryTerms, min_word_length => $minWordLength, max_word_length => $maxWordLength, boost_factor => $boostFactor, stop_words => $stopWords)";
+    }
+
+    /**
+     * @throws JsonException
+     */
+    protected function buildStopWords(Grammar $grammar): string
+    {
+        $words = collect($this->stopWords)
+            ->filter(fn (mixed $word) => is_string($word))
+            ->values()
+            ->all();
+
+        $words = $grammar->escape(json_encode($words, JSON_THROW_ON_ERROR));
+
+        return "$words::json";
     }
 }

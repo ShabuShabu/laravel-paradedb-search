@@ -6,14 +6,11 @@ namespace ShabuShabu\ParadeDB\Expressions;
 
 use Illuminate\Database\Grammar;
 use JsonException;
-use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
 readonly class JsonB implements ParadeExpression
 {
-    use Stringable;
-
     public function __construct(
-        private array $query,
+        private array | string $query,
     ) {}
 
     /**
@@ -21,10 +18,16 @@ readonly class JsonB implements ParadeExpression
      */
     public function getValue(Grammar $grammar): string
     {
+        if (is_string($this->query) && ! json_validate($this->query)) {
+            throw new JsonException('Invalid JSON query');
+        }
+
         $query = $grammar->escape(
-            json_encode($this->query, JSON_THROW_ON_ERROR)
+            is_string($this->query)
+                ? $this->query
+                : json_encode($this->query, JSON_THROW_ON_ERROR)
         );
 
-        return "'$query'::jsonb";
+        return "$query::jsonb";
     }
 }

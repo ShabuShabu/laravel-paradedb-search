@@ -23,3 +23,7 @@ The following required dependency versions have been updated:
 ### Changes
 
 - Order of `ShabuShabu\ParadeDB\Expressions\Boolean` parameters was changed to `should`, `must` and `mustNot` to reflect the order in `pg_search` itself.
+
+### Misc
+
+- Please note that it is necessary to restart Postgres after upgrading to `pg_search` v0.12.0
