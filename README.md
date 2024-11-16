@@ -96,7 +96,7 @@ Bm25::index('teams')
 
 ParadeDB Search for Laravel comes with a fluent builder for TantivyQL, a simple string-based query language.
 
-This builder can be passed as a condition to a search `where` method or used within the various ParadeDB expressions.
+This builder can be used within various ParadeDB expressions.
 
 #### Basic query
 

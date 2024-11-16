@@ -548,13 +548,11 @@ it('applies a rank', function () {
 it('performs a similarity search', function () {
     Team::factory()->create([
         'name' => 'nice team',
-        'description' => 'something...',
         'embedding' => '[1,2,3]',
     ]);
 
     Team::factory()->create([
         'name' => 'test team',
-        'description' => 'something or another something...',
         'embedding' => '[2,3,4]',
     ]);
 
