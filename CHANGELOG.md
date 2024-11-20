@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.8.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.8.0) (2024-11-20)
+
+
+### Bug Fixes
+
+* use regular drop index now ([e4825c4](https://github.com/ShabuShabu/laravel-paradedb-search/commits/e4825c4daf48f6b7b94ece87b86329fb3502601f))
+
+
 ## [0.7.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.7.0) (2024-11-16)
 
 

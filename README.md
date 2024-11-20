@@ -11,7 +11,7 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 | PHP | Laravel | PostgreSQL | pg_search |
 |-----|---------|------------|-----------|
-| 8.2 | 11.0    | 16         | 0.12.0    |
+| 8.2 | 11.0    | 16         | 0.12.2    |
 
 ## Installation
 
@@ -96,7 +96,7 @@ Bm25::index('teams')
 
 ParadeDB Search for Laravel comes with a fluent builder for TantivyQL, a simple string-based query language.
 
-This builder can be passed as a condition to a search `where` method or used within the various ParadeDB expressions.
+This builder can be used within various ParadeDB expressions.
 
 #### Basic query
 
@@ -225,7 +225,7 @@ Query::string()
 
 ### Performing a basic search
 
-To search, you just use the custom `@@@` operator in a regular Eloquent query.
+To search, you just use the custom `@@@` operator in a regular Eloquent where condition.
 
 ```php
 Product::query()
@@ -335,7 +335,7 @@ use ShabuShabu\ParadeDB\Expressions\Boolean;
 use ShabuShabu\ParadeDB\Expressions\ConstScore;
 
 Product::query()
-    ->select(['*', new Score()])
+    ->selectWithScore()
     ->where('id', '@@@', new Boolean(
         should: [
             new ConstScore(new Term('description', 'shoes'), 1.0),
@@ -598,7 +598,8 @@ See: https://docs.paradedb.com/documentation/advanced/term/term
 #### Search for a set of terms
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;use ShabuShabu\ParadeDB\Expressions\TermSet;
+use ShabuShabu\ParadeDB\Expressions\Term;
+use ShabuShabu\ParadeDB\Expressions\TermSet;
 
 Product::query()
     ->where('id', '@@@', new TermSet([
@@ -658,13 +659,14 @@ Boolean queries can also be constructed in a fluid manner:
 
 ```php
 use ShabuShabu\ParadeDB\Expressions\Term;
+use ShabuShabu\ParadeDB\Operators\FullText;
 use ShabuShabu\ParadeDB\Expressions\Boolean;
 use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 
 Product::query()
-    ->where('id', '@@@', Boolean::query()
+    ->where('id', FullText::search->value, Boolean::query()
         ->should(new Term('description', 'headphones'))
         ->must(new Term('category', 'electronics'))
         ->must(new FuzzyTerm('description', 'bluetooht'))

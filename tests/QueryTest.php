@@ -30,7 +30,6 @@ use ShabuShabu\ParadeDB\Expressions\Rank;
 use ShabuShabu\ParadeDB\Expressions\Regex;
 use ShabuShabu\ParadeDB\Expressions\Score;
 use ShabuShabu\ParadeDB\Expressions\Similarity;
-use ShabuShabu\ParadeDB\Expressions\Snippet;
 use ShabuShabu\ParadeDB\Expressions\Term;
 use ShabuShabu\ParadeDB\Expressions\TermSet;
 use ShabuShabu\ParadeDB\Operators\Distance;
@@ -158,7 +157,7 @@ it('parses a query string for a given field', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new ParseWithField('description', 'test'))
+        ->where('id', '@@@', new ParseWithField('description', 'test'))
         ->get();
 
     expect($teams)
@@ -174,7 +173,7 @@ it('highlights a search term', function () {
     ]);
 
     $teams = Team::query()
-        ->select(['id', new Snippet('description')])
+        ->selectWithSnippet('description')
         ->where('description', '@@@', 'test')
         ->get();
 
@@ -201,7 +200,7 @@ it('searches for a given regular expression', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new Regex('description', '(something|test)'))
+        ->where('id', '@@@', new Regex('description', '(something|test)'))
         ->orderBy('name')
         ->get();
 
@@ -245,7 +244,7 @@ it('searches for a given term', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new Term('description', 'something'))
+        ->where('id', '@@@', new Term('description', 'something'))
         ->get();
 
     expect($teams)
@@ -266,7 +265,7 @@ it('searches for a given term set', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new TermSet([
+        ->where('id', '@@@', new TermSet([
             new Term('description', 'something'),
             new Term('description', 'other'),
         ]))
@@ -290,7 +289,7 @@ it('searches for a fuzzy phrase', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new FuzzyPhrase('description', 'ruining shoez'))
+        ->where('id', '@@@', new FuzzyPhrase('description', 'ruining shoez'))
         ->get();
 
     expect($teams)
@@ -337,7 +336,7 @@ it('searches for a phrase', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new Phrase('description', ['running', 'shoes']))
+        ->where('id', '@@@', new Phrase('description', ['running', 'shoes']))
         ->get();
 
     expect($teams)
@@ -358,7 +357,7 @@ it('searches for a phrase prefix', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new PhrasePrefix('description', ['running', 'sh']))
+        ->where('id', '@@@', new PhrasePrefix('description', ['running', 'sh']))
         ->get();
 
     expect($teams)
@@ -384,8 +383,8 @@ it('applies a disjunction max query', function () {
     ]);
 
     $teams = Team::query()
-        ->select(['*', new Score])
-        ->whereSearch(new DisjunctionMax([
+        ->selectWithScore()
+        ->where('id', '@@@', new DisjunctionMax([
             new Term('description', 'shoes'),
             new Term('description', 'running'),
         ]))
@@ -420,7 +419,7 @@ it('gets more like this by id', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new MoreLikeThis(
+        ->where('id', '@@@', new MoreLikeThis(
             idOrFields: $first->id,
             minTermFrequency: 1,
         ))
@@ -442,7 +441,7 @@ it('gets more like this by search term,', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new MoreLikeThis(
+        ->where('id', '@@@', new MoreLikeThis(
             idOrFields: ['description' => 'running'],
             minDocFrequency: 0,
             maxDocFrequency: 100,
@@ -466,7 +465,7 @@ it('searches for a given range', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new Range('max_members', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
+        ->where('id', '@@@', new Range('max_members', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
         ->get();
 
     expect($teams)
@@ -487,7 +486,7 @@ it('searches for a given range term', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new RangeTerm('size', 3))
+        ->where('id', '@@@', new RangeTerm('size', 3))
         ->get();
 
     expect($teams)
@@ -534,7 +533,7 @@ it('applies a rank', function () {
             'name',
             new Alias(new Rank([new Score, 'asc']), 'rank'),
         ])
-        ->where('description', '@@@', 'something')
+        ->whereSearch('something', 'description')
         ->orderBy('rank')
         ->get();
 
@@ -548,13 +547,11 @@ it('applies a rank', function () {
 it('performs a similarity search', function () {
     Team::factory()->create([
         'name' => 'nice team',
-        'description' => 'something...',
         'embedding' => '[1,2,3]',
     ]);
 
     Team::factory()->create([
         'name' => 'test team',
-        'description' => 'something or another something...',
         'embedding' => '[2,3,4]',
     ]);
 
