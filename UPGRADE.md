@@ -1,5 +1,13 @@
 # Upgrade Guide
 
+## Upgrading To 0.8.0 From 0.7.*
+
+### Minimum Versions
+
+The following required dependency versions have been updated:
+
+- The minimum `pg_search` version is now v0.12.2
+
 ## Upgrading To 0.7.0 From 0.6.*
 
 0.7.0 is a big upgrade and care should be taken to check your code for incompatibilities. The introduction of the `@@@` operator opens up a lot of possibilities and allowed us to delete quite a bit of code.

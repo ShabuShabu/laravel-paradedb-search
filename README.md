@@ -11,7 +11,7 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 | PHP | Laravel | PostgreSQL | pg_search |
 |-----|---------|------------|-----------|
-| 8.2 | 11.0    | 16         | 0.12.0    |
+| 8.2 | 11.0    | 16         | 0.12.2    |
 
 ## Installation
 
@@ -335,7 +335,7 @@ use ShabuShabu\ParadeDB\Expressions\Boolean;
 use ShabuShabu\ParadeDB\Expressions\ConstScore;
 
 Product::query()
-    ->select(['*', new Score()])
+    ->selectWithScore()
     ->where('id', '@@@', new Boolean(
         should: [
             new ConstScore(new Term('description', 'shoes'), 1.0),

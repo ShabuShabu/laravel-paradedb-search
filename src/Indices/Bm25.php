@@ -131,10 +131,7 @@ class Bm25
 
     public function drop(): bool
     {
-        return DB::statement('CALL paradedb.drop_bm25(:index_name, :schema_name);', [
-            'index_name' => $this->indexName(),
-            'schema_name' => $this->schema,
-        ]);
+        return DB::statement(sprintf('drop index if exists %s;', $this->indexName()));
     }
 
     public function __call(string $method, array $arguments): static
