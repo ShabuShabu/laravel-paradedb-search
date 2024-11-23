@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.9.1) (2024-11-23)
+
+
+### Features
+
+* added paradedb:tokenizers command ([6e173dc](https://github.com/ShabuShabu/laravel-paradedb-search/commits/6e173dc73fa573755f13fe6b83ed7c5d3d5ea029))
+
+
 ## [0.9.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.9.0) (2024-11-23)
 
 

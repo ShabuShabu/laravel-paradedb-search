@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use ShabuShabu\ParadeDB\Commands\Help;
 use ShabuShabu\ParadeDB\Commands\TestTable;
+use ShabuShabu\ParadeDB\Commands\Tokenizers;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\Parse;
 use ShabuShabu\ParadeDB\Expressions\Score;
@@ -29,6 +30,7 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             ->hasCommands(
                 Help::class,
                 TestTable::class,
+                Tokenizers::class,
             )
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
