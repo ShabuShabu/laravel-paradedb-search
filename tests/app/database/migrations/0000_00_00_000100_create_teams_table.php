@@ -27,8 +27,11 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index('embedding vector_cosine_ops')->algorithm('hnsw');
+            $table->index(['id', 'name', 'description', 'is_vip', 'max_members', 'options', 'size', 'user_id', 'created_at', 'deleted_at'])
+                ->algorithm('bm25')
+                ->with([
+                    'key_field' => 'id',
+                ]);
         });
-
-        create_teams_index(drop: true);
     }
 };
