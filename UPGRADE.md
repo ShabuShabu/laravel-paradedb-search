@@ -1,12 +1,29 @@
 # Upgrade Guide
 
+## Upgrading To 0.9.0 From 0.8.*
+
+### Dependencies
+
+- `tpetry/laravel-postgresql-enhanced` is now a dependency
+
+### Minimum Versions
+
+The following required dependency versions have been updated:
+
+- The minimum `pg_search` version is now `v0.13.0`
+- `tpetry/laravel-postgresql-enhanced` @ `v2.0`
+
+### Deletions
+
+- `ShabuShabu\ParadeDB\Indices\Bm25` has been deleted as it's now possible to create the index using native Laravel schema methods.
+
 ## Upgrading To 0.8.0 From 0.7.*
 
 ### Minimum Versions
 
 The following required dependency versions have been updated:
 
-- The minimum `pg_search` version is now v0.12.2
+- The minimum `pg_search` version is now `v0.12.2`
 
 ## Upgrading To 0.7.0 From 0.6.*
 
@@ -16,7 +33,7 @@ The following required dependency versions have been updated:
 
 The following required dependency versions have been updated:
 
-- The minimum `pg_search` version is now v0.12.0
+- The minimum `pg_search` version is now `v0.12.0`
 
 ### Renamed namespaces
 
@@ -25,7 +42,7 @@ The following required dependency versions have been updated:
 
 ### Deletions
 
-- Due to the use of the `@@@` operator in v0.12.0, the `ShabuShabu\ParadeDB\Query\Search` class is not needed anymore and was deleted
+- Due to the use of the `@@@` operator in `v0.12.0`, the `ShabuShabu\ParadeDB\Query\Search` class is not needed anymore and was deleted
 - The `FullTextSearch` and `HybridSearch` expressions have been removed
 
 ### Changes
@@ -34,4 +51,4 @@ The following required dependency versions have been updated:
 
 ### Misc
 
-- Please note that it is necessary to restart Postgres after upgrading to `pg_search` v0.12.0
+- Please note that it is necessary to restart Postgres after upgrading `pg_search`

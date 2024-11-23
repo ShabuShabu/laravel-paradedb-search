@@ -11,7 +11,7 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 | PHP | Laravel | PostgreSQL | pg_search |
 |-----|---------|------------|-----------|
-| 8.2 | 11.0    | 16         | 0.12.2    |
+| 8.2 | 11.0    | 16         | 0.13.0    |
 
 ## Installation
 
@@ -48,49 +48,26 @@ return [
 Each model that you want to be searchable needs a corresponding `bm25` index. These can be generated within a migration like so:
 
 ```php
-use ShabuShabu\ParadeDB\Indices\Bm25;
-
 return new class extends Migration
 {
     public function up(): void
     {
         Schema::create('products', static function (Blueprint $table) {
             // all your product fields
+            
+           $table->index(['id', 'name', 'description', 'currency', 'amount', 'is_available', 'options', 'size', 'created_at', 'deleted_at'])
+                ->algorithm('bm25')
+                ->with([
+                    'key_field' => 'id'
+                ]);
         });
-
-        Bm25::index('products')
-            ->addNumericFields(['amount'])
-            ->addBooleanFields(['is_available'])
-            ->addDateFields(['created_at', 'deleted_at'])
-            ->addJsonFields(['options'])
-            ->addRangeFields(['size'])
-            ->addTextFields([
-                'name',
-                'currency',
-                'description' => [
-                    'tokenizer' => [
-                        'type' => 'default',
-                    ],
-                ],
-            ])
-            ->create(drop: true);
-    }
-    
-    public function down(): void
-    {
-        Bm25::index('products')->drop();
     }
 };
 ```
 
-### Add a partial bm25 index
-
-```php
-Bm25::index('teams')
-    ->partialBy('max_members > 2')
-    // ...
-    ->create();
-```
+See:
+- https://docs.paradedb.com/documentation/indexing/create_index
+- https://docs.paradedb.com/documentation/indexing/field_options
 
 ### TantivyQL
 
