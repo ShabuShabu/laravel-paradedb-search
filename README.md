@@ -55,7 +55,7 @@ return new class extends Migration
         Schema::create('products', static function (Blueprint $table) {
             // all your product fields
             
-           $table->index(['id', 'name', 'description', 'currency', 'amount', 'is_available', 'options', 'size', 'created_at', 'deleted_at'])
+           $table->index(['id', 'name', 'description', 'currency', 'amount', 'is_available', 'options', 'size', 'created_at', 'deleted_at'], 'products_bm25_idx')
                 ->algorithm('bm25')
                 ->with([
                     'key_field' => 'id'
