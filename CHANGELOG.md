@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.9.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.9.0) (2024-11-23)
+
+
+### Features
+
+* added compatibility with pg_search v0.13.0 ([8328b21](https://github.com/ShabuShabu/laravel-paradedb-search/commits/8328b2195df825c451a2ee96e1a058e39d56fe5d))
+
+
 ## [0.8.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.8.0) (2024-11-20)
 
 
