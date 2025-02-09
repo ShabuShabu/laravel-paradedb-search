@@ -13,7 +13,7 @@ use ShabuShabu\ParadeDB\Expressions\Boost;
 use ShabuShabu\ParadeDB\Expressions\ConstScore;
 use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
 use ShabuShabu\ParadeDB\Expressions\Exists;
-use ShabuShabu\ParadeDB\Expressions\FuzzyPhrase;
+use ShabuShabu\ParadeDB\Expressions\FullText;
 use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
 use ShabuShabu\ParadeDB\Expressions\JsonB;
 use ShabuShabu\ParadeDB\Expressions\MoreLikeThis;
@@ -289,7 +289,7 @@ it('searches for a fuzzy phrase', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new FuzzyPhrase('description', 'ruining shoez'))
+        ->where('id', '@@@', new FullText('description', 'ruining shoes'))
         ->get();
 
     expect($teams)
@@ -408,14 +408,18 @@ it('gets more like this by id', function () {
         'description' => 'boring description...',
         'is_vip' => true,
         'max_members' => 3,
+        'size' => '[4,6)',
+        'embedding' => '[2,3,4]',
     ]);
 
     Team::factory()->create([
         'user_id' => $user->id,
-        'name' => 'nice team',
+        'name' => 'second team',
         'description' => 'boring description...',
         'is_vip' => true,
         'max_members' => 3,
+        'size' => '[4,6)',
+        'embedding' => '[2,3,4]',
     ]);
 
     $teams = Team::query()

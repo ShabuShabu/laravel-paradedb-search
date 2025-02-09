@@ -1,5 +1,17 @@
 # Upgrade Guide
 
+## Upgrading To 0.10.0 From 0.9.*
+
+### Minimum Versions
+
+The following required dependency versions have been updated:
+
+- The minimum `pg_search` version is now `v0.15.1`
+
+### Deletions
+
+- The `FuzzyPhrase` expression has been removed and is replaced by the new `FullText` expression
+
 ## Upgrading To 0.9.0 From 0.8.*
 
 ### Dependencies

@@ -11,7 +11,7 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 | PHP | Laravel | PostgreSQL | pg_search |
 |-----|---------|------------|-----------|
-| 8.2 | 11.0    | 16         | 0.13.0    |
+| 8.2 | 11.0    | 16         | 0.15.1    |
 
 ## Installation
 
@@ -29,7 +29,7 @@ composer require shabushabu/laravel-paradedb-search
 You can also publish the config file:
 
 ```bash
-php artisan vendor:publish --tag="laravel-paradedb-search-config"
+php artisan vendor:publish --tag="paradedb-search-config"
 ```
 
 These are the contents of the published config file:
@@ -389,17 +389,19 @@ Product::query()
 
 See: https://docs.paradedb.com/documentation/advanced/term/fuzzy_term
 
-#### Search for a fuzzy phrase
+#### Match query
+
+Please note that the underlying ParadeDB method is actually called `match`, which is a reserved keyword in PHP.
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\FuzzyPhrase;
+use ShabuShabu\ParadeDB\Expressions\FullText;
 
 Product::query()
-    ->where('id', '@@@', new FuzzyPhrase('description', 'ruining shoez'))
+    ->where('id', '@@@', new FullText('description', 'ruining shoes'))
     ->get();
 ```
 
-See: https://docs.paradedb.com/documentation/advanced/phrase/fuzzy_phrase
+See: https://docs.paradedb.com/documentation/advanced/full-text/match
 
 ### Parse a Tantivy query string
 
