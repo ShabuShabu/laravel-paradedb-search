@@ -6,6 +6,8 @@ use Illuminate\Database\Migrations\Migration;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
+use function ShabuShabu\ParadeDB\text_config;
+
 return new class extends Migration
 {
     public function up(): void
@@ -31,6 +33,11 @@ return new class extends Migration
                 ->algorithm('bm25')
                 ->with([
                     'key_field' => 'id',
+                    'text_fields' => text_config([
+                        'description' => [
+                            'stored' => true,
+                        ],
+                    ]),
                 ]);
         });
     }

@@ -40,7 +40,10 @@
     "autoload": {
         "psr-4": {
             "ShabuShabu\\ParadeDB\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
