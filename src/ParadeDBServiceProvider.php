@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use ShabuShabu\ParadeDB\Commands\Help;
 use ShabuShabu\ParadeDB\Commands\TestTable;
 use ShabuShabu\ParadeDB\Commands\Tokenizers;
@@ -19,6 +18,7 @@ use ShabuShabu\ParadeDB\TantivyQL\Query;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Tpetry\PostgresqlEnhanced\Query\Grammar;
 
 class ParadeDBServiceProvider extends PackageServiceProvider
 {
@@ -46,7 +46,7 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             ->prepend(FullText::search->value)
             ->all();
 
-        PostgresGrammar::customOperators($operators);
+        Grammar::customOperators($operators);
     }
 
     public function registeringPackage(): void

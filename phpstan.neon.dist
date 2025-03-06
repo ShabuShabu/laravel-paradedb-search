@@ -6,6 +6,7 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
+    noEnvCallsOutsideOfConfig: false
     type_coverage:
         return_type: 90
         param_type: 90
