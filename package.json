@@ -2,7 +2,7 @@
   "name": "@shabushabu/laravel-paradedb-search",
   "author": "ShabuShabu - Glumpler GbR",
   "license": "MIT",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "type": "module",
   "scripts": {
     "prepare": "husky"
