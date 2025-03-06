@@ -1,32 +1,38 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
-## [0.10.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.10.0) (2025-02-09)
+## [0.11.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.10.0...v0.11.0) (2025-02-09)
+
+### Features
+
+* added Laravel 12 compatibility ([c683bea](https://github.com/ShabuShabu/laravel-paradedb-search/commits/c683beab6f7ca0b02bbbb9fba8e3a1b880379f2d))
+
+## [0.10.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.9.1...v0.10.0) (2025-02-09)
 
 ### Features
 
 * added pg_search v0.15.1 compatibility ([097d060](https://github.com/ShabuShabu/laravel-paradedb-search/commits/097d060d8c2fe0bdfc4bfed987d05ac04d1acb0d))
 
-### [0.9.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.9.1) (2024-11-23)
+### [0.9.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.9.0...v0.9.1) (2024-11-23)
 
 ### Features
 
 * added paradedb:tokenizers command ([6e173dc](https://github.com/ShabuShabu/laravel-paradedb-search/commits/6e173dc73fa573755f13fe6b83ed7c5d3d5ea029))
 
-## [0.9.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.9.0) (2024-11-23)
+## [0.9.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.8.0...v0.9.0) (2024-11-23)
 
 ### Features
 
 * added compatibility with pg_search v0.13.0 ([8328b21](https://github.com/ShabuShabu/laravel-paradedb-search/commits/8328b2195df825c451a2ee96e1a058e39d56fe5d))
 
-## [0.8.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.8.0) (2024-11-20)
+## [0.8.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.7.0...v0.8.0) (2024-11-20)
 
 ### Bug Fixes
 
 * use regular drop index now ([e4825c4](https://github.com/ShabuShabu/laravel-paradedb-search/commits/e4825c4daf48f6b7b94ece87b86329fb3502601f))
 
-## [0.7.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.2.0...v0.7.0) (2024-11-16)
+## [0.7.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.6.0...v0.7.0) (2024-11-16)
 
 ### Features
 
