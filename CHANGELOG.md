@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
+## [0.12.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.11.0...v0.12.0) (2025-05-03)
+
+### Features
+
+* upgraded package dependencies - ([6f865dc](https://github.com/ShabuShabu/laravel-paradedb-search/commit/6f865dca4f695e05c061c215f9377a612b3fba75))
+
 ## [0.11.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.10.0...v0.11.0) (2025-02-09)
 
 ### Features
