@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+set -e
+
+CURRENT_BRANCH=$(git branch --show-current)
+
+if [[ "$CURRENT_BRANCH" != "develop" ]]; then
+    echo "Not on the develop branch, so bailing..."
+    exit 0
+fi
+
+NEXT_VERSION=$(composer next-version)
+
+CURRENT_VERSION=$(git tag -l | tail -1)
+
+if [[ "$CURRENT_VERSION" == "$NEXT_VERSION" ]]; then
+    echo "There have been no changes, so bailing..."
+    exit 0
+fi
+
+read -p "Do you want to create a release for $NEXT_VERSION (y/n)? " -n 1 -r
+echo
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    git flow release start "$NEXT_VERSION"
+
+    composer changelog
+
+    sed -i '' "s/\(\"version\": \).*/\1\"${NEXT_VERSION:1}\",/" package.json
+
+    git add .
+
+    git commit -m "chore: prepared release for $NEXT_VERSION"
+
+    git flow release finish "$NEXT_VERSION"
+
+    git push --all
+
+    git push --tags
+fi
+
+exit 0
