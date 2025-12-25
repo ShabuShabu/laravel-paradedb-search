@@ -26,4 +26,23 @@ return [
     |
     */
     'highlighting_tag' => env('PG_SEARCH_HIGHLIGHTING_TAG', '<b></b>'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Remove global scopes
+    |--------------------------------------------------------------------------
+    |
+    | Most global scopes will cause a pg_search query to search across the
+    | whole dataset instead of the index. For this reason, you can list
+    | all global scopes that should be removed automatically here.
+    |
+    */
+    'remove_global_scopes' => [
+        // \Illuminate\Database\Eloquent\SoftDeletingScope::class
+    ],
 ];
+
+// @todo
+// upgrade to latest pg_search
+// Auto remove global scopes
+// Add command for version info `SELECT * FROM paradedb.version_info();`

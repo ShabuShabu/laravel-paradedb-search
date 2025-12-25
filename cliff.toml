@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file. See [conven
 # https://keats.github.io/tera/docs/#introduction
 body = """
 ---
+
 {% if version %}\
     {% if previous.version %}\
         ## [{{ version | trim_start_matches(pat="v") }}]($REPO/compare/{{ previous.version }}..{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
