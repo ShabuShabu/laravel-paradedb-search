@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 ---
 
+## [0.12.1](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.12.0..v0.12.1) - 2025-12-25
+
+### Refactoring
+
+- added an expression for snippet positions - ([0df8fd5](https://github.com/ShabuShabu/laravel-paradedb-search/commit/0df8fd524d53a69f6fe24443fc785a74ba51fb7a)) - Boris Glumpler
+
+---
+
 ## [0.12.0](https://github.com/ShabuShabu/laravel-paradedb-search/compare/v0.11.0...v0.12.0) (2025-05-03)
 
 ### Features
