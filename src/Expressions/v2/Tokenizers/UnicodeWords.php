@@ -1,0 +1,18 @@
+<?php
+
+namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
+
+final class UnicodeWords extends BaseTokenizer
+{
+    public function name(): string
+    {
+        return 'pdb.unicode_words';
+    }
+
+    public function removeEmojis(bool $value = true): self
+    {
+        $this->tokenFilters[] = $value ? "'remove_emojis=true'" : "'remove_emojis=false'";
+
+        return $this;
+    }
+}
