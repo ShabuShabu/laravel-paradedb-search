@@ -11,7 +11,7 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 | PHP | Laravel | PostgreSQL | pg_search |
 |-----|---------|------------|-----------|
-| 8.2 | 12.0    | 16         | 0.15.1    |
+| 8.4 | 12.0    | 17.0       | 0.20.5    |
 
 ## Installation
 
@@ -155,7 +155,7 @@ Query::string()
 #### Apply a boolean filter
 
 ```php
-use ShabuShabu\ParadeDB\TantivyQL\Operators\Filter;
+
 
 Query::string()
     ->whereFilter('is_available', '=', false)
@@ -167,7 +167,7 @@ Query::string()
 #### Apply a basic range filter
 
 ```php
-use ShabuShabu\ParadeDB\TantivyQL\Operators\Filter;
+
 
 Query::string()
     ->whereFilter('rating', '>', 4)
@@ -221,7 +221,7 @@ For more complex operations, it might be necessary to use some of the provided [
 The right side of the `@@@` operator also accepts JSON query objects, similar to how Elasticsearch Query DSL works.
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\JsonB;
+use ShabuShabu\ParadeDB\Expressions\v1\JsonB;
 
 Product::query()
     ->where('id', '@@@', new JsonB([
@@ -238,9 +238,7 @@ See: https://docs.paradedb.com/documentation/advanced/overview
 #### Get all the records
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\All;
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
+use ShabuShabu\ParadeDB\Expressions\v1\All;use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
 
 Product::query()
     ->where('id', '@@@', new Boolean(
@@ -255,9 +253,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/all
 #### Check that a field exists
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Exists;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Exists;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
 
 Product::query()
     ->where('id', '@@@', new Boolean(
@@ -275,7 +271,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/exists
 #### Get none of the records
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Blank;
+use ShabuShabu\ParadeDB\Expressions\v1\Blank;
 
 Product::query()
     ->where('id', '@@@', new Blank())
@@ -287,9 +283,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/empty
 #### Boost a query
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Boost;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boost;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
 
 Product::query()
     ->where('id', '@@@', new Boolean(
@@ -306,10 +300,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/boost
 #### Add a constant score
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\All;
-use ShabuShabu\ParadeDB\Expressions\Score;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Expressions\ConstScore;
+use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\ConstScore;
 
 Product::query()
     ->selectWithScore()
@@ -327,9 +318,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/const
 #### Perform a disjunction max query
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Score;
-use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Score;use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
 
 Product::query()
     ->select(['*', new Score()])
@@ -343,10 +332,7 @@ Product::query()
 The `DisjunctionMax` constructor also accepts an array of queries, so using the fluid interface might be more convenient for multiple queries:
 
 ```php
-use ShabuShabu\ParadeDB\TantivyQL\Query;
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Score;
-use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
+use ShabuShabu\ParadeDB\TantivyQL\Query;use ShabuShabu\ParadeDB\Expressions\v1\Score;use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
     
 Product::query()
     ->select(['*', new Score()])
@@ -361,10 +347,7 @@ Product::query()
 This also allows you to conditionally add queries:
 
 ```php
-use ShabuShabu\ParadeDB\TantivyQL\Query;
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Score;
-use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
+use ShabuShabu\ParadeDB\TantivyQL\Query;use ShabuShabu\ParadeDB\Expressions\v1\Score;use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
 
 Product::query()
     ->select(['*', new Score()])
@@ -380,7 +363,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/disjunction_max
 #### Search for a fuzzy term
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
+use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;
 
 Product::query()
     ->where('id', '@@@', new FuzzyTerm('description', 'shoez'))
@@ -394,7 +377,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/fuzzy_term
 Please note that the underlying ParadeDB method is actually called `match`, which is a reserved keyword in PHP.
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\FullText;
+use ShabuShabu\ParadeDB\Expressions\v1\FullText;
 
 Product::query()
     ->where('id', '@@@', new FullText('description', 'ruining shoes'))
@@ -408,7 +391,7 @@ See: https://docs.paradedb.com/documentation/advanced/full-text/match
 Useful for directly searching for user-supplied queries.
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Parse;
+use ShabuShabu\ParadeDB\Expressions\v1\Parse;
 
 Product::query()
     ->where('id', '@@@', new Parse('description:"running shoes" OR category:footwear'))
@@ -418,8 +401,7 @@ Product::query()
 Additionally, `ParadeDB Search for Laravel` comes with its own Tantivy Query Language Builder:
 
 ```php
-use ShabuShabu\ParadeDB\TantivyQL\Query;
-use ShabuShabu\ParadeDB\Expressions\Parse;
+use ShabuShabu\ParadeDB\TantivyQL\Query;use ShabuShabu\ParadeDB\Expressions\v1\Parse;
 
 Product::query()
     ->where('id', '@@@', new Parse(
@@ -437,7 +419,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/parse
 Like `ShabuShabu\ParadeDB\Expressions\Parse` above, but it takes a query string without fields and searches for the given field.
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\ParseWithField;
+use ShabuShabu\ParadeDB\Expressions\v1\ParseWithField;
 
 Product::query()
     ->where('id', '@@@', new ParseWithField(
@@ -453,7 +435,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/parse#parse-with-
 #### Highlight search terms
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Snippet;
+use ShabuShabu\ParadeDB\Expressions\v1\Snippet;
 
 Product::query()
     ->select(['id', new Snippet('description')])
@@ -467,7 +449,7 @@ See: https://docs.paradedb.com/documentation/full-text/highlighting
 #### Search for a phrase
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Phrase;
+use ShabuShabu\ParadeDB\Expressions\v1\Phrase;
 
 Product::query()
     ->where('id', '@@@', new Phrase(
@@ -483,7 +465,7 @@ See: https://docs.paradedb.com/documentation/advanced/phrase/phrase
 #### Perform a phrase prefix query
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\PhrasePrefix;
+use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
 
 Product::query()
     ->where('id', '@@@', new PhrasePrefix('description', ['running', 'sh']))
@@ -495,9 +477,7 @@ See: https://docs.paradedb.com/documentation/advanced/phrase/phrase_prefix
 #### Search within a given range
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Range;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\v1\Range;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
 
 Product::query()
     ->where('id', '@@@', new Range('rating', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
@@ -518,9 +498,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/range
 #### Find ranges for a given value
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Expressions\RangeTerm;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
 
 Product::query()
     ->where('id', '@@@', new Boolean(
@@ -535,9 +513,7 @@ Product::query()
 Ranges can also be compared to other ranges:
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\RangeTerm;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Relation;
+use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Relation;
 
 Product::query()
     ->where('id', '@@@', new RangeTerm(
@@ -553,7 +529,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/range_term
 #### Perform a regex query
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Regex;
+use ShabuShabu\ParadeDB\Expressions\v1\Regex;
 
 Product::query()
     ->where('id', '@@@', new Regex('description', '(plush|leather)'))
@@ -565,7 +541,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/regex
 #### Search for a term
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;
 
 Product::query()
     ->where('id', '@@@', new Term('rating', 4))
@@ -577,8 +553,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/term
 #### Search for a set of terms
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\TermSet;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\TermSet;
 
 Product::query()
     ->where('id', '@@@', new TermSet([
@@ -616,11 +591,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/term_set
 #### Perform a complex boolean query
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
 
 Product::query()
     ->where('id', '@@@', new Boolean(
@@ -637,12 +608,7 @@ Product::query()
 Boolean queries can also be constructed in a fluid manner:
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Operators\FullText;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Operators\FullText;use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
 
 Product::query()
     ->where('id', FullText::search->value, Boolean::query()
@@ -657,11 +623,7 @@ Product::query()
 The two queries above are identical. The fluent methods allow you to conditionally add queries, though:
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
 
 $when = false;
 
@@ -680,7 +642,7 @@ See: https://docs.paradedb.com/documentation/advanced/compound/boolean
 #### Sort by rank
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\Score;
+use ShabuShabu\ParadeDB\Expressions\v1\Score;
 
 Product::query()
     ->addSelect(new Score())
@@ -697,7 +659,7 @@ See: https://docs.paradedb.com/documentation/full-text/scoring
 When you pass a document ID, aka an Eloquent model key, then documents related to the given document are found.
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\MoreLikeThis;
+use ShabuShabu\ParadeDB\v1\Expressions\MoreLikeThis;
 
 Product::query()
     ->where('id', '@@@', new MoreLikeThis(
@@ -710,7 +672,7 @@ Product::query()
 Alternatively, you can pass in document fields instead of an id to search against:
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\MoreLikeThis;
+use ShabuShabu\ParadeDB\v1\Expressions\MoreLikeThis;
 
 Product::query()
     ->where('id', '@@@', new MoreLikeThis(
@@ -729,7 +691,7 @@ See: https://docs.paradedb.com/documentation/advanced/specialized/more_like_this
 In quite a lot of cases, the column you search against will be `id`. For this reason, you can also use the provided `whereSearch` macro.
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\MoreLikeThis;
+use ShabuShabu\ParadeDB\v1\Expressions\MoreLikeThis;
 
 Product::query()
     ->whereSearch(new MoreLikeThis(idOrFields: 3, minTermFrequency: 1))
@@ -741,15 +703,7 @@ Product::query()
 `pg_search` also allows you to perform hybrid full-text/similarity searches. For this to work you will need to install [pgvector](https://github.com/pgvector/pgvector). Please note that `ParadeDB Search for Laravel` registers all custom `pgvector` operators already for you.
 
 ```php
-use Tpetry\QueryExpressions\Value\Value;
-use ShabuShabu\ParadeDB\Expressions\Rank;
-use ShabuShabu\ParadeDB\Expressions\Score;
-use Tpetry\QueryExpressions\Language\Alias;
-use ShabuShabu\ParadeDB\Operators\Distance;
-use ShabuShabu\ParadeDB\Expressions\Similarity;
-use Tpetry\QueryExpressions\Operator\Arithmetic\Add;
-use Tpetry\QueryExpressions\Operator\Arithmetic\Divide;
-use Tpetry\QueryExpressions\Function\Conditional\Coalesce;
+use Tpetry\QueryExpressions\Value\Value;use Tpetry\QueryExpressions\Language\Alias;use ShabuShabu\ParadeDB\Operators\Distance;use ShabuShabu\ParadeDB\Expressions\v1\Rank;use ShabuShabu\ParadeDB\Expressions\v1\Score;use ShabuShabu\ParadeDB\Expressions\v1\Similarity;use Tpetry\QueryExpressions\Operator\Arithmetic\Add;use Tpetry\QueryExpressions\Operator\Arithmetic\Divide;use Tpetry\QueryExpressions\Function\Conditional\Coalesce;
 
 Product::query()
     ->withExpression('semantic_search', Product::query()

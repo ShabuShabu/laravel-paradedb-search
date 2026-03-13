@@ -68,7 +68,7 @@ class Help extends Command
     protected function runQuery(string $subject, string $body): void
     {
         DB::select(
-            (new \ShabuShabu\ParadeDB\Expressions\Help($subject, $body))->getValue(
+            (new \ShabuShabu\ParadeDB\Expressions\v1\Help($subject, $body))->getValue(
                 DB::connection()->getQueryGrammar()
             )
         );

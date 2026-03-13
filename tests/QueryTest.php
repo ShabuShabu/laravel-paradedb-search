@@ -6,35 +6,33 @@ declare(strict_types=1);
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use ShabuShabu\ParadeDB\Expressions\All;
-use ShabuShabu\ParadeDB\Expressions\Blank;
-use ShabuShabu\ParadeDB\Expressions\Boolean;
-use ShabuShabu\ParadeDB\Expressions\Boost;
-use ShabuShabu\ParadeDB\Expressions\ConstScore;
-use ShabuShabu\ParadeDB\Expressions\DisjunctionMax;
-use ShabuShabu\ParadeDB\Expressions\Exists;
-use ShabuShabu\ParadeDB\Expressions\FullText;
-use ShabuShabu\ParadeDB\Expressions\FuzzyTerm;
-use ShabuShabu\ParadeDB\Expressions\JsonB;
-use ShabuShabu\ParadeDB\Expressions\MoreLikeThis;
-use ShabuShabu\ParadeDB\Expressions\Parse;
-use ShabuShabu\ParadeDB\Expressions\ParseWithField;
-use ShabuShabu\ParadeDB\Expressions\Phrase;
-use ShabuShabu\ParadeDB\Expressions\PhrasePrefix;
-use ShabuShabu\ParadeDB\Expressions\Range;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
-use ShabuShabu\ParadeDB\Expressions\RangeTerm;
-use ShabuShabu\ParadeDB\Expressions\Rank;
-use ShabuShabu\ParadeDB\Expressions\Regex;
-use ShabuShabu\ParadeDB\Expressions\Score;
-use ShabuShabu\ParadeDB\Expressions\Similarity;
-use ShabuShabu\ParadeDB\Expressions\Term;
-use ShabuShabu\ParadeDB\Expressions\TermSet;
+use ShabuShabu\ParadeDB\Expressions\v1\All;
+use ShabuShabu\ParadeDB\Expressions\v1\Blank;
+use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
+use ShabuShabu\ParadeDB\Expressions\v1\Boost;
+use ShabuShabu\ParadeDB\Expressions\v1\ConstScore;
+use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
+use ShabuShabu\ParadeDB\Expressions\v1\Exists;
+use ShabuShabu\ParadeDB\Expressions\v1\FullText;
+use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;
+use ShabuShabu\ParadeDB\Expressions\v1\JsonB;
+use ShabuShabu\ParadeDB\Expressions\v1\Parse;
+use ShabuShabu\ParadeDB\Expressions\v1\ParseWithField;
+use ShabuShabu\ParadeDB\Expressions\v1\Phrase;
+use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
+use ShabuShabu\ParadeDB\Expressions\v1\Range;
+use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;
+use ShabuShabu\ParadeDB\Expressions\v1\Ranges\TimestampTz;
+use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
+use ShabuShabu\ParadeDB\Expressions\v1\Rank;
+use ShabuShabu\ParadeDB\Expressions\v1\Regex;
+use ShabuShabu\ParadeDB\Expressions\v1\Score;
+use ShabuShabu\ParadeDB\Expressions\v1\Similarity;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;
+use ShabuShabu\ParadeDB\Expressions\v1\TermSet;
 use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
-use ShabuShabu\ParadeDB\Tests\App\Models\User;
 use Tpetry\QueryExpressions\Language\Alias;
 
 it('gets all results', function () {
@@ -396,65 +394,6 @@ it('applies a disjunction max query', function () {
         ->count()->toBe(2)
         ->first()->name->toBe('test team')
         ->last()->name->toBe('nice team');
-});
-
-// @todo Should probably return a result
-it('gets more like this by id', function () {
-    $user = User::factory()->create();
-
-    $first = Team::factory()->create([
-        'user_id' => $user->id,
-        'name' => 'first team',
-        'description' => 'boring description...',
-        'is_vip' => true,
-        'max_members' => 3,
-        'size' => '[4,6)',
-        'embedding' => '[2,3,4]',
-    ]);
-
-    Team::factory()->create([
-        'user_id' => $user->id,
-        'name' => 'second team',
-        'description' => 'boring description...',
-        'is_vip' => true,
-        'max_members' => 3,
-        'size' => '[4,6)',
-        'embedding' => '[2,3,4]',
-    ]);
-
-    $teams = Team::query()
-        ->where('id', '@@@', new MoreLikeThis(
-            idOrFields: $first->id,
-            minTermFrequency: 1,
-        ))
-        ->get();
-
-    expect($teams)->toBeInstanceOf(Collection::class);
-});
-
-// @todo Should probably return a result
-it('gets more like this by search term,', function () {
-    Team::factory()->create([
-        'name' => 'nice team',
-        'description' => 'running test description...',
-    ]);
-
-    Team::factory()->create([
-        'name' => 'test team',
-        'description' => 'something or other or maybe running shoes...',
-    ]);
-
-    $teams = Team::query()
-        ->where('id', '@@@', new MoreLikeThis(
-            idOrFields: ['description' => 'running'],
-            minDocFrequency: 0,
-            maxDocFrequency: 100,
-            minTermFrequency: 1,
-            stopWords: ['and', 'or']
-        ))
-        ->get();
-
-    expect($teams)->toBeInstanceOf(Collection::class);
 });
 
 it('searches for a given range', function () {

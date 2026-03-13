@@ -6,7 +6,6 @@ namespace ShabuShabu\ParadeDB\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use ShabuShabu\ParadeDB\Expressions;
 
 class Tokenizers extends Command
 {
@@ -16,7 +15,7 @@ class Tokenizers extends Command
 
     public function __invoke(): int
     {
-        $tokenizers = DB::table(new Expressions\Tokenizers)
+        $tokenizers = DB::table(new \ShabuShabu\ParadeDB\Expressions\v1\Tokenizers)
             ->get('tokenizer as name');
 
         $this->components->info('These tokenizers are available:');

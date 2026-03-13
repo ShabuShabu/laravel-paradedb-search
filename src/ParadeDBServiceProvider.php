@@ -9,9 +9,9 @@ use ShabuShabu\ParadeDB\Commands\Help;
 use ShabuShabu\ParadeDB\Commands\TestTable;
 use ShabuShabu\ParadeDB\Commands\Tokenizers;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
-use ShabuShabu\ParadeDB\Expressions\Parse;
-use ShabuShabu\ParadeDB\Expressions\Score;
-use ShabuShabu\ParadeDB\Expressions\Snippet;
+use ShabuShabu\ParadeDB\Expressions\v1\Parse;
+use ShabuShabu\ParadeDB\Expressions\v1\Score;
+use ShabuShabu\ParadeDB\Expressions\v1\Snippet;
 use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Operators\FullText;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
@@ -43,7 +43,10 @@ class ParadeDBServiceProvider extends PackageServiceProvider
     {
         $operators = collect(Distance::cases())
             ->map(fn (Distance $distance) => $distance->value)
-            ->prepend(FullText::search->value)
+            ->merge(
+                collect(FullText::cases())
+                    ->map(fn (FullText $operator) => $operator->value)
+            )
             ->all();
 
         Grammar::customOperators($operators);

@@ -7,4 +7,6 @@ namespace ShabuShabu\ParadeDB\Operators;
 enum FullText: string
 {
     case search = '@@@';
+    case conjunction = '&&&';
+    case disjunction = '|||';
 }
