@@ -6,6 +6,6 @@ final class LiteralNormalized extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.literal_normalized';
+        return 'literal_normalized';
     }
 }

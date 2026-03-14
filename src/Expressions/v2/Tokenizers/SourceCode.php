@@ -6,6 +6,6 @@ final class SourceCode extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.source_code';
+        return 'source_code';
     }
 }

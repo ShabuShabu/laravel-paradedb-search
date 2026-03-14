@@ -8,6 +8,6 @@ final class Literal extends BaseTokenizer
 
     public function name(): string
     {
-        return 'pdb.literal';
+        return 'literal';
     }
 }

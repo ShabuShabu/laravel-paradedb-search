@@ -6,7 +6,7 @@ final class UnicodeWords extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.unicode_words';
+        return 'unicode_words';
     }
 
     public function removeEmojis(bool $value = true): self

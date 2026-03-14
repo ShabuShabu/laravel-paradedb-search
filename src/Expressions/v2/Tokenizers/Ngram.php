@@ -32,6 +32,6 @@ final class Ngram extends BaseTokenizer
 
     public function name(): string
     {
-        return 'pdb.ngram';
+        return 'ngram';
     }
 }

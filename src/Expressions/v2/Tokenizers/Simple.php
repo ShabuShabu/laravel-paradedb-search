@@ -6,6 +6,6 @@ final class Simple extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.simple';
+        return 'simple';
     }
 }

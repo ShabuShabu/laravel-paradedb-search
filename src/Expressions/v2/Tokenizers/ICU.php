@@ -6,6 +6,6 @@ final class ICU extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.icu';
+        return 'icu';
     }
 }

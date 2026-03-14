@@ -6,6 +6,6 @@ final class ChineseCompatible extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.chinese_compatible';
+        return 'chinese_compatible';
     }
 }

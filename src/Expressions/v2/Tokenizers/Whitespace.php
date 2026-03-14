@@ -6,6 +6,6 @@ final class Whitespace extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.whitespace';
+        return 'whitespace';
     }
 }

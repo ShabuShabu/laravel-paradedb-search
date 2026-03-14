@@ -6,6 +6,6 @@ final class Jieba extends BaseTokenizer
 {
     public function name(): string
     {
-        return 'pdb.jieba';
+        return 'jieba';
     }
 }

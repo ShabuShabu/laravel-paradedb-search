@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use ShabuShabu\ParadeDB\Commands\Help;
 use ShabuShabu\ParadeDB\Commands\TestTable;
 use ShabuShabu\ParadeDB\Commands\Tokenizers;
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\v1\Parse;
 use ShabuShabu\ParadeDB\Expressions\v1\Score;
@@ -19,6 +21,7 @@ use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Tpetry\PostgresqlEnhanced\Query\Grammar;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\Tokenizer;
 
 class ParadeDBServiceProvider extends PackageServiceProvider
 {
@@ -68,6 +71,21 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             }
 
             return $this->where($field, FullText::search->value, $expression);
+        });
+
+        Blueprint::macro('bm25', function (string $name, array $columns, ?array $parameters = null) {
+            $grammar = $this->grammar; // @phpstan-ignore-line
+            $columns = array_map(
+                static fn (string|Tokenizer $column) => $column instanceof Tokenizer
+                    ? Str::wrap($column->getValue($grammar), '(', ')')
+                    : $column,
+                $columns,
+            );
+
+            return $this
+                ->index($columns, $name)
+                ->algorithm('bm25')
+                ->with($parameters ?? ['key_field' => 'id']);
         });
     }
 }

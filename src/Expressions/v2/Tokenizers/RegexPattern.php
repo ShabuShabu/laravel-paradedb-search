@@ -17,6 +17,6 @@ final class RegexPattern extends BaseTokenizer
 
     public function name(): string
     {
-        return 'pdb.regex_pattern';
+        return 'regex_pattern';
     }
 }

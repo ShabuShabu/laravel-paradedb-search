@@ -14,6 +14,8 @@ abstract class BaseTokenizer implements Tokenizer
 
     protected array $tokenFilters = [];
 
+    protected string $namespace = 'pdb';
+
     public function __construct(
         protected string|Expression $column,
     ) {}
@@ -101,7 +103,7 @@ abstract class BaseTokenizer implements Tokenizer
 
     public function getValue(Grammar $grammar): string
     {
-        $name = $this->name();
+        $name = $this->tokenizerName();
         $column = $this->stringize($grammar, $this->column);
 
         $parameters = $this->combine($this->parameters);
@@ -113,6 +115,15 @@ abstract class BaseTokenizer implements Tokenizer
             !$parameters && $filters => "$column::$name($filters)",
             default => "$column::$name",
         };
+    }
+
+    protected function tokenizerName(): string
+    {
+        if (str_contains($name = $this->name(), '.')) {
+            return $name;
+        }
+
+        return "$this->namespace.$name";
     }
 
     protected function assertFilters(): void

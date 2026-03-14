@@ -17,6 +17,6 @@ final class Lindera extends BaseTokenizer
 
     public function name(): string
     {
-        return 'pdb.lindera';
+        return 'lindera';
     }
 }
