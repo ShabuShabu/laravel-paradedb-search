@@ -6,7 +6,7 @@ namespace ShabuShabu\ParadeDB\Expressions\v1\Ranges;
 
 use Carbon\CarbonInterface;
 use Illuminate\Database\Grammar;
-use ShabuShabu\ParadeDB\Expressions\v1\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
 abstract readonly class DateTime implements RangeExpression
 {

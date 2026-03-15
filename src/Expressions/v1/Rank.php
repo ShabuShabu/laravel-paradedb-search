@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v1;
 
-use Illuminate\Contracts\Database\Query\Expression;
-use Illuminate\Database\Grammar;
 use Illuminate\Support\Str;
-use ShabuShabu\ParadeDB\Expressions\v1\Concerns\Stringable;
+use Illuminate\Database\Grammar;
+use Illuminate\Contracts\Database\Query\Expression;
+use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
 final readonly class Rank implements Expression
 {

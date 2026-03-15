@@ -21,7 +21,7 @@ use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Tpetry\PostgresqlEnhanced\Query\Grammar;
-use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\Tokenizer;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\TokenizerExpression;
 
 class ParadeDBServiceProvider extends PackageServiceProvider
 {
@@ -76,7 +76,7 @@ class ParadeDBServiceProvider extends PackageServiceProvider
         Blueprint::macro('bm25', function (string $name, array $columns, ?array $parameters = null) {
             $grammar = $this->grammar; // @phpstan-ignore-line
             $columns = array_map(
-                static fn (string|Tokenizer $column) => $column instanceof Tokenizer
+                static fn (string|TokenizerExpression $column) => $column instanceof TokenizerExpression
                     ? Str::wrap($column->getValue($grammar), '(', ')')
                     : $column,
                 $columns,

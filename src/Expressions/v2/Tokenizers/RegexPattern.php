@@ -4,7 +4,7 @@ namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
 
 use Illuminate\Contracts\Database\Query\Expression;
 
-final class RegexPattern extends BaseTokenizer
+final class RegexPattern extends Tokenizer
 {
     public function __construct(
         protected string|Expression $column,

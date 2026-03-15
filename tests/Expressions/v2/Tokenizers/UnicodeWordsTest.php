@@ -8,8 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
 
 it('generates the correct unicode words tokenizer')
     ->expect(new UnicodeWords('description'))
-    ->toBeExpression('description::pdb.unicode_words');
+    ->toBeExpression('"description"::pdb.unicode_words');
 
 it('generates the correct unicode words tokenizer with filters')
     ->expect((new UnicodeWords('description'))->removeEmojis())
-    ->toBeExpression("description::pdb.unicode_words('remove_emojis=true')");
+    ->toBeExpression("\"description\"::pdb.unicode_words('remove_emojis=true')");

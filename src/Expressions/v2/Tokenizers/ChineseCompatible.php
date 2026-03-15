@@ -2,7 +2,7 @@
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
 
-final class ChineseCompatible extends BaseTokenizer
+final class ChineseCompatible extends Tokenizer
 {
     public function name(): string
     {

@@ -8,7 +8,7 @@ use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\Literal;
 
 it('generates the correct literal tokenizer')
     ->expect(new Literal('description'))
-    ->toBeExpression('description::pdb.literal');
+    ->toBeExpression('"description"::pdb.literal');
 
 it('panics for a token filter', function () {
     (new Literal('description'))->asciiFolding();

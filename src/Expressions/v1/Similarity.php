@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v1;
 
-use Illuminate\Contracts\Database\Query\Expression;
-use Illuminate\Database\Grammar;
-use InvalidArgumentException;
 use JsonException;
-use ShabuShabu\ParadeDB\Expressions\v1\Concerns\Stringable;
+use InvalidArgumentException;
+use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Operators\Distance;
+use Illuminate\Contracts\Database\Query\Expression;
+use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
 final readonly class Similarity implements Expression
 {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v1;
 
-use Illuminate\Database\Grammar;
 use RuntimeException;
+use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
-use ShabuShabu\ParadeDB\Expressions\v1\Concerns\Stringable;
-use ShabuShabu\ParadeDB\Expressions\v1\Ranges\RangeExpression;
 use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Relation;
+use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\v1\Ranges\RangeExpression;
 
 final readonly class RangeTerm implements ParadeExpression
 {

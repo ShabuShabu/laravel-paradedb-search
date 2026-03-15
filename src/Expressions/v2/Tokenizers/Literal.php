@@ -2,7 +2,7 @@
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
 
-final class Literal extends BaseTokenizer
+final class Literal extends Tokenizer
 {
     protected bool $allowTokenFilters = false;
 

@@ -2,7 +2,7 @@
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
 
-final class LiteralNormalized extends BaseTokenizer
+final class LiteralNormalized extends Tokenizer
 {
     public function name(): string
     {

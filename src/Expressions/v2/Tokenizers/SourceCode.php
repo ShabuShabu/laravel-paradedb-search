@@ -2,7 +2,7 @@
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
 
-final class SourceCode extends BaseTokenizer
+final class SourceCode extends Tokenizer
 {
     public function name(): string
     {

@@ -2,7 +2,7 @@
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
 
-final class ICU extends BaseTokenizer
+final class ICU extends Tokenizer
 {
     public function name(): string
     {

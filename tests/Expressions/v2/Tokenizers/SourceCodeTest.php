@@ -8,4 +8,4 @@ use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\SourceCode;
 
 it('generates the correct source code tokenizer')
     ->expect(new SourceCode('description'))
-    ->toBeExpression('description::pdb.source_code');
+    ->toBeExpression('"description"::pdb.source_code');

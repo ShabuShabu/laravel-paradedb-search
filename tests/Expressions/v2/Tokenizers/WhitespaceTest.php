@@ -8,4 +8,4 @@ use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\Whitespace;
 
 it('generates the correct whitespace tokenizer')
     ->expect(new Whitespace('description'))
-    ->toBeExpression('description::pdb.whitespace');
+    ->toBeExpression('"description"::pdb.whitespace');

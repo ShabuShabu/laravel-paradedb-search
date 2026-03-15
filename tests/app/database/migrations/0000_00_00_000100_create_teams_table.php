@@ -30,6 +30,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index('embedding vector_cosine_ops')->algorithm('hnsw');
+            // @phpstan-ignore-next-line
             $table->bm25(
                 name: 'teams_bm25_idx',
                 columns: [

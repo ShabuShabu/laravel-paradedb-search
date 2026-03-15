@@ -4,7 +4,7 @@ namespace ShabuShabu\ParadeDB\Expressions\v2\Tokenizers;
 
 use Illuminate\Contracts\Database\Query\Expression;
 
-final class Lindera extends BaseTokenizer
+final class Lindera extends Tokenizer
 {
     public function __construct(
         protected string|Expression $column,
