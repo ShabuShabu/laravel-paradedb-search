@@ -5,8 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
-
-use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\UnicodeWords;
 use function ShabuShabu\ParadeDB\text_config;
 
 return new class extends Migration
@@ -32,7 +31,6 @@ return new class extends Migration
             $table->index('embedding vector_cosine_ops')->algorithm('hnsw');
             // @phpstan-ignore-next-line
             $table->bm25(
-                name: 'teams_bm25_idx',
                 columns: [
                     'id',
                     (new UnicodeWords('name'))->removeEmojis(),

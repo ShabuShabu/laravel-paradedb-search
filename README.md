@@ -11,7 +11,7 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 | PHP | Laravel | PostgreSQL | pg_search |
 |-----|---------|------------|-----------|
-| 8.4 | 12.0    | 17.0       | 0.20.5    |
+| 8.4 | 12.0    | 17.0       | 0.22.0    |
 
 ## Installation
 
@@ -36,7 +36,7 @@ These are the contents of the published config file:
 
 ```php
 return [
-    'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', '_idx'),
+    'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', 'idx'),
     'highlighting_tag' => env('PG_SEARCH_HIGHLIGHTING_TAG', '<b></b>'),
 ];
 ```

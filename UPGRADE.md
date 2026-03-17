@@ -5,6 +5,10 @@
 - all expressions are now final
 - tokenizers can only be used with new bm25 macro
 
+## @todo
+- Auto remove global scopes
+- Update readme
+
 ## Upgrading To 0.10.0 From 0.9.*
 
 ### Minimum Versions
