@@ -18,6 +18,7 @@ use ShabuShabu\ParadeDB\Commands\Tokenizers;
 use Tpetry\PostgresqlEnhanced\Query\Grammar;
 use ShabuShabu\ParadeDB\Expressions\v1\Parse;
 use ShabuShabu\ParadeDB\Expressions\v1\Score;
+use ShabuShabu\ParadeDB\Commands\VersionInfo;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use ShabuShabu\ParadeDB\Expressions\v1\Snippet;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
@@ -37,6 +38,7 @@ class ParadeDBServiceProvider extends PackageServiceProvider
                 Help::class,
                 TestTable::class,
                 Tokenizers::class,
+                VersionInfo::class,
             )
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
