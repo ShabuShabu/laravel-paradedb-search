@@ -21,6 +21,7 @@ use ShabuShabu\ParadeDB\Expressions\v1\Score;
 use ShabuShabu\ParadeDB\Commands\VersionInfo;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use ShabuShabu\ParadeDB\Expressions\v1\Snippet;
+use ShabuShabu\ParadeDB\Commands\IndexIntegrity;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use Tpetry\PostgresqlEnhanced\Schema\IndexDefinition;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -39,6 +40,7 @@ class ParadeDBServiceProvider extends PackageServiceProvider
                 TestTable::class,
                 Tokenizers::class,
                 VersionInfo::class,
+                IndexIntegrity::class,
             )
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command

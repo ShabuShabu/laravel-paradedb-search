@@ -37,7 +37,9 @@ final readonly class VerifyIndex implements ParadeExpression
             'report_progress' => $this->cast($grammar, $this->reportProgress),
             'verbose' => $this->cast($grammar, $this->verbose),
             'on_error_stop' => $this->cast($grammar, $this->onErrorStop),
-            'segment_ids' => $this->cast($grammar, $this->onErrorStop),
+            'segment_ids' => $this->segmentIds
+                ? $this->wrapArray(collect($this->segmentIds))
+                : null,
         ]);
 
         return "pdb.verify_index($params)";

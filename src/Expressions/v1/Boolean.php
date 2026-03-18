@@ -73,8 +73,8 @@ final class Boolean implements ParadeExpression
             );
     }
 
-    public static function query(): static
+    public static function query(): self
     {
-        return new static;
+        return new self;
     }
 }
