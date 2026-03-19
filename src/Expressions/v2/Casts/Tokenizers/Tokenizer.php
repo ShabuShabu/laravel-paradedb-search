@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers;
 
-use InvalidArgumentException;
-use Illuminate\Database\Grammar;
 use Illuminate\Contracts\Database\Query\Expression;
+use Illuminate\Database\Grammar;
+use InvalidArgumentException;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
 abstract class Tokenizer implements TokenizerExpression
@@ -20,7 +22,7 @@ abstract class Tokenizer implements TokenizerExpression
     protected string $namespace = 'pdb';
 
     public function __construct(
-        protected string|Expression $column,
+        protected string | Expression $column,
     ) {}
 
     public function alphaNumOnly(bool $value = true): static
@@ -77,7 +79,7 @@ abstract class Tokenizer implements TokenizerExpression
         return $this;
     }
 
-    public function stopwordsLanguage(array|Stopwords $value): static
+    public function stopwordsLanguage(array | Stopwords $value): static
     {
         $this->assertFilters();
 
@@ -104,7 +106,6 @@ abstract class Tokenizer implements TokenizerExpression
         return $this;
     }
 
-
     public function alias(string $value): static
     {
         $this->config[] = "'alias=$value'";
@@ -120,10 +121,10 @@ abstract class Tokenizer implements TokenizerExpression
         $parameters = $this->combine($this->parameters);
         $filters = $this->combine($this->config);
 
-        return match(true) {
+        return match (true) {
             $parameters && $filters => "$column::$name($parameters, $filters)",
-            $parameters && !$filters => "$column::$name($parameters)",
-            !$parameters && $filters => "$column::$name($filters)",
+            $parameters && ! $filters => "$column::$name($parameters)",
+            ! $parameters && $filters => "$column::$name($filters)",
             default => "$column::$name",
         };
     }
@@ -139,7 +140,7 @@ abstract class Tokenizer implements TokenizerExpression
 
     protected function assertFilters(): void
     {
-        if (!$this->allowTokenFilters) {
+        if (! $this->allowTokenFilters) {
             throw new InvalidArgumentException('Token filters are not allowed for this tokenizer');
         }
     }

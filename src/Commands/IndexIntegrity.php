@@ -8,11 +8,11 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use ShabuShabu\ParadeDB\Expressions\v2\Integrity;
 
-use function Laravel\Prompts\text;
-use function Laravel\Prompts\select;
-use function Laravel\Prompts\warning;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\text;
+use function Laravel\Prompts\warning;
 
 class IndexIntegrity extends Command
 {
@@ -28,7 +28,7 @@ class IndexIntegrity extends Command
             'verify',
         );
 
-        return match($action) {
+        return match ($action) {
             'verify' => $this->verify(),
             'verify-all' => $this->verifyAll(),
             'indexes' => $this->indexes(),
@@ -41,7 +41,7 @@ class IndexIntegrity extends Command
     {
         info('You selected to verify an index.');
 
-        if (!is_string($index = $this->selectIndex())) {
+        if (! is_string($index = $this->selectIndex())) {
             return $index;
         }
 
@@ -128,7 +128,7 @@ class IndexIntegrity extends Command
     {
         info('You selected to view the indexes.');
 
-        $indexes = DB::table(new Integrity\Indexes())->get();
+        $indexes = DB::table(new Integrity\Indexes)->get();
 
         $this->table(
             headers: ['Schema name', 'Table name', 'Index name', 'Index rel id', 'Num segments', 'Total docs'],
@@ -149,7 +149,7 @@ class IndexIntegrity extends Command
     {
         info('You selected to view the segments of an index.');
 
-        if (!is_string($index = $this->selectIndex())) {
+        if (! is_string($index = $this->selectIndex())) {
             return $index;
         }
 
@@ -170,9 +170,9 @@ class IndexIntegrity extends Command
         return self::SUCCESS;
     }
 
-    protected function selectIndex(): int|string
+    protected function selectIndex(): int | string
     {
-        $indexes = DB::table(new Integrity\Indexes())->pluck('indexname');
+        $indexes = DB::table(new Integrity\Indexes)->pluck('indexname');
 
         if ($indexes->isEmpty()) {
             warning('It looks like you have no indexes.');
@@ -181,7 +181,7 @@ class IndexIntegrity extends Command
         }
 
         if ($indexes->count() === 1) {
-            return  $indexes->first();
+            return $indexes->first();
         }
 
         return select(

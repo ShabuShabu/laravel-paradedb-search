@@ -4,8 +4,8 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\Lindera;
 use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\Dictionary;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\Lindera;
 
 it('generates the correct lindera tokenizer')
     ->expect(new Lindera('description', Dictionary::korean))

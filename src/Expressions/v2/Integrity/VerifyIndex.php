@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Integrity;
 
-use InvalidArgumentException;
 use Illuminate\Database\Grammar;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use InvalidArgumentException;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\v2\Integrity\Concerns\HasSampleRate;
 
 final readonly class VerifyIndex implements ParadeExpression
 {
-    use Stringable;
     use HasSampleRate;
+    use Stringable;
 
     public function __construct(
         protected string $index,

@@ -8,7 +8,7 @@ it('lists tokenizers', function () {
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:version')
         ->expectsOutputToContain('Version')
-        //->expectsOutputToContain('Git hash')
-        //->expectsOutputToContain('Build mode')
+        // ->expectsOutputToContain('Git hash')
+        // ->expectsOutputToContain('Build mode')
         ->assertExitCode(0);
 });

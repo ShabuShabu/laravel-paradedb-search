@@ -4,36 +4,36 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v1\All;
-use ShabuShabu\ParadeDB\Operators\Distance;
-use Tpetry\QueryExpressions\Language\Alias;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use ShabuShabu\ParadeDB\Expressions\v1\Rank;
-use ShabuShabu\ParadeDB\Expressions\v1\Term;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
+use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
+use ShabuShabu\ParadeDB\Expressions\v1\All;
 use ShabuShabu\ParadeDB\Expressions\v1\Blank;
+use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
 use ShabuShabu\ParadeDB\Expressions\v1\Boost;
+use ShabuShabu\ParadeDB\Expressions\v1\ConstScore;
+use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
+use ShabuShabu\ParadeDB\Expressions\v1\Exists;
+use ShabuShabu\ParadeDB\Expressions\v1\FullText;
+use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;
 use ShabuShabu\ParadeDB\Expressions\v1\JsonB;
 use ShabuShabu\ParadeDB\Expressions\v1\Parse;
+use ShabuShabu\ParadeDB\Expressions\v1\ParseWithField;
+use ShabuShabu\ParadeDB\Expressions\v1\Phrase;
+use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
 use ShabuShabu\ParadeDB\Expressions\v1\Range;
+use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
+use ShabuShabu\ParadeDB\Expressions\v1\Rank;
 use ShabuShabu\ParadeDB\Expressions\v1\Regex;
 use ShabuShabu\ParadeDB\Expressions\v1\Score;
-use ShabuShabu\ParadeDB\Expressions\v1\Exists;
-use ShabuShabu\ParadeDB\Expressions\v1\Phrase;
-use ShabuShabu\ParadeDB\Tests\App\Models\Team;
-use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
-use ShabuShabu\ParadeDB\Expressions\v1\TermSet;
-use ShabuShabu\ParadeDB\Expressions\v1\FullText;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;
-use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
-use ShabuShabu\ParadeDB\Expressions\v1\ConstScore;
-use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 use ShabuShabu\ParadeDB\Expressions\v1\Similarity;
-use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
-use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
-use ShabuShabu\ParadeDB\Expressions\v1\ParseWithField;
-use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;
+use ShabuShabu\ParadeDB\Expressions\v1\TermSet;
+use ShabuShabu\ParadeDB\Operators\Distance;
+use ShabuShabu\ParadeDB\Tests\App\Models\Team;
+use Tpetry\QueryExpressions\Language\Alias;
 
 it('gets all results', function () {
     Team::factory()->count(2)->create();

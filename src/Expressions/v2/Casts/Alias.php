@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Casts;
 
-use Illuminate\Database\Grammar;
 use Illuminate\Contracts\Database\Query\Expression;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 
 final readonly class Alias implements ParadeExpression
 {
     use Stringable;
 
     public function __construct(
-        private string|Expression $expression,
+        private string | Expression $expression,
         private string $name,
     ) {}
 

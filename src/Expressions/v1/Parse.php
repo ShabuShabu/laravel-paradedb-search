@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB\Expressions\v1;
 
 use Illuminate\Database\Grammar;
-use ShabuShabu\ParadeDB\TantivyQL\Query;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 final readonly class Parse implements ParadeExpression
 {

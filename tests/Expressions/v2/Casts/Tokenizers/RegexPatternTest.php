@@ -4,8 +4,8 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\Stopwords;
 use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\RegexPattern;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\Stopwords;
 
 it('generates the correct ngram tokenizer')
     ->expect(new RegexPattern('description', '(?i)\bh\w*'))

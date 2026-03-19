@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB\Expressions\v2;
 
 use Illuminate\Database\Grammar;
-use ShabuShabu\ParadeDB\TantivyQL\Query;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 
 final readonly class Proximity implements ParadeExpression
 {
     use Stringable;
 
     public function __construct(
-        private string|ProxRegex|ProxArray $token1,
+        private string | ProxRegex | ProxArray $token1,
         private int $distance,
         private string $token2,
         private bool $enforceOrder = false,

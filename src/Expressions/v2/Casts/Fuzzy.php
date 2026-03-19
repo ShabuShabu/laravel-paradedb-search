@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Casts;
 
-use InvalidArgumentException;
-use Illuminate\Database\Grammar;
 use Illuminate\Contracts\Database\Query\Expression;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use Illuminate\Database\Grammar;
+use InvalidArgumentException;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 
 final readonly class Fuzzy implements ParadeExpression
 {
     use Stringable;
 
     public function __construct(
-        private string|Expression $expression,
+        private string | Expression $expression,
         private int $distance,
         private bool $prefix = false,
         private bool $transposition = false,

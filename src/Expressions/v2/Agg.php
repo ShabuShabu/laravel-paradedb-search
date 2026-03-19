@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2;
 
-use JsonException;
 use Illuminate\Database\Grammar;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use JsonException;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
-use function Symfony\Component\String\s;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 
 final readonly class Agg implements ParadeExpression
 {
@@ -29,12 +28,12 @@ final readonly class Agg implements ParadeExpression
             json_encode($this->query, JSON_THROW_ON_ERROR)
         );
 
-        if(!$this->asFacet) {
+        if (! $this->asFacet) {
             return "pdb.agg($query)";
         }
 
         $checks = $this->visibilityChecks
-            ? ', '.$this->cast($grammar, $this->visibilityChecks)
+            ? ', ' . $this->cast($grammar, $this->visibilityChecks)
             : '';
 
         return "pdb.agg($query$checks) over ()";

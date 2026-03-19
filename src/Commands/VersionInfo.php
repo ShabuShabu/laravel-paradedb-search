@@ -16,12 +16,12 @@ class VersionInfo extends Command
 
     public function __invoke(): int
     {
-        $info = DB::table(new v1\VersionInfo())->first();
+        $info = DB::table(new v1\VersionInfo)->first();
 
         $this->table(
             ['Version', 'Git hash', 'Build mode'],
             [
-                [$info->version, $info->githash, $info->build_mode]
+                [$info->version, $info->githash, $info->build_mode],
             ],
         );
 

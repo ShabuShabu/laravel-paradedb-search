@@ -5,8 +5,8 @@
 declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
-use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Relation;
+use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
 
 it('finds ranges for a given value')
     ->expect(new RangeTerm('weight_range', 1))

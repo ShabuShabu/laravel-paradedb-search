@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2;
 
-use JsonException;
-use InvalidArgumentException;
 use Illuminate\Database\Grammar;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use InvalidArgumentException;
+use JsonException;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 
 final readonly class MoreLikeThis implements ParadeExpression
 {
     use Stringable;
 
     public function __construct(
-        private int|string|array $document,
+        private int | string | array $document,
         private ?array $fields = null,
         private ?int $minDocFrequency = null,
         private ?int $maxDocFrequency = null,

@@ -4,9 +4,9 @@
 
 declare(strict_types=1);
 
-use Tpetry\QueryExpressions\Value\Value;
 use ShabuShabu\ParadeDB\Expressions\v2\Casts\Alias;
 use Tpetry\QueryExpressions\Function\String\Concat;
+use Tpetry\QueryExpressions\Value\Value;
 
 it('generates a correct alias cast')
     ->expect(new Alias(new Concat(['description', new Value(' '), 'category']), 'description_concat'))

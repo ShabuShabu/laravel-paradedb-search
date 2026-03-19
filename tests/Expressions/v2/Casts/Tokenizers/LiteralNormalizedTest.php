@@ -4,8 +4,8 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\Stemmer;
 use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\LiteralNormalized;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\Stemmer;
 
 it('generates the correct literal normalized tokenizer')
     ->expect(new LiteralNormalized('description'))

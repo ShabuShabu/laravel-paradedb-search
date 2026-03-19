@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB\Expressions\Concerns;
 
 use Carbon\CarbonInterface;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Grammar;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
-use ShabuShabu\ParadeDB\TantivyQL\Query;
-use ShabuShabu\ParadeDB\Expressions\v1\Parse;
-use Illuminate\Contracts\Database\Query\Expression;
+use Illuminate\Support\Str;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use ShabuShabu\ParadeDB\Expressions\v1\Parse;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 trait Stringable
 {
