@@ -8,6 +8,7 @@ use JsonException;
 use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use function Symfony\Component\String\s;
 
 final readonly class Agg implements ParadeExpression
 {
@@ -15,6 +16,8 @@ final readonly class Agg implements ParadeExpression
 
     public function __construct(
         private array $query,
+        private bool $visibilityChecks = true,
+        private bool $asFacet = false,
     ) {}
 
     /**
@@ -26,6 +29,14 @@ final readonly class Agg implements ParadeExpression
             json_encode($this->query, JSON_THROW_ON_ERROR)
         );
 
-        return "pdb.agg($query)";
+        if(!$this->asFacet) {
+            return "pdb.agg($query)";
+        }
+
+        $checks = $this->visibilityChecks
+            ? ', '.$this->cast($grammar, $this->visibilityChecks)
+            : '';
+
+        return "pdb.agg($query$checks) over ()";
     }
 }
