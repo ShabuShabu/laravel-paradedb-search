@@ -477,7 +477,7 @@ See: https://docs.paradedb.com/documentation/advanced/phrase/phrase_prefix
 #### Search within a given range
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\v1\Range;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\v1\Range;use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 
 Product::query()
     ->where('id', '@@@', new Range('rating', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
@@ -513,7 +513,7 @@ Product::query()
 Ranges can also be compared to other ranges:
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Relation;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;use ShabuShabu\ParadeDB\Expressions\Ranges\Relation;
 
 Product::query()
     ->where('id', '@@@', new RangeTerm(
@@ -591,7 +591,7 @@ See: https://docs.paradedb.com/documentation/advanced/term/term_set
 #### Perform a complex boolean query
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 
 Product::query()
     ->where('id', '@@@', new Boolean(
@@ -608,7 +608,7 @@ Product::query()
 Boolean queries can also be constructed in a fluid manner:
 
 ```php
-use ShabuShabu\ParadeDB\Operators\FullText;use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Operators\FullText;use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 
 Product::query()
     ->where('id', FullText::search->value, Boolean::query()
@@ -623,7 +623,7 @@ Product::query()
 The two queries above are identical. The fluent methods allow you to conditionally add queries, though:
 
 ```php
-use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;use ShabuShabu\ParadeDB\Expressions\v1\Boolean;use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 
 $when = false;
 

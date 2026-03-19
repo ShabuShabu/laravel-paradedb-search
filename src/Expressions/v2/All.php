@@ -11,6 +11,6 @@ final readonly class All implements ParadeExpression
 {
     public function getValue(Grammar $grammar): string
     {
-        return '';
+        return 'pdb.all()';
     }
 }

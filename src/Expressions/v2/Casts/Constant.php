@@ -4,25 +4,29 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Casts;
 
+use InvalidArgumentException;
 use Illuminate\Database\Grammar;
 use Illuminate\Contracts\Database\Query\Expression;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
-final readonly class Alias implements ParadeExpression
+final readonly class Constant implements ParadeExpression
 {
     use Stringable;
 
     public function __construct(
         private string|Expression $expression,
-        private string $name,
+        private int $factor,
     ) {}
 
     public function getValue(Grammar $grammar): string
     {
-        $expression = $this->stringize($grammar, $this->expression);
-        $name = $this->toString($grammar, $this->name);
+        if ($this->factor < -2048 || $this->factor > 2048) {
+            throw new InvalidArgumentException('Const factor must be between -2048 and 2048.');
+        }
 
-        return "$expression::pdb.alias($name)";
+        $expression = $this->stringize($grammar, $this->expression);
+
+        return "$expression::pdb.const($this->factor)";
     }
 }

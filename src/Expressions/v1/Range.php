@@ -7,7 +7,7 @@ namespace ShabuShabu\ParadeDB\Expressions\v1;
 use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
-use ShabuShabu\ParadeDB\Expressions\v1\Ranges\RangeExpression;
+use ShabuShabu\ParadeDB\Expressions\Ranges\RangeExpression;
 
 final readonly class Range implements ParadeExpression
 {

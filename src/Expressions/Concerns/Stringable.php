@@ -93,6 +93,14 @@ trait Stringable
         };
     }
 
+    protected function bool(bool $value): string
+    {
+        return match (true) {
+            $value === true => 't',
+            $value === false => 'f',
+        };
+    }
+
     protected function stringize(Grammar $grammar, string | Expression $expression): float | int | string
     {
         return match ($grammar->isExpression($expression)) {

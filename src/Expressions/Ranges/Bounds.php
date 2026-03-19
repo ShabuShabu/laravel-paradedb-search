@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ShabuShabu\ParadeDB\Expressions\v1\Ranges;
+namespace ShabuShabu\ParadeDB\Expressions\Ranges;
 
 enum Bounds
 {
