@@ -19,8 +19,14 @@ final readonly class ProxArray implements ParadeExpression
     public function getValue(Grammar $grammar): string
     {
         $clauses = collect($this->clauses)
-            ->filter(fn (mixed $clause) => is_string($clause) || $clause instanceof ProxRegex)
-            ->map(fn (string | ProxRegex $clause) => $this->stringize($grammar, $clause))
+            ->filter(
+                fn (mixed $clause) => is_string($clause) || $clause instanceof ProxRegex
+            )
+            ->map(
+                fn (string | ProxRegex $clause) => $clause instanceof ProxRegex
+                    ? $this->stringize($grammar, $clause)
+                    : $this->toString($grammar, $clause)
+            )
             ->join(', ');
 
         return "pdb.prox_array($clauses)";

@@ -22,7 +22,9 @@ final readonly class Proximity implements ParadeExpression
     public function getValue(Grammar $grammar): string
     {
         $operator = $this->enforceOrder ? '##>' : '##';
-        $token1 = $this->stringize($grammar, $this->token1);
+        $token1 = $this->token1 instanceof ParadeExpression
+            ? $this->stringize($grammar, $this->token1)
+            : $this->toString($grammar, $this->token1);
         $distance = $this->cast($grammar, $this->distance);
         $token2 = $this->cast($grammar, $this->token2);
 
