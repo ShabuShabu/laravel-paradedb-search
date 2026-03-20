@@ -18,10 +18,8 @@ final readonly class SnippetPositions implements ParadeExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $params = $this->toParams([
-            'column' => $this->cast($grammar, $this->column),
-        ]);
+        $column = $this->stringize($grammar, $this->column);
 
-        return "paradedb.snippet_positions($params)";
+        return "paradedb.snippet_positions($column)";
     }
 }
