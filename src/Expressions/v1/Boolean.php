@@ -21,22 +21,22 @@ final class Boolean implements ParadeExpression
         private null | string | array | ParadeExpression | Query $mustNot = null,
     ) {}
 
-    public function must(Closure | string | array | ParadeExpression | Query $query, bool $when = true): static
+    public function must(Closure | string | array | ParadeExpression | Query $query, bool $when = true): self
     {
         return $this->addQuery('must', $query, $when);
     }
 
-    public function should(Closure | string | array | ParadeExpression | Query $query, bool $when = true): static
+    public function should(Closure | string | array | ParadeExpression | Query $query, bool $when = true): self
     {
         return $this->addQuery('should', $query, $when);
     }
 
-    public function mustNot(Closure | string | array | ParadeExpression | Query $query, bool $when = true): static
+    public function mustNot(Closure | string | array | ParadeExpression | Query $query, bool $when = true): self
     {
         return $this->addQuery('mustNot', $query, $when);
     }
 
-    protected function addQuery(string $type, Closure | string | array | ParadeExpression | Query $query, bool $when): static
+    protected function addQuery(string $type, Closure | string | array | ParadeExpression | Query $query, bool $when): self
     {
         if (! $when) {
             return $this;

@@ -19,7 +19,7 @@ final class DisjunctionMax implements ParadeExpression
         private null | int | float $tieBreaker = null,
     ) {}
 
-    public function add(ParadeExpression | Query | string $query, bool $when = true): static
+    public function add(ParadeExpression | Query | string $query, bool $when = true): self
     {
         if (! is_array($this->disjuncts)) {
             $this->disjuncts = Arr::wrap($this->disjuncts);
@@ -32,7 +32,7 @@ final class DisjunctionMax implements ParadeExpression
         return $this;
     }
 
-    public function tieBreaker(int | float $tieBreaker): static
+    public function tieBreaker(int | float $tieBreaker): self
     {
         $this->tieBreaker = $tieBreaker;
 
@@ -51,8 +51,8 @@ final class DisjunctionMax implements ParadeExpression
         return "paradedb.disjunction_max($params)";
     }
 
-    public static function query(): static
+    public static function query(): self
     {
-        return new static([]);
+        return new self([]);
     }
 }

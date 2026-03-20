@@ -16,7 +16,7 @@ final class TermSet implements ParadeExpression
         private array $terms,
     ) {}
 
-    public function add(Term $query, bool $when = true): static
+    public function add(Term $query, bool $when = true): self
     {
         if ($when) {
             $this->terms[] = $query;
@@ -40,8 +40,8 @@ final class TermSet implements ParadeExpression
         return "paradedb.term_set($params)";
     }
 
-    public static function query(): static
+    public static function query(): self
     {
-        return new static([]);
+        return new self([]);
     }
 }
