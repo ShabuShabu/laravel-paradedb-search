@@ -703,7 +703,7 @@ Product::query()
 `pg_search` also allows you to perform hybrid full-text/similarity searches. For this to work you will need to install [pgvector](https://github.com/pgvector/pgvector). Please note that `ParadeDB Search for Laravel` registers all custom `pgvector` operators already for you.
 
 ```php
-use Tpetry\QueryExpressions\Value\Value;use Tpetry\QueryExpressions\Language\Alias;use ShabuShabu\ParadeDB\Operators\Distance;use ShabuShabu\ParadeDB\Expressions\v1\Rank;use ShabuShabu\ParadeDB\Expressions\v1\Score;use ShabuShabu\ParadeDB\Expressions\v1\Similarity;use Tpetry\QueryExpressions\Operator\Arithmetic\Add;use Tpetry\QueryExpressions\Operator\Arithmetic\Divide;use Tpetry\QueryExpressions\Function\Conditional\Coalesce;
+use Tpetry\QueryExpressions\Value\Value;use Tpetry\QueryExpressions\Language\Alias;use ShabuShabu\ParadeDB\Operators\Distance;use ShabuShabu\ParadeDB\Expressions\v2\Rank;use ShabuShabu\ParadeDB\Expressions\v1\Score;use ShabuShabu\ParadeDB\Expressions\v2\Similarity;use Tpetry\QueryExpressions\Operator\Arithmetic\Add;use Tpetry\QueryExpressions\Operator\Arithmetic\Divide;use Tpetry\QueryExpressions\Function\Conditional\Coalesce;
 
 Product::query()
     ->withExpression('semantic_search', Product::query()

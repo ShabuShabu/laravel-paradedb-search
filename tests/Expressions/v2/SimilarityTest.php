@@ -5,10 +5,10 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Query\Expression;
-use ShabuShabu\ParadeDB\Expressions\v1\Similarity;
 use ShabuShabu\ParadeDB\Operators\Distance;
+use ShabuShabu\ParadeDB\Expressions\v2\Similarity;
 
-pest()->group('v1');
+pest()->group('v2');
 
 it('parses a similarity query')
     ->expect(new Similarity('embedding', Distance::l2, [1, 2, 3]))

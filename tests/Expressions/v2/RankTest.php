@@ -4,9 +4,9 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v1\Rank;
-use ShabuShabu\ParadeDB\Expressions\v1\Similarity;
 use ShabuShabu\ParadeDB\Operators\Distance;
+use ShabuShabu\ParadeDB\Expressions\v2\Rank;
+use ShabuShabu\ParadeDB\Expressions\v2\Similarity;
 
 pest()->group('v1');
 

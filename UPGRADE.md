@@ -8,6 +8,7 @@
 - new search builder macro
 - help command and `paradedb.help` function were removed
 - JsonB was moved to v2\Casts
+- Similarity & Rank moved to v2
 
 ## @todo
 
