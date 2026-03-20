@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\v1\Snippet;
 
+pest()->group('v1');
+
 it('highlights search queries: ', function (?string $startTag, ?string $endTag, ?int $maxNumChars, string $expression) {
     $snippet = ! is_null($maxNumChars)
         ? new Snippet('description', $startTag, $endTag, $maxNumChars)

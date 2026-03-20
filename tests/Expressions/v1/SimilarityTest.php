@@ -8,6 +8,8 @@ use Illuminate\Database\Query\Expression;
 use ShabuShabu\ParadeDB\Expressions\v1\Similarity;
 use ShabuShabu\ParadeDB\Operators\Distance;
 
+pest()->group('v1');
+
 it('parses a similarity query')
     ->expect(new Similarity('embedding', Distance::l2, [1, 2, 3]))
     ->toBeExpression("\"embedding\" <-> '[1,2,3]'");

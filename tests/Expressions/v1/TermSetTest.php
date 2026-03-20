@@ -8,6 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\Ranges\Int8;
 use ShabuShabu\ParadeDB\Expressions\v1\Term;
 use ShabuShabu\ParadeDB\Expressions\v1\TermSet;
 
+pest()->group('v1');
+
 it('matches documents containing a specified term')
     ->expect(new TermSet([
         new Term('description', 'shoes'),

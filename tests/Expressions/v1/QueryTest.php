@@ -35,6 +35,8 @@ use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 use Tpetry\QueryExpressions\Language\Alias;
 
+pest()->group('v1');
+
 it('gets all results', function () {
     Team::factory()->count(2)->create();
 

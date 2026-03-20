@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
 
+pest()->group('v1');
+
 it('identifies documents containing a given sequence of words followed by a term prefix')
     ->expect(new PhrasePrefix('description', ['har']))
     ->toBeExpression("paradedb.phrase_prefix(field => 'description', phrases => ARRAY['har'])");

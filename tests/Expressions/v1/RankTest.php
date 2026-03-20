@@ -8,6 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\v1\Rank;
 use ShabuShabu\ParadeDB\Expressions\v1\Similarity;
 use ShabuShabu\ParadeDB\Operators\Distance;
 
+pest()->group('v1');
+
 it('ranks a simple query')
     ->expect(new Rank(['description', 'asc']))
     ->toBeExpression('RANK () OVER (ORDER BY "description" ASC)');

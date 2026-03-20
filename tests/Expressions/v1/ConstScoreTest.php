@@ -8,6 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\v1\All;
 use ShabuShabu\ParadeDB\Expressions\v1\ConstScore;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 
+pest()->group('v1');
+
 it('applies a constant score to an expression query')
     ->expect(new ConstScore(new All, 2))
     ->toBeExpression('paradedb.const_score(score => 2, query => paradedb.all())');

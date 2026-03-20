@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\v1\JsonB;
 
+pest()->group('v1');
+
 it('creates a jsonb query string from an array')
     ->expect(new JsonB([
         'fuzzy_term' => [

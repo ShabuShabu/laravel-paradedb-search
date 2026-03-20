@@ -4,6 +4,8 @@
 
 declare(strict_types=1);
 
+pest()->group('commands');
+
 it('verifies an index', function () {
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:integrity verify')

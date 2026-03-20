@@ -5,8 +5,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\DB;
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\UnicodeWords;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+
+pest()->group('macros');
 
 it('uses the bm25 blueprint macro correctly', function () {
     // @phpstan-ignore-next-line

@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\v1\Phrase;
 
+pest()->group('v1');
+
 it('searches for exact matches')
     ->expect(new Phrase('description', ['robot', 'building', 'kit']))
     ->toBeExpression("paradedb.phrase(field => 'description', phrases => ARRAY['robot', 'building', 'kit'])");

@@ -17,11 +17,13 @@ use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 trait Stringable
 {
-    protected function toParams(array $params): string
+    protected function toParams(array $params, string $operator = '=>'): string
     {
+        $expand = ! array_is_list($params);
+
         return collect($params)
             ->filter(fn ($value) => ! is_null($value))
-            ->map(fn (string $value, string $key) => "$key => $value")
+            ->map(fn (string $value, string $key) => $expand ? "$key $operator $value" : $value)
             ->implode(', ');
     }
 
@@ -93,8 +95,12 @@ trait Stringable
         };
     }
 
-    protected function bool(bool $value): string
+    protected function bool(?bool $value): ?string
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         return match (true) {
             $value === true => 't',
             $value === false => 'f',

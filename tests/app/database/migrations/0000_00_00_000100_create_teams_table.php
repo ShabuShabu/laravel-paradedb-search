@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\UnicodeWords;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 

@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\v1\Score;
 
+pest()->group('v1');
+
 it('ranks a query with default key')
     ->expect(new Score)
     ->toBeExpression('paradedb.score("id")');

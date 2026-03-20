@@ -4,6 +4,8 @@
 
 declare(strict_types=1);
 
+pest()->group('commands');
+
 it('asks for help', function () {
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:help', ['--dry' => true])

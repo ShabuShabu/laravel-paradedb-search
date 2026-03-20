@@ -8,6 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Relation;
 use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
 
+pest()->group('v1');
+
 it('finds ranges for a given value')
     ->expect(new RangeTerm('weight_range', 1))
     ->toBeExpression("paradedb.range_term(field => 'weight_range', term => 1)");

@@ -8,6 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
 use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 
+pest()->group('v1');
+
 it('filters documents based on logical relationships', function (string $type) {
     $queries = [
         Query::string()->where('description', 'shoes'),

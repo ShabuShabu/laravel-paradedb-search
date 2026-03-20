@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\v1\FullText;
 
+pest()->group('v1');
+
 it('performs a match query: ', function (?string $tokenizer, ?int $distance, ?bool $transposeCostOne, ?bool $prefix, ?bool $conjunctionMode, string $expression) {
     expect(new FullText('description', 'wolo', $tokenizer, $distance, $transposeCostOne, $prefix, $conjunctionMode))->toBeExpression($expression);
 })->with([

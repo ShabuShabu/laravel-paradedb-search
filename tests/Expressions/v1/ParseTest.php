@@ -7,6 +7,8 @@ declare(strict_types=1);
 use ShabuShabu\ParadeDB\Expressions\v1\Parse;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 
+pest()->group('v1');
+
 it('parses a string query')
     ->expect(new Parse('description:shoes'))
     ->toBeExpression("paradedb.parse(query_string => 'description:shoes')");

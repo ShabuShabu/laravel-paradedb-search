@@ -7,6 +7,8 @@ declare(strict_types=1);
 use ShabuShabu\ParadeDB\Expressions\Ranges\Int8;
 use ShabuShabu\ParadeDB\Expressions\v1\Term;
 
+pest()->group('v1');
+
 it('matches documents containing a specified term')
     ->expect(new Term('description', 'shoes'))
     ->toBeExpression("paradedb.term(field => 'description', value => 'shoes')");

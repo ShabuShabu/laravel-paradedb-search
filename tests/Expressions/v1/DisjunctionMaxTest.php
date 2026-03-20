@@ -8,6 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
 use ShabuShabu\ParadeDB\Expressions\v1\Regex;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 
+pest()->group('v1');
+
 it('returns documents that match one or more of the specified subqueries')
     ->expect(new DisjunctionMax([
         Query::string()->where('description', 'shoes'),

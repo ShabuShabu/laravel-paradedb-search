@@ -8,6 +8,8 @@ use ShabuShabu\ParadeDB\Expressions\v1\All;
 use ShabuShabu\ParadeDB\Expressions\v1\Boost;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 
+pest()->group('v1');
+
 it('boosts an expression query')
     ->expect(new Boost(new All, 2))
     ->toBeExpression('paradedb.boost(factor => 2, query => paradedb.all())');

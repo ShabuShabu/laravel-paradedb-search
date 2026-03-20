@@ -16,7 +16,7 @@ use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 use ShabuShabu\ParadeDB\Expressions\v1\Parse;
 use ShabuShabu\ParadeDB\Expressions\v1\Score;
 use ShabuShabu\ParadeDB\Expressions\v1\Snippet;
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\Tokenizers\TokenizerExpression;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\TokenizerExpression;
 use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Operators\FullText;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
@@ -63,14 +63,17 @@ class ParadeDBServiceProvider extends PackageServiceProvider
 
     public function registeringPackage(): void
     {
+        // Note: v1 only
         Builder::macro('selectWithScore', function (array $columns = ['*'], string $key = 'id') {
             return $this->select([...$columns, new Score($key)]);
         });
 
+        // Note: v1 only
         Builder::macro('selectWithSnippet', function (string $field, array $columns = ['*'], ?string $startTag = null, ?string $endTag = null, ?int $maxNumChars = null) {
             return $this->select([...$columns, new Snippet($field, $startTag, $endTag, $maxNumChars)]);
         });
 
+        // Note: v1 only
         Builder::macro('whereSearch', function (ParadeExpression | Query | string $expression, string $field = 'id') {
             if ($expression instanceof Query) {
                 $expression = new Parse($expression);
@@ -79,6 +82,7 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->where($field, FullText::search->value, $expression);
         });
 
+        // Note: v2 only
         Blueprint::macro('bm25', function (array $columns, ?array $parameters = null, ?string $name = null): Fluent {
             $table = $this->table; // @phpstan-ignore-line
             $grammar = $this->grammar; // @phpstan-ignore-line
