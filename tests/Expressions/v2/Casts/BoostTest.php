@@ -4,9 +4,9 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Regex;
 use ShabuShabu\ParadeDB\Expressions\v2\Casts\Boost;
 use ShabuShabu\ParadeDB\Expressions\v2\Casts\Fuzzy;
+use ShabuShabu\ParadeDB\Expressions\v2\Regex;
 
 pest()->group('v2', 'casts');
 

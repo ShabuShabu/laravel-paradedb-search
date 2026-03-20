@@ -7,7 +7,6 @@ namespace ShabuShabu\ParadeDB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
-use ShabuShabu\ParadeDB\Commands\Help;
 use ShabuShabu\ParadeDB\Commands\IndexIntegrity;
 use ShabuShabu\ParadeDB\Commands\TestTable;
 use ShabuShabu\ParadeDB\Commands\Tokenizers;
@@ -34,7 +33,6 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             ->name('laravel-paradedb-search')
             ->hasConfigFile()
             ->hasCommands(
-                Help::class,
                 TestTable::class,
                 Tokenizers::class,
                 VersionInfo::class,

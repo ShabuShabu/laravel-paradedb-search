@@ -12,8 +12,8 @@
 ## @todo
 
 - Finish missing v1 functions
-- Finish tests
 - Look into type generation
+- Finish tests
 - Rewrite readme
 
 ## Upgrading To 0.10.0 From 0.9.*
