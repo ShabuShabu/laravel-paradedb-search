@@ -7,6 +7,9 @@ namespace ShabuShabu\ParadeDB\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
+use function Laravel\Prompts\info;
+use function Laravel\Prompts\table;
+
 class Tokenizers extends Command
 {
     protected $signature = 'paradedb:tokenizers';
@@ -18,11 +21,13 @@ class Tokenizers extends Command
         $tokenizers = DB::table(new \ShabuShabu\ParadeDB\Expressions\v1\Tokenizers)
             ->get('tokenizer as name');
 
-        $this->components->info('These tokenizers are available:');
+        info('These tokenizers are available:');
 
-        $this->table(
-            ['Name'],
-            $tokenizers->map(fn (object $row) => (array) $row)->toArray()
+        table(
+            headers: ['Name'],
+            rows: $tokenizers
+                ->map(fn (object $row) => (array) $row)
+                ->all()
         );
 
         return self::SUCCESS;

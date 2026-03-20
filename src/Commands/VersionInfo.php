@@ -8,6 +8,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use ShabuShabu\ParadeDB\Expressions\v1;
 
+use function Laravel\Prompts\table;
+
 class VersionInfo extends Command
 {
     protected $signature = 'paradedb:version';
@@ -18,9 +20,9 @@ class VersionInfo extends Command
     {
         $info = DB::table(new v1\Inspection\VersionInfo)->first();
 
-        $this->table(
-            ['Version', 'Git hash', 'Build mode'],
-            [
+        table(
+            headers: ['Version', 'Git hash', 'Build mode'],
+            rows: [
                 [$info->version, $info->githash, $info->build_mode],
             ],
         );

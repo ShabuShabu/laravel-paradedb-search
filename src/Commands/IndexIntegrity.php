@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use ShabuShabu\ParadeDB\Expressions\v2\Integrity;
 
+use function Laravel\Prompts\table;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
@@ -56,7 +57,7 @@ class IndexIntegrity extends Command
         );
 
         $segmentIds = multiselect(
-            label: 'Do you want to verify the following permissions?',
+            label: 'Which segment ids would you like to verify?',
             options: DB::table(new Integrity\IndexSegments($index))->pluck('segment_idx')
         );
 
@@ -70,7 +71,7 @@ class IndexIntegrity extends Command
             segmentIds: empty($segmentIds) ? null : $segmentIds,
         ))->get();
 
-        $this->table(
+        table(
             headers: ['Check name', 'Passed', 'Details'],
             rows: $checks->map(fn (object $check) => [
                 $check->check_name,
@@ -110,7 +111,7 @@ class IndexIntegrity extends Command
             onErrorStop: $onErrorStop,
         ))->get();
 
-        $this->table(
+        table(
             headers: ['Schema name', 'Index name', 'Check name', 'Passed', 'Details'],
             rows: $checks->map(fn (object $check) => [
                 $check->schemaname,
@@ -130,7 +131,7 @@ class IndexIntegrity extends Command
 
         $indexes = DB::table(new Integrity\Indexes)->get();
 
-        $this->table(
+        table(
             headers: ['Schema name', 'Table name', 'Index name', 'Index rel id', 'Num segments', 'Total docs'],
             rows: $indexes->map(fn (object $index) => [
                 $index->schemaname,
@@ -155,7 +156,7 @@ class IndexIntegrity extends Command
 
         $segments = DB::table(new Integrity\IndexSegments($index))->get();
 
-        $this->table(
+        table(
             headers: ['Partition name', 'Segment idx', 'Segment id', 'Num docs', 'Num deleted', 'Max docs'],
             rows: $segments->map(fn (object $index) => [
                 $index->partition_name,
