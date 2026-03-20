@@ -4,6 +4,7 @@
 - `more_like_this` has changed to `pdb` with different parameters
 - all expressions are now final
 - tokenizers can only be used with new bm25 macro
+- new namespaces for ranges
 
 ## @todo
 - Auto remove global scopes

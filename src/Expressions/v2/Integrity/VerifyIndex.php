@@ -31,7 +31,7 @@ final readonly class VerifyIndex implements ParadeExpression
         $this->assertSegmentIds();
 
         $params = $this->toParams([
-            'index' => $grammar->wrap($this->index),
+            'index' => $this->toString($grammar, $this->index),
             'heapallindexed' => $this->cast($grammar, $this->heapAllIndexed),
             'sample_rate' => $this->cast($grammar, $this->sampleRate),
             'report_progress' => $this->cast($grammar, $this->reportProgress),
