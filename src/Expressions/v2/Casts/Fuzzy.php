@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ShabuShabu\ParadeDB\Expressions\v2\Types;
+namespace ShabuShabu\ParadeDB\Expressions\v2\Casts;
 
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Grammar;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ShabuShabu\ParadeDB\Expressions\v1;
+namespace ShabuShabu\ParadeDB\Expressions\v2\Casts;
 
-use Illuminate\Database\Grammar;
 use JsonException;
+use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 
 final readonly class JsonB implements ParadeExpression

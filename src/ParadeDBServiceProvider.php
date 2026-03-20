@@ -82,6 +82,11 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->where($field, FullText::search->value, $expression);
         });
 
+        // Note: both v1 and v2
+        Builder::macro('search', function () {
+            return $this->withoutGlobalScopes();
+        });
+
         // Note: v2 only
         Blueprint::macro('bm25', function (array $columns, ?array $parameters = null, ?string $name = null): Fluent {
             $table = $this->table; // @phpstan-ignore-line

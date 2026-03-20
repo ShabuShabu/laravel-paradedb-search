@@ -5,10 +5,10 @@
 declare(strict_types=1);
 
 use ShabuShabu\ParadeDB\Expressions\v2\Regex;
-use ShabuShabu\ParadeDB\Expressions\v2\Types\Boost;
-use ShabuShabu\ParadeDB\Expressions\v2\Types\Fuzzy;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Boost;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Fuzzy;
 
-pest()->group('v2', 'types');
+pest()->group('v2', 'casts');
 
 it('boosts a column')
     ->expect(new Boost('description', 2))

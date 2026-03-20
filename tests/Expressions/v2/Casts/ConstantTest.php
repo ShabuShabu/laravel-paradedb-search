@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Types\Constant;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Constant;
 use Tpetry\QueryExpressions\Value\Value;
 
-pest()->group('v2', 'types');
+pest()->group('v2', 'casts');
 
 it('assigns a constant score to a column')
     ->expect(new Constant('description', 2))

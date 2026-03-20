@@ -3,12 +3,18 @@
 - v1 expressions have moved to the `v1` namespace
 - `more_like_this` has changed to `pdb` with different parameters
 - all expressions are now final
-- tokenizers can only be used with new bm25 macro
+- tokenizers can only be used with the new bm25 macro
 - new namespaces for ranges
+- new search builder macro
+- help command and `paradedb.help` function were removed
+- JsonB was moved to v2\Casts
 
 ## @todo
-- Auto remove global scopes
-- Update readme
+
+- Finish missing v1 functions
+- Finish tests
+- Look into type generation
+- Rewrite readme
 
 ## Upgrading To 0.10.0 From 0.9.*
 

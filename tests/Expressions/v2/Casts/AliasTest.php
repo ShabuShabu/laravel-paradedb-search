@@ -4,11 +4,11 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Types\Alias;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Alias;
 use Tpetry\QueryExpressions\Function\String\Concat;
 use Tpetry\QueryExpressions\Value\Value;
 
-pest()->group('v2', 'types');
+pest()->group('v2', 'casts');
 
 it('generates a correct alias cast against a column')
     ->expect(new Alias('description', 'description_simple'))

@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Types\Slop;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Slop;
 use Tpetry\QueryExpressions\Value\Value;
 
-pest()->group('v2', 'types');
+pest()->group('v2', 'casts');
 
 it('adds slop to a column')
     ->expect(new Slop('shoes', 2))

@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Types\Fuzzy;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Fuzzy;
 use Tpetry\QueryExpressions\Value\Value;
 
-pest()->group('v2', 'types');
+pest()->group('v2', 'casts');
 
 it('assigns a constant score to a column')
     ->expect(new Fuzzy('description', 1))

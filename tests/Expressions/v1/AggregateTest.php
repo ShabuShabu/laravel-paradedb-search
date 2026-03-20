@@ -4,6 +4,6 @@
 
 declare(strict_types=1);
 
-pest()->group('v2', 'expressions');
+pest()->group('v1');
 
 it('')->todo();
