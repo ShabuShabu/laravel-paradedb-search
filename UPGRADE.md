@@ -1,21 +1,24 @@
 # Upgrade Guide
 
+## Upgrading To 0.13.0 From 0.12.*
+
+### Minimum Versions
+
+The following required dependency versions have been updated:
+
+- The minimum `pg_search` version is now `v0.22.0`
+
+### Changes
+
 - v1 expressions have moved to the `v1` namespace
-- `more_like_this` has changed to `pdb` with different parameters
-- all expressions are now final
-- tokenizers can only be used with the new bm25 macro
-- new namespaces for ranges
-- new search builder macro
-- help command and `paradedb.help` function were removed
-- JsonB was moved to v2\Casts
-- Similarity & Rank moved to v2
-
-## @todo
-
-- Finish missing v1 functions
-- Look into type generation
-- Finish tests
-- Rewrite readme
+- `paradedb.more_like_this` has moved to `pdb.more_like_this` with different parameters
+- All expressions are now final
+- Tokenizers can only be used with the new `bm25` macro
+- New namespace for ranges: `ShabuShabu\ParadeDB\Expressions\Ranges`
+- New search builder macro
+- `Help` command and `paradedb.help` function have been removed
+- `JsonB` was moved to `v2\Casts`
+- `Similarity` & `Rank` moved to v2
 
 ## Upgrading To 0.10.0 From 0.9.*
 
