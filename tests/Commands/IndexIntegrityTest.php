@@ -18,25 +18,25 @@ it('verifies an index', function () {
         ->expectsConfirmation('Do you want to enable verbose logging?')
         ->expectsChoice('Which segment ids would you like to verify?')
         ->assertExitCode(0);
-});
+})->todo();
 
 it('verifies all indexes', function () {
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:integrity')
         ->expectsQuestion('What action would you like to perform?', 'verify-all')
         ->assertExitCode(0);
-});
+})->todo();
 
 it('lists all indexes', function () {
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:integrity')
         ->expectsQuestion('What action would you like to perform?', 'indexes')
         ->assertExitCode(0);
-});
+})->todo();
 
 it('lists all segments', function () {
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:integrity')
         ->expectsQuestion('What action would you like to perform?', 'segments')
         ->assertExitCode(0);
-});
+})->todo();

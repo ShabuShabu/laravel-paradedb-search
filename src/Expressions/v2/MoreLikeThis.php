@@ -48,21 +48,20 @@ final readonly class MoreLikeThis implements ParadeExpression
         ];
 
         if (is_array($this->document)) {
+            $document = $grammar->escape(json_encode($this->document, JSON_THROW_ON_ERROR));
+
+            $params = $this->toParams($baseParams);
+        } else {
+            $document = $this->cast($grammar, $this->document);
+
             $params = $this->toParams([
-                'document' => $grammar->escape(json_encode($this->document, JSON_THROW_ON_ERROR)),
+                'fields' => is_array($this->fields) ? $this->asArray($grammar, $this->fields) : null,
                 ...$baseParams,
             ]);
-
-            return "pdb.more_like_this($params)";
         }
 
-        $keyValue = $this->cast($grammar, $this->document);
-
-        $params = $this->toParams([
-            'fields' => is_array($this->fields) ? $this->asArray($grammar, $this->fields) : null,
-            ...$baseParams,
-        ]);
-
-        return "pdb.more_like_this($keyValue, $params)";
+        return filled($params)
+            ? "pdb.more_like_this($document, $params)"
+            : "pdb.more_like_this($document)";
     }
 }
