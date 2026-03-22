@@ -10,4 +10,4 @@ pest()->group('v1');
 
 it('gets the snippet positions')
     ->expect(new SnippetPositions('description'))
-    ->toBeExpression("paradedb.snippet_positions(\"description\")");
+    ->toBeExpression('paradedb.snippet_positions("description")');

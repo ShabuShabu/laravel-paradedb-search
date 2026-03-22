@@ -10,7 +10,7 @@ pest()->group('v2', 'expressions');
 
 it('gets the snippets')
     ->expect(new Snippets('description'))
-    ->toBeExpression("pdb.snippets(field => \"description\")");
+    ->toBeExpression('pdb.snippets(field => "description")');
 
 it('gets the snippets with options')
     ->expect(new Snippets(

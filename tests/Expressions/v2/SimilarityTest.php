@@ -5,8 +5,8 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Query\Expression;
-use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Expressions\v2\Similarity;
+use ShabuShabu\ParadeDB\Operators\Distance;
 
 pest()->group('v2');
 

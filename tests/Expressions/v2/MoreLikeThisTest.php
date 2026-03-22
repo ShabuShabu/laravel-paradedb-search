@@ -23,7 +23,7 @@ it('finds similar documents by string')
 it('finds similar documents by custom document')
     ->expect(new MoreLikeThis([
         'description' => 'Sleek running shoes',
-        'category' => 'footwear'
+        'category' => 'footwear',
     ]))
     ->toBeExpression('pdb.more_like_this(\'{"description":"Sleek running shoes","category":"footwear"}\')');
 

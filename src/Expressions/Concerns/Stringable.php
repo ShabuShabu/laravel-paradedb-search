@@ -58,7 +58,7 @@ trait Stringable
         return $this->wrapArray(
             collect($values)
                 ->filter(fn (mixed $value) => is_string($value) || $value instanceof \Stringable)
-                ->map(fn (string $value) => $grammar->escape((string)$value))
+                ->map(fn (string $value) => $grammar->escape((string) $value))
         );
     }
 

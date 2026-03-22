@@ -14,7 +14,7 @@ final readonly class Agg implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private string|array $query,
+        private string | array $query,
         private bool $visibilityChecks = true,
         private bool $asFacet = false,
     ) {}
@@ -35,7 +35,7 @@ final readonly class Agg implements ParadeExpression
             )
         );
 
-        $checks = !$this->visibilityChecks
+        $checks = ! $this->visibilityChecks
             ? ', ' . $this->cast($grammar, $this->visibilityChecks)
             : '';
 

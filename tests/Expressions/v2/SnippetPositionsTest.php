@@ -10,5 +10,4 @@ pest()->group('v2', 'expressions');
 
 it('gets the snippet positions')
     ->expect(new SnippetPositions('description'))
-    ->toBeExpression("pdb.snippet_positions(field => \"description\")");
-
+    ->toBeExpression('pdb.snippet_positions(field => "description")');

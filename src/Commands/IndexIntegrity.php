@@ -8,10 +8,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use ShabuShabu\ParadeDB\Expressions\v2\Integrity;
 
-use function Laravel\Prompts\table;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
+use function Laravel\Prompts\table;
 use function Laravel\Prompts\text;
 use function Laravel\Prompts\warning;
 

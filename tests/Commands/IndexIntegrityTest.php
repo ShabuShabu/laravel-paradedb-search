@@ -11,14 +11,14 @@ it('verifies an index', function () {
     $this->artisan('paradedb:integrity')
         ->expectsQuestion('What action would you like to perform?', 'verify')
         // Not asked for only a single index
-        //->expectsChoice('Which index would you like to select?', 'teams_bm25_idx', ['teams_bm25_idx' ])
+        // ->expectsChoice('Which index would you like to select?', 'teams_bm25_idx', ['teams_bm25_idx' ])
         ->expectsConfirmation('Do you want to verify that all indexed entries still exist in the heap table?')
         ->expectsQuestion('Enter a sample rate or leave empty.', '0.8')
         ->expectsConfirmation('Do you want to enable progress reporting to see status updates?')
         ->expectsConfirmation('Do you want to stop verification immediately when the first error is found?')
         ->expectsConfirmation('Do you want to enable verbose logging?')
         // not asked for no segment ids
-        //->expectsChoice('Which segment ids would you like to verify?', 0, [0])
+        // ->expectsChoice('Which segment ids would you like to verify?', 0, [0])
         ->assertExitCode(0);
 });
 
