@@ -156,4 +156,14 @@ abstract class Tokenizer implements TokenizerExpression
     {
         return count($args) > 0 ? implode(', ', $args) : null;
     }
+
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
 }

@@ -9,13 +9,13 @@ use Illuminate\Contracts\Database\Query\Expression;
 final class Ngram extends Tokenizer
 {
     public function __construct(
-        protected string | Expression $column,
-        protected int $min,
-        protected int $max,
+        string | Expression $column,
+        int $min,
+        int $max,
     ) {
         parent::__construct($column);
 
-        $this->parameters = [$this->min, $this->max];
+        $this->parameters = [$min, $max];
     }
 
     public function prefixOnly(bool $value = true): self

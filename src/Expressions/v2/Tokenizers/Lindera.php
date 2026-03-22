@@ -9,12 +9,12 @@ use Illuminate\Contracts\Database\Query\Expression;
 final class Lindera extends Tokenizer
 {
     public function __construct(
-        protected string | Expression $column,
-        protected Dictionary $dictionary,
+        string | Expression $column,
+        Dictionary $dictionary,
     ) {
         parent::__construct($column);
 
-        $this->parameters = [$this->dictionary->name];
+        $this->parameters = [$dictionary->name];
     }
 
     public function name(): string

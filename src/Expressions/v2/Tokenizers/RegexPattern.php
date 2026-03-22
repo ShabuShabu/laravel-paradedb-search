@@ -9,12 +9,12 @@ use Illuminate\Contracts\Database\Query\Expression;
 final class RegexPattern extends Tokenizer
 {
     public function __construct(
-        protected string | Expression $column,
-        protected string $pattern,
+        string | Expression $column,
+        string $pattern,
     ) {
         parent::__construct($column);
 
-        $this->parameters = ["'$this->pattern'"];
+        $this->parameters = ["'$pattern'"];
     }
 
     public function name(): string

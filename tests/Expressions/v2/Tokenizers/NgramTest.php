@@ -15,3 +15,7 @@ it('generates the correct ngram tokenizer')
 it('generates the correct ngram tokenizer with filters')
     ->expect((new Ngram('description', 2, 3))->prefixOnly()->positions())
     ->toBeExpression("\"description\"::pdb.ngram(2, 3, 'prefix_only=true', 'positions=true')");
+
+it('generates the correct ngram tokenizer with false filters')
+    ->expect((new Ngram('description', 2, 3))->prefixOnly(false)->positions(false))
+    ->toBeExpression("\"description\"::pdb.ngram(2, 3, 'prefix_only=false', 'positions=false')");
