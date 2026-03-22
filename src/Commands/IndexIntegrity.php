@@ -56,10 +56,14 @@ class IndexIntegrity extends Command
             default: false,
         );
 
-        $segmentIds = multiselect(
-            label: 'Which segment ids would you like to verify?',
-            options: DB::table(new Integrity\IndexSegments($index))->pluck('segment_idx')
-        );
+        $segments = DB::table(new Integrity\IndexSegments($index))->pluck('segment_idx');
+
+        $segmentIds = $segments->isNotEmpty()
+            ? multiselect(
+                label: 'Which segment ids would you like to verify?',
+                options: $segments
+            )
+            : null;
 
         $checks = DB::table(new Integrity\VerifyIndex(
             index: $index,
@@ -68,7 +72,7 @@ class IndexIntegrity extends Command
             reportProgress: $reportProgress,
             verbose: $verbose === true ? true : null,
             onErrorStop: $onErrorStop,
-            segmentIds: empty($segmentIds) ? null : $segmentIds,
+            segmentIds: $segmentIds,
         ))->get();
 
         table(
@@ -88,12 +92,12 @@ class IndexIntegrity extends Command
         info('You selected to verify all indexes.');
 
         $schemaPattern = text(
-            label: 'Enter a schema name or pattern.',
+            label: 'Enter a schema name or pattern:',
             hint: 'You can use SQL LIKE syntax! Leave empty to verify all schemas.',
         );
 
         $indexPattern = text(
-            label: 'Enter an index name or pattern.',
+            label: 'Enter an index name or pattern:',
             hint: 'You can use SQL LIKE syntax! Leave empty to verify all indexes.',
         );
 
