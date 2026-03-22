@@ -9,6 +9,8 @@ use ShabuShabu\ParadeDB\TantivyQL\Operators\Filter;
 use ShabuShabu\ParadeDB\TantivyQL\Operators\Range;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 
+pest()->group('tantivy');
+
 it('compiles a regular query', function () {
     $query = Query::string()->where('description', 'keyboard')->get();
 

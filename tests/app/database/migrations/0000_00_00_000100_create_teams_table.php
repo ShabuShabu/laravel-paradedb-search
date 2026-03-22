@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
@@ -29,16 +30,29 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index('embedding vector_cosine_ops')->algorithm('hnsw');
-            $table->index(['id', 'name', 'description', 'is_vip', 'max_members', 'options', 'size', 'user_id', 'created_at', 'deleted_at'], 'teams_bm25_idx')
-                ->algorithm('bm25')
-                ->with([
+            // @phpstan-ignore-next-line
+            $table->bm25(
+                columns: [
+                    'id',
+                    (new UnicodeWords('name'))->removeEmojis(),
+                    'description',
+                    'is_vip',
+                    'max_members',
+                    'options',
+                    'size',
+                    'user_id',
+                    'created_at',
+                    'deleted_at',
+                ],
+                parameters: [
                     'key_field' => 'id',
                     'text_fields' => text_config([
                         'description' => [
                             'stored' => true,
                         ],
                     ]),
-                ]);
+                ],
+            );
         });
     }
 };

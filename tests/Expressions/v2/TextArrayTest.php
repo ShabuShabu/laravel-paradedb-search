@@ -1,0 +1,18 @@
+<?php
+
+/** @noinspection StaticClosureCanBeUsedInspection */
+
+declare(strict_types=1);
+
+use ShabuShabu\ParadeDB\Expressions\v2\TextArray;
+use Tpetry\QueryExpressions\Value\Value;
+
+pest()->group('v2', 'expressions');
+
+it('generates an array of strings')
+    ->expect(new TextArray(['running', 'shoes']))
+    ->toBeExpression("ARRAY['running', 'shoes']");
+
+it('filters out anything but strings')
+    ->expect(new TextArray([true, 'running', null, 'shoes', 3, new Value('foo')]))
+    ->toBeExpression("ARRAY['running', 'shoes']");

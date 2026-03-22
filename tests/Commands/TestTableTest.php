@@ -6,6 +6,8 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Schema;
 
+pest()->group('commands');
+
 it('creates and drops the test table', function () {
     /* @phpstan-ignore variable.undefined */
     $this->artisan('paradedb:test-table')

@@ -1,5 +1,22 @@
 # Upgrade Guide
 
+- v1 expressions have moved to the `v1` namespace
+- `more_like_this` has changed to `pdb` with different parameters
+- all expressions are now final
+- tokenizers can only be used with the new bm25 macro
+- new namespaces for ranges
+- new search builder macro
+- help command and `paradedb.help` function were removed
+- JsonB was moved to v2\Casts
+- Similarity & Rank moved to v2
+
+## @todo
+
+- Finish missing v1 functions
+- Look into type generation
+- Finish tests
+- Rewrite readme
+
 ## Upgrading To 0.10.0 From 0.9.*
 
 ### Minimum Versions

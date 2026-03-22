@@ -1,0 +1,80 @@
+<?php
+
+declare(strict_types=1);
+
+namespace ShabuShabu\ParadeDB\Expressions\v1;
+
+use Closure;
+use Illuminate\Database\Grammar;
+use Illuminate\Support\Arr;
+use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
+use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
+
+final class Boolean implements ParadeExpression
+{
+    use Stringable;
+
+    public function __construct(
+        private null | string | array | ParadeExpression | Query $should = null,
+        private null | string | array | ParadeExpression | Query $must = null,
+        private null | string | array | ParadeExpression | Query $mustNot = null,
+    ) {}
+
+    public function must(Closure | string | array | ParadeExpression | Query $query, bool $when = true): self
+    {
+        return $this->addQuery('must', $query, $when);
+    }
+
+    public function should(Closure | string | array | ParadeExpression | Query $query, bool $when = true): self
+    {
+        return $this->addQuery('should', $query, $when);
+    }
+
+    public function mustNot(Closure | string | array | ParadeExpression | Query $query, bool $when = true): self
+    {
+        return $this->addQuery('mustNot', $query, $when);
+    }
+
+    protected function addQuery(string $type, Closure | string | array | ParadeExpression | Query $query, bool $when): self
+    {
+        if (! $when) {
+            return $this;
+        }
+
+        if (! is_array($this->$type)) {
+            $this->$type = array_filter(Arr::wrap($this->$type));
+        }
+
+        foreach (Arr::wrap(value($query)) as $condition) {
+            $this->$type[] = $condition;
+        }
+
+        return $this;
+    }
+
+    public function getValue(Grammar $grammar): string
+    {
+        $params = $this->toParams([
+            'must' => $this->process($grammar, $this->must),
+            'should' => $this->process($grammar, $this->should),
+            'must_not' => $this->process($grammar, $this->mustNot),
+        ]);
+
+        return "paradedb.boolean($params)";
+    }
+
+    protected function process(Grammar $grammar, null | string | array | ParadeExpression | Query $expressions): ?string
+    {
+        return is_null($expressions)
+            ? null
+            : $this->wrapArray(
+                $this->normalizeQueries($grammar, $expressions)
+            );
+    }
+
+    public static function query(): self
+    {
+        return new self;
+    }
+}

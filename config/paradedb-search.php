@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', '_idx'),
+    'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', 'idx'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,8 +41,3 @@ return [
         // \Illuminate\Database\Eloquent\SoftDeletingScope::class
     ],
 ];
-
-// @todo
-// upgrade to latest pg_search
-// Auto remove global scopes
-// Add command for version info `SELECT * FROM paradedb.version_info();`

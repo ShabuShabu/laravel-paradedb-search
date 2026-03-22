@@ -12,16 +12,18 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
-use ShabuShabu\ParadeDB\Expressions\Parse;
+use ShabuShabu\ParadeDB\Expressions\v1\Parse;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 
 trait Stringable
 {
-    protected function toParams(array $params): string
+    protected function toParams(array $params, string $operator = '=>'): string
     {
+        $expand = ! array_is_list($params);
+
         return collect($params)
             ->filter(fn ($value) => ! is_null($value))
-            ->map(fn (string $value, string $key) => "$key => $value")
+            ->map(fn (string $value, string $key) => $expand ? "$key $operator $value" : $value)
             ->implode(', ');
     }
 
@@ -55,8 +57,8 @@ trait Stringable
     {
         return $this->wrapArray(
             collect($values)
-                ->filter(fn (mixed $value) => is_string($value))
-                ->map(fn (string $value) => $grammar->escape($value))
+                ->filter(fn (mixed $value) => is_string($value) || $value instanceof \Stringable)
+                ->map(fn (string $value) => $grammar->escape((string) $value))
         );
     }
 
@@ -90,6 +92,18 @@ trait Stringable
             is_string($value) => $grammar->escape($value),
             $value === true => 'true',
             $value === false => 'false',
+        };
+    }
+
+    protected function bool(?bool $value): ?string
+    {
+        if (is_null($value)) {
+            return null;
+        }
+
+        return match (true) {
+            $value === true => 't',
+            $value === false => 'f',
         };
     }
 
