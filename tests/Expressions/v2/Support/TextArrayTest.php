@@ -4,8 +4,8 @@
 
 declare(strict_types=1);
 
-use Tpetry\QueryExpressions\Value\Value;
 use ShabuShabu\ParadeDB\Expressions\v2\Support\TextArray;
+use Tpetry\QueryExpressions\Value\Value;
 
 pest()->group('v2', 'support');
 

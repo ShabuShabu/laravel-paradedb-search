@@ -14,6 +14,10 @@ it('generates the correct literal tokenizer')
     ->expect(new Literal('description'))
     ->toBeExpression('"description"::pdb.literal');
 
+it('can be used as a type')
+    ->expect((new Literal('description'))->useAsType())
+    ->toBeExpression('"description" pdb.literal');
+
 it('panics for a token filter', function (string $method, mixed $arg) {
     if ($arg) {
         (new Literal('description'))->$method($arg);

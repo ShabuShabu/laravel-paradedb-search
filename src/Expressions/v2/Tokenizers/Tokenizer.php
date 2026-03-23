@@ -21,9 +21,18 @@ abstract class Tokenizer implements TokenizerExpression
 
     protected string $namespace = 'pdb';
 
+    protected bool $asType = false;
+
     public function __construct(
         protected string | Expression $column,
     ) {}
+
+    public function useAsType(): static
+    {
+        $this->asType = true;
+
+        return $this;
+    }
 
     public function alphaNumOnly(bool $value = true): static
     {
@@ -128,11 +137,13 @@ abstract class Tokenizer implements TokenizerExpression
         $parameters = $this->combine($this->parameters);
         $filters = $this->combine($this->config);
 
+        $operator = $this->asType ? ' ' : '::';
+
         return match (true) {
-            $parameters && $filters => "$column::$name($parameters, $filters)",
-            $parameters && ! $filters => "$column::$name($parameters)",
-            ! $parameters && $filters => "$column::$name($filters)",
-            default => "$column::$name",
+            $parameters && $filters => "$column$operator$name($parameters, $filters)",
+            $parameters && ! $filters => "$column$operator$name($parameters)",
+            ! $parameters && $filters => "$column$operator$name($filters)",
+            default => "$column$operator$name",
         };
     }
 

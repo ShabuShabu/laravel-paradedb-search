@@ -13,6 +13,10 @@ it('generates the correct lindera tokenizer')
     ->expect(new Lindera('description', Dictionary::korean))
     ->toBeExpression('"description"::pdb.lindera(korean)');
 
+it('can be used as a type')
+    ->expect((new Lindera('description', Dictionary::korean))->useAsType())
+    ->toBeExpression('"description" pdb.lindera(korean)');
+
 it('sets the dictionary')
     ->expect((new Lindera('description', Dictionary::korean))->getParameters())
     ->toBe(['korean']);

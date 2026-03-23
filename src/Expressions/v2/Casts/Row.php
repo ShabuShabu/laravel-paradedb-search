@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Casts;
 
-use Illuminate\Support\Str;
-use Illuminate\Database\Grammar;
 use Illuminate\Contracts\Database\Query\Expression;
+use Illuminate\Database\Grammar;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
 final readonly class Row implements Expression

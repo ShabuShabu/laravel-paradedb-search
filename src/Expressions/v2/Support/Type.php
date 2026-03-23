@@ -4,20 +4,25 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB\Expressions\v2\Support;
 
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Grammar;
+use Illuminate\Support\Str;
 use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
-use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
 
-final readonly class TextArray implements ParadeExpression
+final readonly class Type implements Expression
 {
     use Stringable;
 
     public function __construct(
-        private array $tokens,
+        private string $column,
+        private string $type,
     ) {}
 
     public function getValue(Grammar $grammar): string
     {
-        return $this->asArray($grammar, $this->tokens);
+        $column = $grammar->wrap($this->column);
+        $type = Str::lower($this->type);
+
+        return "$column $type";
     }
 }

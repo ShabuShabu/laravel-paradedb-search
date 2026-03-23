@@ -5,6 +5,8 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\DB;
+use ShabuShabu\ParadeDB\Expressions\v2\Support\Type;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\Literal;
 use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 
@@ -24,4 +26,19 @@ it('uses the bm25 blueprint macro correctly', function () {
             create index "testing_bm25_idx" on "testing" using bm25 ("id", ("name"::pdb.unicode_words('remove_emojis=true')), "created_at") with (key_field = id)
             SQL
         );
+});
+
+it('uses the createCompositeType schema macro correctly', function () {
+    $result = Schema::createCompositeType('item_fields', [
+        (new Literal('name'))->useAsType(),
+        'description text',
+        new Type('category', 'text'),
+    ]);
+
+    // create type "item_fields" as ("name" pdb.literal, "description" text, "category" text)
+
+    expect($result)->toBeTrue()
+        ->and(DB::table('pg_type')->where('typname', 'item_fields')->exists())->toBeTrue();
+
+    DB::statement('DROP TYPE "item_fields"');
 });

@@ -13,6 +13,10 @@ it('generates the correct literal normalized tokenizer')
     ->expect(new LiteralNormalized('description'))
     ->toBeExpression('"description"::pdb.literal_normalized');
 
+it('can be used as a type')
+    ->expect((new LiteralNormalized('description'))->useAsType())
+    ->toBeExpression('"description" pdb.literal_normalized');
+
 it('generates the correct literal normalized tokenizer with filters')
     ->expect((new LiteralNormalized('description'))->stemmer(Stemmer::english))
     ->toBeExpression("\"description\"::pdb.literal_normalized('stemmer=english')");
