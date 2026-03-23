@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use ShabuShabu\ParadeDB\Expressions\v2\Support\Type;
 use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\Literal;
 use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
+use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 
 pest()->group('macros');
@@ -30,7 +31,7 @@ it('uses the bm25 blueprint macro correctly', function () {
 
 it('uses the createCompositeType schema macro correctly', function () {
     $result = Schema::createCompositeType('item_fields', [
-        (new Literal('name'))->useAsType(),
+        new Literal('name'),
         'description text',
         new Type('category', 'text'),
     ]);
@@ -42,3 +43,7 @@ it('uses the createCompositeType schema macro correctly', function () {
 
     DB::statement('DROP TYPE "item_fields"');
 });
+
+it('uses the search macro correctly', function () {
+    Team::search()->get();
+})->throwsNoExceptions();

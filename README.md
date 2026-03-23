@@ -16,9 +16,9 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 ## Installation
 
 > [!CAUTION]
-> Please note that this is a new package and, even though it is well tested, it should be considered pre-release software
+> Please note that this is a fairly new package and, even though it is well tested, it should be considered pre-release software
 
-Before installing the package you should install and enable the [pg_search](https://github.com/paradedb/paradedb/tree/dev/pg_search) extension.
+Before installing this package, you should install and enable the [pg_search](https://github.com/paradedb/paradedb/tree/dev/pg_search) extension.
 
 You can then install the package via composer:
 
@@ -38,19 +38,351 @@ These are the contents of the published config file:
 return [
     'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', 'idx'),
     'highlighting_tag' => env('PG_SEARCH_HIGHLIGHTING_TAG', '<b></b>'),
-    'remove_global_scopes' => [],
+    'remove_global_scopes' => null,
 ];
 ```
 
 ## Usage
 
-The documentation for the v1 API can be found [here](V1.md)!
+This is the documentation for the upcoming v1.0 release (develop branch). The documentation for the v1 API can be found [here](V1.md). Please note that the v2 API should be used **wherever possible**!
+
+It is recommended to first familiarize yourself with the [extension docs](https://docs.paradedb.com/welcome/introduction) as most of the examples found there translate directly to the expressions used in this package!
+
+### Operators
+
+The operators supported by `pg_search` are already registered for you automatically. Additionally, we also register all supported `pgvector` operators.
+
+Please see the following enums
+
+- `\ShabuShabu\ParadeDB\Operators\FullText`
+- `\ShabuShabu\ParadeDB\Operators\Distance`
+
+### Creating an index
+
+A `bm25` index can be created like this in a migration:
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
+
+$table->bm25(
+    columns: [
+        'id',
+        (new UnicodeWords('name'))->removeEmojis(),
+        'description',
+    ],
+);
+```
+
+If the `key_field` is anything other than `id`, then you can specify it in the second argument together with any other parameters you might need:
+
+```php
+$table->bm25(
+    columns: ['id', 'description'],
+    parameters: ['key_field' => 'uuid'],
+);
+```
+
+The following tokenizers are currently supported under this namespace: `\ShabuShabu\ParadeDB\Expressions\v2\Tokenizers`.
+
+- `ChineseCompatible`
+- `ICU`
+- `Jieba`
+- `Lindera`
+- `Literal`
+- `LiteralNormalized`
+- `Ngram`
+- `RegexPattern`
+- `Simple`
+- `SourceCode`
+- `UnicodeWords`
+- `Whitespace`
+
+Please refer to the [pg_search docs](https://docs.paradedb.com/documentation/tokenizers/overview) for more information.
+
+#### Composite types
+
+If you have more than 32 columns to index, then you will need to create a composite type in a migration:
+
+```php
+Schema::createCompositeType('item_fields', [
+    new Literal('name'),
+    'description text',
+    new Type('category', 'text'),
+]);
+```
+
+You can use this type in your index like this:
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\Row;
+
+$table->bm25(
+    columns: [
+        new Row('item_fields', ['name', 'description', 'category'])
+    ]   
+);
+```
+
+### Starting your search
+
+It is recommended to always start your search using the available `search` macro like so:
+
+```php
+Product::search()
+    ->where('description', '@@@', 'shoes')
+    ->get();
+```
+
+This macro will automatically remove any global scopes that are registered in the config file as most of these will prevent the `bm25` index from being used.
+
+This macro might also be used for other purposes in the future.
+
+### Advanced query functions
+
+See the relevant documentation for the [pg_search docs](https://docs.paradedb.com/documentation/query-builder/overview).
+
+#### All
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\All;
+
+Product::search()
+    ->where('id', '@@@', new All())
+    ->get();
+```
+
+#### More like this
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\MoreLikeThis;
+
+Product::search()
+    ->where('id', '@@@', new MoreLikeThis(3))
+    ->get();
+```
+
+#### Phrase prefix
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\PhrasePrefix;
+
+Product::search()
+    ->where('description', '@@@', new PhrasePrefix(['running', 'sh']))
+    ->get();
+```
+
+#### Query parser
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\Parse;
+
+Product::search()
+    ->where('description', '@@@', new Parse('description:(sleek shoes) AND rating:>3'))
+    ->get();
+```
+
+The `Parse` expression also accepts a TantivyQL query builder (see below).
+
+#### Range term
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\RangeTerm;
+
+Product::search()
+    ->where('weight_range', '@@@', new RangeTerm(1))
+    ->get();
+```
+
+The `RangeTerm` expression also accepts a `ShabuShabu\ParadeDB\Expressions\Ranges\RangeExpression`.
+
+#### Regex
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\Regex;
+
+Product::search()
+    ->where('description', '@@@', new Regex('key.*'))
+    ->get();
+```
+
+#### Regex phrase
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\RegexPhrase;
+
+Product::search()
+    ->where('description', '@@@', new RegexPhrase(['ru.*', 'shoes']))
+    ->get();
+```
+
+### TantivyQL
+
+ParadeDB Search for Laravel comes with a fluent builder for TantivyQL, a simple string-based query language.
+
+This builder can be used within various v1 ParadeDB as well as the v2 `Parse` expressions.
+
+### Basic query
+
+```php
+use ShabuShabu\ParadeDB\TantivyQL\Query;
+
+Query::string()->where('description', 'keyboard')->get();
+
+// results in: description:keyboard
+```
+
+### Add an IN condition
+
+```php
+Query::string()
+    ->where('description', ['keyboard', 'toy'])
+    ->get();
+
+// results in: description:IN [keyboard, toy]
+```
+
+### Add an AND NOT condition
+
+```php
+(string) Query::string()
+    ->where('category', 'electronics')
+    ->whereNot('description', 'keyboard');
+
+// results in: category:electronics AND NOT description:keyboard
+```
+
+### Boost a condition
+
+```php
+Query::string()
+    ->where('description', 'keyboard', boost: 1)
+    ->get();
+
+// results in: description:keyboard^1
+```
+
+### Apply the slop operator
+
+```php
+Query::string()
+    ->where('description', 'ergonomic keyboard', slop: 1)
+    ->get();
+
+// results in: description:"ergonomic keyboard"~1
+```
+
+### More complex example with a sub condition
+
+```php
+Query::string()
+    ->where('description', ['keyboard', 'toy'])
+    ->where(
+        fn (Builder $builder) => $builder
+            ->where('category', 'electronics')
+            ->orWhere('tag', 'office')
+    )
+    ->get();
+
+// results in: description:IN [keyboard, toy] AND (category:electronics OR tag:office)
+```
+
+### Apply a simple filter
+
+```php
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Filter;
+
+Query::string()
+    ->whereFilter('rating', Filter::equals, 4)
+    ->get();
+
+// results in: rating:4
+```
+
+### Apply a boolean filter
+
+```php
+Query::string()
+    ->whereFilter('is_available', '=', false)
+    ->get();
+
+// results in: is_available:false
+```
+
+### Apply a basic range filter
+
+```php
+Query::string()
+    ->whereFilter('rating', '>', 4)
+    ->get();
+
+// results in: rating:>4
+```
+
+### Apply an inclusive range filter
+
+```php
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Range;
+
+Query::string()
+    ->whereFilter('rating', Range::includeAll, [2, 5])
+    ->get();
+
+// results in: rating:[2 TO 5]
+```
+
+### Apply an exclusive range filter
+
+```php
+use ShabuShabu\ParadeDB\TantivyQL\Operators\Range;
+
+Query::string()
+    ->whereFilter('rating', Range::excludeAll, [2, 5])
+    ->get();
+
+// results in: rating:{2 TO 5}
+```
 
 ### A word of caution
 
 While it is possible to combine ParadeDB queries with regular Eloquent queries, you will incur some performance penalties.
 
 For optimal performance it is recommended to let the `bm25` index do as much work as possible!
+
+## Commands
+
+This package comes with various Artisan commands to help you manage your `pg_search` instance.
+
+### Index integrity
+
+Allows you to verify a single or all indexes, as well as list your indexes and segments.
+
+```bash
+php artisan paradedb:integrity
+```
+
+### Test table
+
+Either create or drop the built-in test table:
+
+```bash
+php artisan paradedb:test-table
+```
+
+### Tokenizers
+
+List all available tokenizers:
+
+```bash
+php artisan paradedb:tokenizers
+```
+
+### Version info
+
+List some versioning info:
+
+```bash
+php artisan paradedb:version
+```
 
 ## Testing
 
@@ -94,10 +426,6 @@ There is also a command that allows you to create and drop the built-in test tab
 ```bash
 php artisan paradedb:test-table create
 ```
-
-## Extension documentation
-
-The `pg_search` documentation can be found [here](https://docs.paradedb.com/welcome/introduction)!
 
 ## Changelog
 
