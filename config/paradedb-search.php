@@ -35,9 +35,12 @@ return [
     | Most global scopes will cause a pg_search query to search across the
     | whole dataset instead of the index. For this reason, you can list
     | all global scopes that should be removed automatically here.
+    | Set to null to remove all global scopes.
+    | Set to an array to only remove specific scopes:
     |
+    | 'remove_global_scopes' => [
+    |    \Illuminate\Database\Eloquent\SoftDeletingScope::class
+    | ]
     */
-    'remove_global_scopes' => [
-        // \Illuminate\Database\Eloquent\SoftDeletingScope::class
-    ],
+    'remove_global_scopes' => null,
 ];

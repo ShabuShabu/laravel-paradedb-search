@@ -86,7 +86,9 @@ class ParadeDBServiceProvider extends PackageServiceProvider
 
         // Note: both v1 and v2
         Builder::macro('search', function () {
-            return $this->withoutGlobalScopes();
+            return $this->withoutGlobalScopes(
+                config('paradedb-search.remove_global_scopes')
+            );
         });
 
         // Note: v2 only
