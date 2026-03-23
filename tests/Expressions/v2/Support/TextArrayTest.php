@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\TextArray;
 use Tpetry\QueryExpressions\Value\Value;
+use ShabuShabu\ParadeDB\Expressions\v2\Support\TextArray;
 
-pest()->group('v2', 'expressions');
+pest()->group('v2', 'support');
 
 it('generates an array of strings')
     ->expect(new TextArray(['running', 'shoes']))

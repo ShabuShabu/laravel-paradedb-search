@@ -4,11 +4,11 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Rank;
-use ShabuShabu\ParadeDB\Expressions\v2\Similarity;
 use ShabuShabu\ParadeDB\Operators\Distance;
+use ShabuShabu\ParadeDB\Expressions\v2\Similarity;
+use ShabuShabu\ParadeDB\Expressions\v2\Support\Rank;
 
-pest()->group('v1');
+pest()->group('v1', 'support');
 
 it('ranks a simple query')
     ->expect(new Rank(['description', 'asc']))

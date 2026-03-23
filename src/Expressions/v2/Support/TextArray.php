@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ShabuShabu\ParadeDB\Expressions\v2;
+namespace ShabuShabu\ParadeDB\Expressions\v2\Support;
 
 use Illuminate\Database\Grammar;
-use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
+use ShabuShabu\ParadeDB\Expressions\Concerns\Stringable;
 
 final readonly class TextArray implements ParadeExpression
 {
