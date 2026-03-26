@@ -1,0 +1,514 @@
+<?php
+
+/** @noinspection StaticClosureCanBeUsedInspection */
+
+declare(strict_types=1);
+
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
+use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
+use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
+use ShabuShabu\ParadeDB\Expressions\v1\All;
+use ShabuShabu\ParadeDB\Expressions\v1\Blank;
+use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
+use ShabuShabu\ParadeDB\Expressions\v1\Boost;
+use ShabuShabu\ParadeDB\Expressions\v1\ConstScore;
+use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
+use ShabuShabu\ParadeDB\Expressions\v1\Exists;
+use ShabuShabu\ParadeDB\Expressions\v1\FullText;
+use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;
+use ShabuShabu\ParadeDB\Expressions\v1\Parse;
+use ShabuShabu\ParadeDB\Expressions\v1\ParseWithField;
+use ShabuShabu\ParadeDB\Expressions\v1\Phrase;
+use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
+use ShabuShabu\ParadeDB\Expressions\v1\Range;
+use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
+use ShabuShabu\ParadeDB\Expressions\v1\Regex;
+use ShabuShabu\ParadeDB\Expressions\v1\Score;
+use ShabuShabu\ParadeDB\Expressions\v1\Term;
+use ShabuShabu\ParadeDB\Expressions\v1\TermSet;
+use ShabuShabu\ParadeDB\Expressions\v2\Casts\JsonB;
+use ShabuShabu\ParadeDB\Expressions\v2\Similarity;
+use ShabuShabu\ParadeDB\Expressions\v2\Support\Rank;
+use ShabuShabu\ParadeDB\Operators\Distance;
+use ShabuShabu\ParadeDB\Tests\App\Models\Team;
+use Tpetry\QueryExpressions\Language\Alias;
+
+pest()->group('v2');
+
+it('gets all results', function () {
+    Team::factory()->count(2)->create();
+
+    $results = Team::query()
+        ->where('id', '@@@', new All)
+        ->get();
+
+    expect($results)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(2);
+});
+
+it('gets no results', function () {
+    Team::factory()->count(2)->create();
+
+    $results = Team::query()
+        ->where('id', '@@@', new Blank)
+        ->get();
+
+    expect($results)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(0);
+});
+
+it('performs a boosted boolean query with various conditions', function () {
+    Team::factory()->softDeleted()->create();
+
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test something...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->select(['*', new Score])
+        ->where('id', '@@@', new Boolean(
+            should: [
+                new Boost(new FuzzyTerm('name', 'test'), 2),
+                new FuzzyTerm('description', 'test'),
+            ],
+            must: [
+                new Range('created_at', new TimestampTz(null, now())),
+            ],
+            mustNot: [
+                new Range('deleted_at', new TimestampTz(null, now())),
+            ],
+        ))
+        ->orderByDesc(new Score)
+        ->paginate();
+
+    expect($teams)
+        ->toBeInstanceOf(LengthAwarePaginator::class)
+        ->count()->toBe(2)
+        ->first()->name->toBe('test team')
+        ->last()->name->toBe('nice team');
+});
+
+it('searches for a given json query string', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new JsonB([
+            'term' => [
+                'field' => 'description',
+                'value' => 'something',
+            ],
+        ]))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('parses a query string', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new Parse('description:test'))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('nice team');
+});
+
+it('parses a query string for a given field', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new ParseWithField('description', 'test'))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('nice team');
+});
+
+it('highlights a search term', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    $teams = Team::query()
+        ->selectWithSnippet('description')
+        ->where('description', '@@@', 'test')
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->snippet->toBe('<b>test</b> description');
+});
+
+it('searches for a given regular expression', function () {
+    Team::factory()->create([
+        'name' => 'first team',
+        'description' => 'what?',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new Regex('description', '(something|test)'))
+        ->orderBy('name')
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(2)
+        ->first()->name->toBe('nice team')
+        ->last()->name->toBe('test team');
+});
+
+it('checks for a field existence', function () {
+    Team::factory()->softDeleted()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->whereSearch(new Exists('deleted_at'))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('nice team');
+});
+
+it('searches for a given term', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new Term('description', 'something'))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('searches for a given term set', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new TermSet([
+            new Term('description', 'something'),
+            new Term('description', 'other'),
+        ]))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('searches for a fuzzy phrase', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other or maybe running shoes...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new FullText('description', 'ruining shoes'))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('applies a constant score', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other or maybe running shoes...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new Boolean(
+            should: [
+                new ConstScore(new Term('description', 'shoes'), 1.0),
+                new Term('description', 'running'),
+            ],
+        ))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('searches for a phrase', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other or maybe running shoes...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new Phrase('description', ['running', 'shoes']))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('searches for a phrase prefix', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other or maybe running shoes...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new PhrasePrefix('description', ['running', 'sh']))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('applies a disjunction max query', function () {
+    Team::factory()->create([
+        'name' => 'first team',
+        'description' => 'boring description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'running test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other or maybe running shoes...',
+    ]);
+
+    $teams = Team::query()
+        ->selectWithScore()
+        ->where('id', '@@@', new DisjunctionMax([
+            new Term('description', 'shoes'),
+            new Term('description', 'running'),
+        ]))
+        ->orderByDesc(new Score)
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(2);
+});
+
+it('searches for a given range', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'max_members' => 3,
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'max_members' => 2,
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new Range('max_members', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('test team');
+});
+
+it('searches for a given range term', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'size' => '[2,4)',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'size' => '[4,6)',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new RangeTerm('size', 3))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('nice team');
+});
+
+it('combines paradedb functions with regular eloquent wheres', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'test description...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or other...',
+    ]);
+
+    $teams = Team::query()
+        ->where('id', '@@@', new Parse('description:test'))
+        ->whereLike('name', 'nice%')
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->name->toBe('nice team');
+});
+
+it('applies a rank', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'description' => 'something...',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'description' => 'something or another something...',
+    ]);
+
+    $teams = Team::query()
+        ->select([
+            'name',
+            new Alias(new Rank([new Score, 'asc']), 'rank'),
+        ])
+        ->whereSearch('something', 'description')
+        ->orderBy('rank')
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(2)
+        ->first()->name->toBe('test team')
+        ->last()->name->toBe('nice team');
+});
+
+it('performs a similarity search', function () {
+    Team::factory()->create([
+        'name' => 'nice team',
+        'embedding' => '[1,2,3]',
+    ]);
+
+    Team::factory()->create([
+        'name' => 'test team',
+        'embedding' => '[2,3,4]',
+    ]);
+
+    $teams = Team::query()
+        ->select([
+            'name',
+            new Alias(new Rank([new Similarity('embedding', Distance::cosine, [1, 2, 3]), 'asc']), 'rank'),
+        ])
+        ->orderBy(new Similarity('embedding', Distance::cosine, [1, 2, 3]))
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(2)
+        ->first()->name->toBe('nice team')
+        ->last()->name->toBe('test team');
+});
