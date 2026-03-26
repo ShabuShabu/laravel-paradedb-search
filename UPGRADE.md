@@ -17,7 +17,7 @@ The following required dependency versions have been updated:
 - New namespace for ranges: `ShabuShabu\ParadeDB\Expressions\Ranges`
 - New search builder macro
 - `Help` command and `paradedb.help` function have been removed
-- `JsonB` was moved to `v2\Casts`
+- `JsonB` was moved to `v1\Casts`
 - `Similarity` & `Rank` moved to v2
 
 ## Upgrading To 0.10.0 From 0.9.*

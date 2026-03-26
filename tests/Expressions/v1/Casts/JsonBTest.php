@@ -4,9 +4,9 @@
 
 declare(strict_types=1);
 
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\JsonB;
+use ShabuShabu\ParadeDB\Expressions\v1\Casts\JsonB;
 
-pest()->group('v2');
+pest()->group('v1');
 
 it('creates a jsonb query string from an array')
     ->expect(new JsonB([

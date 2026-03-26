@@ -9,31 +9,9 @@ use Illuminate\Database\Eloquent\Collection;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Bounds;
 use ShabuShabu\ParadeDB\Expressions\Ranges\Int4;
 use ShabuShabu\ParadeDB\Expressions\Ranges\TimestampTz;
-use ShabuShabu\ParadeDB\Expressions\v1\All;
-use ShabuShabu\ParadeDB\Expressions\v1\Blank;
-use ShabuShabu\ParadeDB\Expressions\v1\Boolean;
-use ShabuShabu\ParadeDB\Expressions\v1\Boost;
-use ShabuShabu\ParadeDB\Expressions\v1\ConstScore;
-use ShabuShabu\ParadeDB\Expressions\v1\DisjunctionMax;
-use ShabuShabu\ParadeDB\Expressions\v1\Exists;
-use ShabuShabu\ParadeDB\Expressions\v1\FullText;
-use ShabuShabu\ParadeDB\Expressions\v1\FuzzyTerm;
-use ShabuShabu\ParadeDB\Expressions\v1\Parse;
-use ShabuShabu\ParadeDB\Expressions\v1\ParseWithField;
-use ShabuShabu\ParadeDB\Expressions\v1\Phrase;
-use ShabuShabu\ParadeDB\Expressions\v1\PhrasePrefix;
-use ShabuShabu\ParadeDB\Expressions\v1\Range;
-use ShabuShabu\ParadeDB\Expressions\v1\RangeTerm;
-use ShabuShabu\ParadeDB\Expressions\v1\Regex;
-use ShabuShabu\ParadeDB\Expressions\v1\Score;
-use ShabuShabu\ParadeDB\Expressions\v1\Term;
-use ShabuShabu\ParadeDB\Expressions\v1\TermSet;
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\JsonB;
-use ShabuShabu\ParadeDB\Expressions\v2\Similarity;
-use ShabuShabu\ParadeDB\Expressions\v2\Support\Rank;
-use ShabuShabu\ParadeDB\Operators\Distance;
+use ShabuShabu\ParadeDB\Expressions\v1;
+use ShabuShabu\ParadeDB\Expressions\v1\Casts\JsonB;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
-use Tpetry\QueryExpressions\Language\Alias;
 
 pest()->group('v1', 'integration');
 
@@ -41,7 +19,7 @@ it('gets all results', function () {
     Team::factory()->count(2)->create();
 
     $results = Team::query()
-        ->where('id', '@@@', new All)
+        ->where('id', '@@@', new v1\All)
         ->get();
 
     expect($results)
@@ -53,7 +31,7 @@ it('gets no results', function () {
     Team::factory()->count(2)->create();
 
     $results = Team::query()
-        ->where('id', '@@@', new Blank)
+        ->where('id', '@@@', new v1\Blank)
         ->get();
 
     expect($results)
@@ -75,20 +53,20 @@ it('performs a boosted boolean query with various conditions', function () {
     ]);
 
     $teams = Team::query()
-        ->select(['*', new Score])
-        ->where('id', '@@@', new Boolean(
+        ->select(['*', new v1\Score])
+        ->where('id', '@@@', new v1\Boolean(
             should: [
-                new Boost(new FuzzyTerm('name', 'test'), 2),
-                new FuzzyTerm('description', 'test'),
+                new v1\Boost(new v1\FuzzyTerm('name', 'test'), 2),
+                new v1\FuzzyTerm('description', 'test'),
             ],
             must: [
-                new Range('created_at', new TimestampTz(null, now())),
+                new v1\Range('created_at', new TimestampTz(null, now())),
             ],
             mustNot: [
-                new Range('deleted_at', new TimestampTz(null, now())),
+                new v1\Range('deleted_at', new TimestampTz(null, now())),
             ],
         ))
-        ->orderByDesc(new Score)
+        ->orderByDesc(new v1\Score)
         ->paginate();
 
     expect($teams)
@@ -136,7 +114,7 @@ it('parses a query string', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new Parse('description:test'))
+        ->where('id', '@@@', new v1\Parse('description:test'))
         ->get();
 
     expect($teams)
@@ -157,7 +135,7 @@ it('parses a query string for a given field', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new ParseWithField('description', 'test'))
+        ->where('id', '@@@', new v1\ParseWithField('description', 'test'))
         ->get();
 
     expect($teams)
@@ -200,7 +178,7 @@ it('searches for a given regular expression', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new Regex('description', '(something|test)'))
+        ->where('id', '@@@', new v1\Regex('description', '(something|test)'))
         ->orderBy('name')
         ->get();
 
@@ -223,7 +201,7 @@ it('checks for a field existence', function () {
     ]);
 
     $teams = Team::query()
-        ->whereSearch(new Exists('deleted_at'))
+        ->whereSearch(new v1\Exists('deleted_at'))
         ->get();
 
     expect($teams)
@@ -244,7 +222,7 @@ it('searches for a given term', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new Term('description', 'something'))
+        ->where('id', '@@@', new v1\Term('description', 'something'))
         ->get();
 
     expect($teams)
@@ -265,9 +243,9 @@ it('searches for a given term set', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new TermSet([
-            new Term('description', 'something'),
-            new Term('description', 'other'),
+        ->where('id', '@@@', new v1\TermSet([
+            new v1\Term('description', 'something'),
+            new v1\Term('description', 'other'),
         ]))
         ->get();
 
@@ -289,7 +267,7 @@ it('searches for a fuzzy phrase', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new FullText('description', 'ruining shoes'))
+        ->where('id', '@@@', new v1\FullText('description', 'ruining shoes'))
         ->get();
 
     expect($teams)
@@ -310,10 +288,10 @@ it('applies a constant score', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new Boolean(
+        ->where('id', '@@@', new v1\Boolean(
             should: [
-                new ConstScore(new Term('description', 'shoes'), 1.0),
-                new Term('description', 'running'),
+                new v1\ConstScore(new v1\Term('description', 'shoes'), 1.0),
+                new v1\Term('description', 'running'),
             ],
         ))
         ->get();
@@ -336,7 +314,7 @@ it('searches for a phrase', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new Phrase('description', ['running', 'shoes']))
+        ->where('id', '@@@', new v1\Phrase('description', ['running', 'shoes']))
         ->get();
 
     expect($teams)
@@ -357,7 +335,7 @@ it('searches for a phrase prefix', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new PhrasePrefix('description', ['running', 'sh']))
+        ->where('id', '@@@', new v1\PhrasePrefix('description', ['running', 'sh']))
         ->get();
 
     expect($teams)
@@ -384,11 +362,11 @@ it('applies a disjunction max query', function () {
 
     $teams = Team::query()
         ->selectWithScore()
-        ->where('id', '@@@', new DisjunctionMax([
-            new Term('description', 'shoes'),
-            new Term('description', 'running'),
+        ->where('id', '@@@', new v1\DisjunctionMax([
+            new v1\Term('description', 'shoes'),
+            new v1\Term('description', 'running'),
         ]))
-        ->orderByDesc(new Score)
+        ->orderByDesc(new v1\Score)
         ->get();
 
     expect($teams)
@@ -408,7 +386,7 @@ it('searches for a given range', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new Range('max_members', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
+        ->where('id', '@@@', new v1\Range('max_members', new Int4(1, 3, Bounds::includeStartExcludeEnd)))
         ->get();
 
     expect($teams)
@@ -429,7 +407,7 @@ it('searches for a given range term', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new RangeTerm('size', 3))
+        ->where('id', '@@@', new v1\RangeTerm('size', 3))
         ->get();
 
     expect($teams)
@@ -450,7 +428,7 @@ it('combines paradedb functions with regular eloquent wheres', function () {
     ]);
 
     $teams = Team::query()
-        ->where('id', '@@@', new Parse('description:test'))
+        ->where('id', '@@@', new v1\Parse('description:test'))
         ->whereLike('name', 'nice%')
         ->get();
 
@@ -458,57 +436,4 @@ it('combines paradedb functions with regular eloquent wheres', function () {
         ->toBeInstanceOf(Collection::class)
         ->count()->toBe(1)
         ->first()->name->toBe('nice team');
-});
-
-it('applies a rank', function () {
-    Team::factory()->create([
-        'name' => 'nice team',
-        'description' => 'something...',
-    ]);
-
-    Team::factory()->create([
-        'name' => 'test team',
-        'description' => 'something or another something...',
-    ]);
-
-    $teams = Team::query()
-        ->select([
-            'name',
-            new Alias(new Rank([new Score, 'asc']), 'rank'),
-        ])
-        ->whereSearch('something', 'description')
-        ->orderBy('rank')
-        ->get();
-
-    expect($teams)
-        ->toBeInstanceOf(Collection::class)
-        ->count()->toBe(2)
-        ->first()->name->toBe('test team')
-        ->last()->name->toBe('nice team');
-});
-
-it('performs a similarity search', function () {
-    Team::factory()->create([
-        'name' => 'nice team',
-        'embedding' => '[1,2,3]',
-    ]);
-
-    Team::factory()->create([
-        'name' => 'test team',
-        'embedding' => '[2,3,4]',
-    ]);
-
-    $teams = Team::query()
-        ->select([
-            'name',
-            new Alias(new Rank([new Similarity('embedding', Distance::cosine, [1, 2, 3]), 'asc']), 'rank'),
-        ])
-        ->orderBy(new Similarity('embedding', Distance::cosine, [1, 2, 3]))
-        ->get();
-
-    expect($teams)
-        ->toBeInstanceOf(Collection::class)
-        ->count()->toBe(2)
-        ->first()->name->toBe('nice team')
-        ->last()->name->toBe('test team');
 });
