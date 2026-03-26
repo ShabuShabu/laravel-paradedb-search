@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
@@ -93,9 +94,13 @@ class ParadeDBServiceProvider extends PackageServiceProvider
         });
 
         // Note: v2 only
-        Builder::macro('agg', function (string $alias = 'agg'): Collection {
-            return $this->toBase()->get()->map(function (object $result) use ($alias) {
-                $result->$alias = json_decode($result->$alias, false, 512, JSON_THROW_ON_ERROR);
+        Builder::macro('agg', function (string | array $aliases = 'agg'): Collection {
+            $aliases = Arr::wrap($aliases);
+
+            return $this->toBase()->get()->map(function (object $result) use ($aliases) {
+                foreach ($aliases as $alias) {
+                    data_set($result, $alias, json_decode(data_get($result, $alias), false, 512, JSON_THROW_ON_ERROR));
+                }
 
                 return $result;
             });

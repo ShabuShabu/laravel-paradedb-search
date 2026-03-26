@@ -233,6 +233,22 @@ Product::search()
 
 The `agg` macro will return a collection of results, with the aggregate values already decoded.
 
+By default, only the `agg` key will be decoded. If you requested multiple aggregates or aliased the column to something else, then you can specify the keys like so:
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\All;
+use ShabuShabu\ParadeDB\Expressions\v2\Agg;
+use Tpetry\QueryExpressions\Language\Alias;
+
+Product::search()
+    ->select([
+        new Alias(new Agg(...), 'first'),
+        new Alias(new Agg(...), 'second')
+    ])
+    ->where('id', '@@@', new All)
+    ->agg(['first', 'second']);
+```
+
 ### TantivyQL
 
 ParadeDB Search for Laravel comes with a fluent builder for TantivyQL, a simple string-based query language.
