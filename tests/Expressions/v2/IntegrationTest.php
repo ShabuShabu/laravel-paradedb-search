@@ -70,7 +70,7 @@ it('applies a rank', function () {
             'name',
             new Alias(new v2\Support\Rank([new v2\Score, 'asc']), 'rank'),
         ])
-        ->whereSearch('something', 'description')
+        ->where('description', '@@@', 'something')
         ->orderBy('rank')
         ->get();
 
