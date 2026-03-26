@@ -7,19 +7,25 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Collection;
 use ShabuShabu\ParadeDB\Expressions\v2;
 use ShabuShabu\ParadeDB\Operators\Distance;
+use ShabuShabu\ParadeDB\Operators\FullText;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 use Tpetry\QueryExpressions\Language\Alias;
 
 pest()->group('v2', 'integration');
 
-it('can use all available operators')->todo();
-
-it('performs an aggregate query')->todo();
+it('can use all available operators', function (FullText | Distance $operator) {
+    Team::search()
+        ->where('description', $operator, 'test')
+        ->get();
+})->with([
+    ...FullText::cases(),
+    ...Distance::cases(),
+])->throwsNoExceptions();
 
 it('gets all results', function () {
     Team::factory()->count(2)->create();
 
-    $results = Team::query()
+    $results = Team::search()
         ->where('id', '@@@', new v2\All)
         ->get();
 
@@ -28,31 +34,42 @@ it('gets all results', function () {
         ->count()->toBe(2);
 });
 
-it('performs a more like this query')->todo();
+it('performs an aggregate query', function () {
+    Team::factory()->count(2)->create();
 
-it('parses a tantivy query')->todo();
+    $result = Team::search()
+        ->select(new v2\Agg(['value_count' => ['field' => 'id']]))
+        ->where('id', '@@@', new v2\All)
+        ->agg();
 
-it('performs a phrase prefix query')->todo();
+    expect($result->first()->agg->value)->toBe(2.0);
+});
 
-it('performs a proximity query')->todo();
+it('performs a more like this query', function () {})->todo();
 
-it('performs a proximity array query')->todo();
+it('parses a tantivy query', function () {})->todo();
 
-it('performs a proximity regex query')->todo();
+it('performs a phrase prefix query', function () {})->todo();
 
-it('performs a range term query')->todo();
+it('performs a proximity query', function () {})->todo();
 
-it('performs a regex phrase query')->todo();
+it('performs a proximity array query', function () {})->todo();
 
-it('performs a regex query')->todo();
+it('performs a proximity regex query', function () {})->todo();
 
-it('scores a query result')->todo();
+it('performs a range term query', function () {})->todo();
 
-it('highlights a search term')->todo();
+it('performs a regex phrase query', function () {})->todo();
 
-it('highlights multiple search terms')->todo();
+it('performs a regex query', function () {})->todo();
 
-it('gets snippet positions')->todo();
+it('scores a query result', function () {})->todo();
+
+it('highlights a search term', function () {})->todo();
+
+it('highlights multiple search terms', function () {})->todo();
+
+it('gets snippet positions', function () {})->todo();
 
 it('applies a rank', function () {
     Team::factory()->create([
@@ -65,7 +82,7 @@ it('applies a rank', function () {
         'description' => 'something or another something...',
     ]);
 
-    $teams = Team::query()
+    $teams = Team::search()
         ->select([
             'name',
             new Alias(new v2\Support\Rank([new v2\Score, 'asc']), 'rank'),
@@ -92,7 +109,7 @@ it('performs a similarity search', function () {
         'embedding' => '[2,3,4]',
     ]);
 
-    $teams = Team::query()
+    $teams = Team::search()
         ->select([
             'name',
             new Alias(new v2\Support\Rank([new v2\Similarity('embedding', Distance::cosine, [1, 2, 3]), 'asc']), 'rank'),

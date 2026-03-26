@@ -215,6 +215,24 @@ Product::search()
     ->get();
 ```
 
+### Aggregates
+
+Various aggregates can be retrieved using the `bm25` index, like counts. Please see the [pg_search docs](https://docs.paradedb.com/documentation/aggregates/overview) for more information.
+
+```php
+use ShabuShabu\ParadeDB\Expressions\v2\All;
+use ShabuShabu\ParadeDB\Expressions\v2\Agg;
+
+Product::search()
+    ->select(new Agg([
+        'value_count' => ['field' => 'id'],
+    ]))
+    ->where('id', '@@@', new All)
+    ->agg();
+```
+
+The `agg` macro will return a collection of results, with the aggregate values already decoded.
+
 ### TantivyQL
 
 ParadeDB Search for Laravel comes with a fluent builder for TantivyQL, a simple string-based query language.

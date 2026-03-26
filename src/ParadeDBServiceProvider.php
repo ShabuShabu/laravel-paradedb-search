@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -89,6 +90,15 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->withoutGlobalScopes(
                 config('paradedb-search.remove_global_scopes')
             );
+        });
+
+        // Note: v2 only
+        Builder::macro('agg', function (string $alias = 'agg'): Collection {
+            return $this->toBase()->get()->map(function (object $result) use ($alias) {
+                $result->$alias = json_decode($result->$alias, false, 512, JSON_THROW_ON_ERROR);
+
+                return $result;
+            });
         });
 
         // Note: v2 only
