@@ -64,7 +64,8 @@ it('performs a more like this query', function () {
         ->orderByDesc(new v2\Score)
         ->get();
 
-    expect($teams->first()->id)->toBe($team2->id);
+    expect($teams->first()->id)->toBe($team2->id)
+        ->and($teams->first()->score)->not->toBeNull();
 });
 
 it('parses a tantivy query', function () {
@@ -125,21 +126,87 @@ it('performs a regex phrase query', function () {
     expect($result->sole()->id)->toBe($team->id);
 });
 
-it('performs a proximity query', function () {})->todo();
+it('performs a range term query', function () {
+    Team::factory()->create([
+        'size' => '[4,6)',
+    ]);
 
-it('performs a proximity array query', function () {})->todo();
+    $team = Team::factory()->create([
+        'size' => '[2,4)',
+    ]);
 
-it('performs a proximity regex query', function () {})->todo();
+    $result = Team::query()
+        ->where('size', '@@@', new v2\RangeTerm(3))
+        ->get();
 
-it('performs a range term query', function () {})->todo();
+    expect($result->sole()->id)->toBe($team->id);
+});
 
-it('scores a query result', function () {})->todo();
+it('performs a proximity query using a ', function (mixed $expression) {
+    Team::factory()->count(2)->create();
 
-it('highlights a search term', function () {})->todo();
+    $team = Team::factory()->create([
+        'description' => 'We have a lot of sleek running shoes...',
+    ]);
 
-it('highlights multiple search terms', function () {})->todo();
+    $result = Team::search()
+        ->whereQuery('description', new v2\Proximity($expression, 1, 'shoes'))
+        ->get();
 
-it('gets snippet positions', function () {})->todo();
+    expect($result->sole()->id)->toBe($team->id);
+})->with([
+    'string' => ['sleek'],
+    'regex expression' => [new v2\ProxRegex('sl.*')],
+    'array expression' => [new v2\ProxArray([new v2\ProxRegex('sl.*'), 'white'])],
+]);
+
+it('highlights a search term', function () {
+    Team::factory()->create([
+        'description' => 'test description...',
+    ]);
+
+    $teams = Team::query()
+        ->select(['*', new v2\Snippet('description')])
+        ->where('description', '@@@', 'test')
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->snippet->toBe('<b>test</b> description');
+});
+
+it('highlights multiple search terms', function () {
+    Team::factory()->create([
+        'description' => 'Comes with a ceramic vase made by an artistic dude.',
+    ]);
+
+    $teams = Team::query()
+        ->select(['*', new v2\Snippets('description')])
+        ->whereDisjunction('description', 'artistic vase')
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->snippets->toBe('{"Comes with a ceramic <b>vase</b> made by an <b>artistic</b> dude"}');
+});
+
+it('gets snippet positions', function () {
+    Team::factory()->create([
+        'description' => 'White jogging shoes',
+    ]);
+
+    $teams = Team::query()
+        ->select(['*', new v2\Snippet('description'), new v2\SnippetPositions('description')])
+        ->where('description', '|||', 'shoes')
+        ->get();
+
+    expect($teams)
+        ->toBeInstanceOf(Collection::class)
+        ->count()->toBe(1)
+        ->first()->snippet_positions->toBe('{{14,19}}');
+});
 
 it('applies a rank', function () {
     Team::factory()->create([
