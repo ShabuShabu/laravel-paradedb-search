@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use ShabuShabu\ParadeDB\Expressions\v2;
 use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Operators\FullText;
+use ShabuShabu\ParadeDB\TantivyQL\Query;
 use ShabuShabu\ParadeDB\Tests\App\Models\Team;
 use Tpetry\QueryExpressions\Language\Alias;
 
@@ -26,7 +27,7 @@ it('gets all results', function () {
     Team::factory()->count(2)->create();
 
     $results = Team::search()
-        ->where('id', '@@@', new v2\All)
+        ->whereQuery('id', new v2\All)
         ->get();
 
     expect($results)
@@ -39,17 +40,90 @@ it('performs an aggregate query', function () {
 
     $result = Team::search()
         ->select(new v2\Agg(['value_count' => ['field' => 'id']]))
-        ->where('id', '@@@', new v2\All)
+        ->whereQuery('id', new v2\All)
         ->agg();
 
     expect($result->first()->agg->value)->toBe(2.0);
 });
 
-it('performs a more like this query', function () {})->todo();
+it('performs a more like this query', function () {
+    Team::factory()->count(2)->create();
 
-it('parses a tantivy query', function () {})->todo();
+    $team1 = Team::factory()->create([
+        'description' => 'this is just a test',
+    ]);
 
-it('performs a phrase prefix query', function () {})->todo();
+    $team2 = Team::factory()->create([
+        'description' => 'this is another test',
+    ]);
+
+    $teams = Team::search()
+        ->withScore()
+        ->where('id', '@@@', new v2\MoreLikeThis($team1->id))
+        ->where('id', '!=', $team1->id)
+        ->orderByDesc(new v2\Score)
+        ->get();
+
+    expect($teams->first()->id)->toBe($team2->id);
+});
+
+it('parses a tantivy query', function () {
+    Team::factory()->create([
+        'description' => 'blablabla',
+    ]);
+
+    $team = Team::factory()->create([
+        'description' => 'this is just a test',
+    ]);
+
+    $result = Team::search()
+        ->whereQuery('id', Query::string()->where('description', 'test'))
+        ->get();
+
+    expect($result->first()->id)->toBe($team->id);
+});
+
+it('performs a phrase prefix query', function () {
+    Team::factory()->count(2)->create();
+
+    $team = Team::factory()->create([
+        'description' => 'We have a lot of running shoes...',
+    ]);
+
+    $result = Team::search()
+        ->whereQuery('description', new v2\PhrasePrefix(['running', 'sh']))
+        ->get();
+
+    expect($result->sole()->id)->toBe($team->id);
+});
+
+it('performs a regex query', function () {
+    Team::factory()->count(2)->create();
+
+    $team = Team::factory()->create([
+        'description' => 'We have a lot of keyrings',
+    ]);
+
+    $result = Team::search()
+        ->whereQuery('description', new v2\Regex('key.*'))
+        ->get();
+
+    expect($result->sole()->id)->toBe($team->id);
+});
+
+it('performs a regex phrase query', function () {
+    Team::factory()->count(2)->create();
+
+    $team = Team::factory()->create([
+        'description' => 'We have a lot of running shoes...',
+    ]);
+
+    $result = Team::search()
+        ->whereQuery('description', new v2\RegexPhrase(['ru.*', 'shoes']))
+        ->get();
+
+    expect($result->sole()->id)->toBe($team->id);
+});
 
 it('performs a proximity query', function () {})->todo();
 
@@ -58,10 +132,6 @@ it('performs a proximity array query', function () {})->todo();
 it('performs a proximity regex query', function () {})->todo();
 
 it('performs a range term query', function () {})->todo();
-
-it('performs a regex phrase query', function () {})->todo();
-
-it('performs a regex query', function () {})->todo();
 
 it('scores a query result', function () {})->todo();
 

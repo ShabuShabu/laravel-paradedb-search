@@ -15,11 +15,8 @@ use ShabuShabu\ParadeDB\Commands\TestTable;
 use ShabuShabu\ParadeDB\Commands\Tokenizers;
 use ShabuShabu\ParadeDB\Commands\VersionInfo;
 use ShabuShabu\ParadeDB\Expressions\ParadeExpression;
-use ShabuShabu\ParadeDB\Expressions\v1\Parse;
-use ShabuShabu\ParadeDB\Expressions\v1\Score;
-use ShabuShabu\ParadeDB\Expressions\v1\Snippet;
-use ShabuShabu\ParadeDB\Expressions\v2\Casts\Row;
-use ShabuShabu\ParadeDB\Expressions\v2\Support\Type;
+use ShabuShabu\ParadeDB\Expressions\v1;
+use ShabuShabu\ParadeDB\Expressions\v2;
 use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\TokenizerExpression;
 use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Operators\FullText;
@@ -54,14 +51,12 @@ class ParadeDBServiceProvider extends PackageServiceProvider
     public function bootingPackage(): void
     {
         Grammar::customOperators(
-            collect(Distance::cases())
-                ->map(fn (Distance $distance) => $distance->value)
-                ->merge(
-                    collect(FullText::cases())->map(
-                        fn (FullText $operator) => $operator->value
-                    )
-                )
-                ->all()
+            collect([
+                ...FullText::cases(),
+                ...Distance::cases(),
+            ])->map(
+                fn (FullText | Distance $operator) => $operator->value
+            )->all()
         );
     }
 
@@ -69,18 +64,18 @@ class ParadeDBServiceProvider extends PackageServiceProvider
     {
         // Note: v1 only
         Builder::macro('selectWithScore', function (array $columns = ['*'], string $key = 'id') {
-            return $this->select([...$columns, new Score($key)]);
+            return $this->select([...$columns, new v1\Score($key)]);
         });
 
         // Note: v1 only
         Builder::macro('selectWithSnippet', function (string $field, array $columns = ['*'], ?string $startTag = null, ?string $endTag = null, ?int $maxNumChars = null) {
-            return $this->select([...$columns, new Snippet($field, $startTag, $endTag, $maxNumChars)]);
+            return $this->select([...$columns, new v1\Snippet($field, $startTag, $endTag, $maxNumChars)]);
         });
 
         // Note: v1 only
         Builder::macro('whereSearch', function (ParadeExpression | Query | string $expression, string $field = 'id') {
             if ($expression instanceof Query) {
-                $expression = new Parse($expression);
+                $expression = new v1\Parse($expression);
             }
 
             return $this->where($field, FullText::search->value, $expression);
@@ -94,10 +89,44 @@ class ParadeDBServiceProvider extends PackageServiceProvider
         });
 
         // Note: v2 only
+        Builder::macro('whereQuery', function (string $field, ParadeExpression | Query | string $expression) {
+            if ($expression instanceof Query) {
+                $expression = new v2\Parse($expression);
+            }
+
+            return $this->where($field, FullText::search->value, $expression);
+        });
+
+        // Note: v2 only
+        Builder::macro('whereConjunction', function (string $field, ParadeExpression | string $expression) {
+            return $this->where($field, FullText::conjunction->value, $expression);
+        });
+
+        // Note: v2 only
+        Builder::macro('whereDisjunction', function (string $field, ParadeExpression | string $expression) {
+            return $this->where($field, FullText::disjunction->value, $expression);
+        });
+
+        // Note: v2 only
+        Builder::macro('wherePhrase', function (string $field, ParadeExpression | string $expression) {
+            return $this->where($field, FullText::phrase->value, $expression);
+        });
+
+        // Note: v2 only
+        Builder::macro('whereTerm', function (string $field, ParadeExpression | string $expression) {
+            return $this->where($field, FullText::term->value, $expression);
+        });
+
+        // Note: v2 only
+        Builder::macro('withScore', function (array $columns = ['*'], string $key = 'id') {
+            return $this->select([...$columns, new v2\Score($key)]);
+        });
+
+        // Note: v2 only
         Builder::macro('agg', function (string | array $aliases = 'agg'): Collection {
             $aliases = Arr::wrap($aliases);
 
-            return $this->toBase()->get()->map(function (object $result) use ($aliases) {
+            return $this->get()->map(function (object $result) use ($aliases) {
                 foreach ($aliases as $alias) {
                     data_set($result, $alias, json_decode(data_get($result, $alias), false, 512, JSON_THROW_ON_ERROR));
                 }
@@ -121,9 +150,9 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             };
 
             $columns = array_map(
-                static fn (string | TokenizerExpression | Type $column) => match (true) {
+                static fn (string | TokenizerExpression | v2\Support\Type $column) => match (true) {
                     $column instanceof TokenizerExpression => $column->useAsType()->getValue($grammar),
-                    $column instanceof Type => $column->getValue($grammar),
+                    $column instanceof v2\Support\Type => $column->getValue($grammar),
                     default => $wrapColumn($column),
                 },
                 $columns,
@@ -145,9 +174,9 @@ class ParadeDBServiceProvider extends PackageServiceProvider
 
             $name ??= sprintf('%s_bm25_%s', $table, config('paradedb-search.index_suffix'));
             $columns = array_map(
-                static fn (string | TokenizerExpression | Row $column) => $column instanceof TokenizerExpression || $column instanceof Row
-                    ? Str::wrap($column->getValue($grammar), '(', ')')
-                    : $column,
+                static fn (string | TokenizerExpression | v2\Casts\Row $column) => is_string($column)
+                    ? $column
+                    : Str::wrap($column->getValue($grammar), '(', ')'),
                 $columns,
             );
 

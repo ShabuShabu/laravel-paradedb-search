@@ -13,7 +13,7 @@ final readonly class RegexPhrase implements ParadeExpression
     use Stringable;
 
     public function __construct(
-        private array $phrases,
+        private array $regexes,
         private ?int $slop = null,
         private ?int $maxExpansions = null,
     ) {}
@@ -21,7 +21,7 @@ final readonly class RegexPhrase implements ParadeExpression
     public function getValue(Grammar $grammar): string
     {
         $params = $this->toParams([
-            'phrases' => $this->asArray($grammar, $this->phrases),
+            'regexes' => $this->asArray($grammar, $this->regexes),
             'slop' => $this->cast($grammar, $this->slop),
             'max_expansions' => $this->cast($grammar, $this->maxExpansions),
         ]);
