@@ -58,21 +58,21 @@ class ParadeDBServiceProvider extends PackageServiceProvider
                 fn (FullText | Distance $operator) => $operator->value
             )->all()
         );
+
+        $this->versionOneMacros();
+        $this->versionTwoMacros();
     }
 
-    public function registeringPackage(): void
+    protected function versionOneMacros(): void
     {
-        // Note: v1 only
         Builder::macro('selectWithScore', function (array $columns = ['*'], string $key = 'id') {
             return $this->select([...$columns, new v1\Score($key)]);
         });
 
-        // Note: v1 only
         Builder::macro('selectWithSnippet', function (string $field, array $columns = ['*'], ?string $startTag = null, ?string $endTag = null, ?int $maxNumChars = null) {
             return $this->select([...$columns, new v1\Snippet($field, $startTag, $endTag, $maxNumChars)]);
         });
 
-        // Note: v1 only
         Builder::macro('whereSearch', function (ParadeExpression | Query | string $expression, string $field = 'id') {
             if ($expression instanceof Query) {
                 $expression = new v1\Parse($expression);
@@ -80,15 +80,17 @@ class ParadeDBServiceProvider extends PackageServiceProvider
 
             return $this->where($field, FullText::search->value, $expression);
         });
+    }
 
-        // Note: both v1 and v2
+    protected function versionTwoMacros(): void
+    {
+        // Note: can also be used in v1
         Builder::macro('search', function () {
             return $this->withoutGlobalScopes(
                 config('paradedb-search.remove_global_scopes')
             );
         });
 
-        // Note: v2 only
         Builder::macro('whereQuery', function (string $field, ParadeExpression | Query | string $expression) {
             if ($expression instanceof Query) {
                 $expression = new v2\Parse($expression);
@@ -97,32 +99,26 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->where($field, FullText::search->value, $expression);
         });
 
-        // Note: v2 only
         Builder::macro('whereConjunction', function (string $field, ParadeExpression | string $expression) {
             return $this->where($field, FullText::conjunction->value, $expression);
         });
 
-        // Note: v2 only
         Builder::macro('whereDisjunction', function (string $field, ParadeExpression | string $expression) {
             return $this->where($field, FullText::disjunction->value, $expression);
         });
 
-        // Note: v2 only
         Builder::macro('wherePhrase', function (string $field, ParadeExpression | string $expression) {
             return $this->where($field, FullText::phrase->value, $expression);
         });
 
-        // Note: v2 only
         Builder::macro('whereTerm', function (string $field, ParadeExpression | string $expression) {
             return $this->where($field, FullText::term->value, $expression);
         });
 
-        // Note: v2 only
         Builder::macro('withScore', function (array $columns = ['*'], string $key = 'id') {
             return $this->select([...$columns, new v2\Score($key)]);
         });
 
-        // Note: v2 only
         Builder::macro('agg', function (string | array $aliases = 'agg'): Collection {
             $aliases = Arr::wrap($aliases);
 
@@ -135,7 +131,6 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             });
         });
 
-        // Note: v2 only
         Schema::macro('createCompositeType', function (string $name, array $columns) {
             $grammar = $this->grammar; // @phpstan-ignore-line
 
@@ -167,7 +162,6 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->connection->statement($statement); // @phpstan-ignore-line
         });
 
-        // Note: v2 only
         Blueprint::macro('bm25', function (array $columns, ?array $parameters = null, ?string $name = null): Fluent {
             $table = $this->table; // @phpstan-ignore-line
             $grammar = $this->grammar; // @phpstan-ignore-line

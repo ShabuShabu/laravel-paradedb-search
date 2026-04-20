@@ -131,20 +131,26 @@ abstract class Tokenizer implements TokenizerExpression
 
     public function getValue(Grammar $grammar): string
     {
-        $name = $this->tokenizerName();
         $column = $this->stringize($grammar, $this->column);
+        $operator = $this->asType ? ' ' : '::';
+        $name = $this->tokenizerName();
 
         $parameters = $this->combine($this->parameters);
         $filters = $this->combine($this->config);
 
-        $operator = $this->asType ? ' ' : '::';
+        if ($parameters && $filters) {
+            return "$column$operator$name($parameters, $filters)";
+        }
 
-        return match (true) {
-            $parameters && $filters => "$column$operator$name($parameters, $filters)",
-            $parameters && ! $filters => "$column$operator$name($parameters)",
-            ! $parameters && $filters => "$column$operator$name($filters)",
-            default => "$column$operator$name",
-        };
+        if ($parameters) {
+            return "$column$operator$name($parameters)";
+        }
+
+        if ($filters) {
+            return "$column$operator$name($filters)";
+        }
+
+        return "$column$operator$name";
     }
 
     protected function tokenizerName(): string
