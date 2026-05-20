@@ -86,8 +86,10 @@ class ParadeDBServiceProvider extends PackageServiceProvider
     {
         // Note: can also be used in v1
         Builder::macro('search', function () {
+            $scopes = config('paradedb-search.remove_scopes', []);
+
             return $this->withoutGlobalScopes(
-                config('paradedb-search.remove_global_scopes')
+                $scopes[$this->getModel()::class] ?? $scopes['fallback'] ?? null
             );
         });
 
@@ -117,6 +119,12 @@ class ParadeDBServiceProvider extends PackageServiceProvider
 
         Builder::macro('withScore', function (array $columns = ['*'], string $key = 'id') {
             return $this->select([...$columns, new v2\Score($key)]);
+        });
+
+        Builder::macro('orderByScore', function (string $direction = 'desc', array $columns = ['*'], string $key = 'id') {
+            return $this
+                ->select([...$columns, new v2\Score($key)])
+                ->orderBy(new v2\Score($key), $direction);
         });
 
         Builder::macro('agg', function (string | array $aliases = 'agg'): Collection {

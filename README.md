@@ -38,7 +38,9 @@ These are the contents of the published config file:
 return [
     'index_suffix' => env('PG_SEARCH_INDEX_SUFFIX', 'idx'),
     'highlighting_tag' => env('PG_SEARCH_HIGHLIGHTING_TAG', '<b></b>'),
-    'remove_global_scopes' => null,
+    'remove_scopes' => [
+        'fallback' => null,
+    ],
 ];
 ```
 
