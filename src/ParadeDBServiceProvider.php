@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ShabuShabu\ParadeDB;
 
+use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -113,7 +114,11 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->where($field, FullText::phrase->value, $expression);
         });
 
-        Builder::macro('whereTerm', function (string $field, ParadeExpression | string $expression) {
+        Builder::macro('whereTerm', function (string $field, ParadeExpression | string | BackedEnum $expression) {
+            if ($expression instanceof BackedEnum) {
+                $expression = (string) $expression->value;
+            }
+
             return $this->where($field, FullText::term->value, $expression);
         });
 
