@@ -176,6 +176,10 @@ class ParadeDBServiceProvider extends PackageServiceProvider
         });
 
         Blueprint::macro('bm25', function (array $columns, ?array $parameters = null, ?string $name = null): Fluent {
+            if (count($columns) > 32) {
+                throw new InvalidArgumentException('Only up to 32 columns can be indexed. Please use a composite type instead.');
+            }
+
             $table = $this->table; // @phpstan-ignore-line
             $grammar = $this->grammar; // @phpstan-ignore-line
 
