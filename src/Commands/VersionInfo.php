@@ -18,12 +18,14 @@ class VersionInfo extends Command
 
     public function __invoke(): int
     {
-        $info = DB::table(new v1\Inspection\VersionInfo)->first();
+        $info = DB::table(new v1\Inspection\VersionInfo)->value('version_info');
+
+        [$version, $type] = explode(',', trim($info, '()'));
 
         table(
-            headers: ['Version', 'Git hash', 'Build mode'],
+            headers: ['Version', 'Build mode'],
             rows: [
-                [$info->version, $info->githash, $info->build_mode],
+                [$version, $type],
             ],
         );
 

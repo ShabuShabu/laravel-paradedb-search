@@ -11,7 +11,7 @@ Integrates the `pg_search` Postgres extension by [ParadeDB](https://docs.paraded
 
 | PHP | Laravel | PostgreSQL | pg_search |
 |-----|---------|------------|-----------|
-| 8.4 | 12.0    | 17.0       | 0.22.0    |
+| 8.4 | 12.0    | 17.0       | 0.25.0    |
 
 ## Installation
 

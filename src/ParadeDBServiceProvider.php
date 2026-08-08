@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB;
 
 use BackedEnum;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -175,7 +176,11 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->connection->statement($statement); // @phpstan-ignore-line
         });
 
-        Blueprint::macro('bm25', function (array $columns, ?array $parameters = null, ?string $name = null): Fluent {
+        Blueprint::macro('bm25', function (Arrayable | array $columns, ?array $parameters = null, ?string $name = null): Fluent {
+            if ($columns instanceof Arrayable) {
+                $columns = $columns->toArray();
+            }
+
             if (count($columns) > 32) {
                 throw new InvalidArgumentException('Only up to 32 columns can be indexed. Please use a composite type instead.');
             }
