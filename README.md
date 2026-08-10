@@ -61,7 +61,11 @@ Please see the following enums
 
 ### Creating an index
 
-A `bm25` index can be created like this in a migration:
+There are currently 3 ways to create a `bm25` index in a migration:
+
+#### Using an array
+
+This is the most basic way to create an index.
 
 ```php
 use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
@@ -69,11 +73,91 @@ use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
 $table->bm25(
     columns: [
         'id',
-        (new UnicodeWords('name'))->removeEmojis(),
+        new UnicodeWords('name')->removeEmojis(),
         'description',
     ],
 );
 ```
+
+#### Using a closure
+
+When using a closure, you can create your index using a Laravel-like syntax.
+
+```php
+use ShabuShabu\ParadeDB\Schema\Index;
+use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\UnicodeWords;
+
+$table->bm25(function (Index $index) {
+    $index->id();
+    $index->unicodeWords('name')->removeEmojis();
+    $index->column('description');
+});
+```
+
+#### Using a `Schema` class
+
+Schemas allow you to have all your `bm25` adjustments in a single place. Columns will be built from all the existing versions up until the version specified.
+
+```php
+namespace Database\Schemas;
+
+use ShabuShabu\ParadeDB\Schema\Index;
+use ShabuShabu\ParadeDB\Schema\Schema;
+
+class PostSchema extends Schema
+{
+    protected function v1(Index $index): void
+    {
+        $index->id();
+        $index->unicodeWords('name');
+        $index->column('description');
+        $index->column('created_at');
+    }
+    
+    protected function v2(Index $index): void
+    {
+        $index->unicodeWords('name')->removeEmojis();
+        $index->remove('created_at');
+    }
+    
+    protected function v3(Index $index): void
+    {
+        $index->literal('tags');
+    }
+}
+```
+
+```php
+use Database\Schemas\PostSchema;
+
+$table->bm25(
+    PostSchema::v(3),
+);
+```
+
+This will be equivalent to:
+
+```php
+$table->bm25(function (Index $index) {
+    $index->id();
+    $index->unicodeWords('name')->removeEmojis();
+    $index->column('description');
+    $index->literal('tags');
+});
+```
+
+Which in turn is equivalent to this:
+
+```php
+$table->bm25([
+    'id',
+    new UnicodeWords('name')->removeEmojis(),
+    'description',
+    new Literal('tags'),
+]);
+```
+
+#### Parameters & tokenizers
 
 If the `key_field` is anything other than `id`, then you can specify it in the second argument together with any other parameters you might need:
 
@@ -111,6 +195,14 @@ Schema::createCompositeType('item_fields', [
     'description text',
     new Type('category', 'text'),
 ]);
+
+// or
+
+Schema::createCompositeType('item_fields', function (Composite $type) {
+    $type->literal('name');
+    $type->column('description', 'text');
+    $type->column('category', 'text');
+});
 ```
 
 You can use this type in your index like this:
@@ -123,6 +215,12 @@ $table->bm25(
         new Row('item_fields', ['name', 'description', 'category'])
     ]   
 );
+
+// or
+
+$table->bm25(function (Index $index) {
+    $index->row('item_fields', ['name', 'description', 'category']);
+});
 ```
 
 ### Starting your search

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ShabuShabu\ParadeDB;
 
 use BackedEnum;
-use Illuminate\Contracts\Support\Arrayable;
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -22,13 +22,16 @@ use ShabuShabu\ParadeDB\Expressions\v2;
 use ShabuShabu\ParadeDB\Expressions\v2\Tokenizers\TokenizerExpression;
 use ShabuShabu\ParadeDB\Operators\Distance;
 use ShabuShabu\ParadeDB\Operators\FullText;
+use ShabuShabu\ParadeDB\Schema\Composite;
+use ShabuShabu\ParadeDB\Schema\Index;
+use ShabuShabu\ParadeDB\Schema\Schema;
 use ShabuShabu\ParadeDB\TantivyQL\Query;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Tpetry\PostgresqlEnhanced\Query\Grammar;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
-use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+use Tpetry\PostgresqlEnhanced\Support\Facades;
 
 class ParadeDBServiceProvider extends PackageServiceProvider
 {
@@ -145,7 +148,13 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             });
         });
 
-        Schema::macro('createCompositeType', function (string $name, array $columns) {
+        Facades\Schema::macro('createCompositeType', function (string $name, Closure | array $columns) {
+            if ($columns instanceof Closure) {
+                $columns($schema = new Composite);
+
+                $columns = $schema->columns();
+            }
+
             $grammar = $this->grammar; // @phpstan-ignore-line
 
             $wrapColumn = static function (string $column) use ($grammar) {
@@ -176,8 +185,14 @@ class ParadeDBServiceProvider extends PackageServiceProvider
             return $this->connection->statement($statement); // @phpstan-ignore-line
         });
 
-        Blueprint::macro('bm25', function (Arrayable | array $columns, ?array $parameters = null, ?string $name = null): Fluent {
-            if ($columns instanceof Arrayable) {
+        Blueprint::macro('bm25', function (Closure | Schema | array $columns, ?array $parameters = null, ?string $name = null): Fluent {
+            if ($columns instanceof Closure) {
+                $columns($index = new Index);
+
+                $columns = $index->columns();
+            }
+
+            if ($columns instanceof Schema) {
                 $columns = $columns->toArray();
             }
 
@@ -185,8 +200,8 @@ class ParadeDBServiceProvider extends PackageServiceProvider
                 throw new InvalidArgumentException('Only up to 32 columns can be indexed. Please use a composite type instead.');
             }
 
-            $table = $this->table; // @phpstan-ignore-line
-            $grammar = $this->grammar; // @phpstan-ignore-line
+            $table = $this->table;
+            $grammar = $this->grammar;
 
             $name ??= sprintf('%s_bm25_%s', $table, config('paradedb-search.index_suffix'));
             $columns = array_map(

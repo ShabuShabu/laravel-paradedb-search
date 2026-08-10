@@ -27,7 +27,7 @@ expect()->extend('toBeIndex', function (string $table) {
 });
 
 expect()->extend('toBeExpression', function (string $expected) {
-    Assert::assertSame($expected, $this->value->getValue(grammar()));
+    Assert::assertSame($expected, $this->value?->getValue(grammar()));
 
     return $this;
 });
